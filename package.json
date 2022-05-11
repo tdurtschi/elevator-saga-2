@@ -1,0 +1,29 @@
+{
+  "name": "elevatorsaga",
+  "version": "1.0.0",
+  "description": "Elevator Saga =================== The elevator programming game",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "prebuild": "rm -rf dist/*",
+    "build": "esbuild app.js base.js challenges.js elevator.js fitness.js fitnessworker.js floor.js interfaces.js movable.js presenters.js user.js world.js --bundle --outdir=dist",
+    "postbuild": "cp -r font-awesome-4.1-1.0 dist/ && cp -r libs dist/ && cp *.html dist/ && cp *.css dist/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/magwo/elevatorsaga.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/magwo/elevatorsaga/issues"
+  },
+  "homepage": "https://github.com/magwo/elevatorsaga#readme",
+  "devDependencies": {
+    "esbuild": "^0.14.38"
+  }
+}

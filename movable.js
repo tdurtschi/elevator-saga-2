@@ -1,16 +1,16 @@
 
 var EPSILON = 0.00001;
 
-var linearInterpolate = function(value0, value1, x) {
+window.linearInterpolate = function(value0, value1, x) {
     return value0 + (value1 - value0) * x;
 };
-var powInterpolate = function(value0, value1, x, a) {
+window.powInterpolate = function(value0, value1, x, a) {
     return value0 + (value1 - value0) * Math.pow(x, a) / (Math.pow(x, a) + Math.pow(1-x, a));
 };
-var coolInterpolate = function(value0, value1, x) {
+window.coolInterpolate = function(value0, value1, x) {
     return powInterpolate(value0, value1, x, 1.3);
 };
-var DEFAULT_INTERPOLATOR = coolInterpolate;
+window.DEFAULT_INTERPOLATOR = coolInterpolate;
 
 var _tmpPosStorage = [0,0];
 
@@ -135,3 +135,5 @@ Movable.prototype.setParent = function(movableParent) {
         this.moveToFast(objWorld[0] - parentWorld[0], objWorld[1] - parentWorld[1]);
     }
 };
+
+window.Movable = Movable;

@@ -255,3 +255,5 @@ Elevator.prototype.handleNewState = function() {
     }
     this.previousTruncFutureFloorIfStopped = futureTruncFloorIfStopped;
 };
+
+window.Elevator = Elevator;

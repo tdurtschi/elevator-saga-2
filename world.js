@@ -1,7 +1,4 @@
-
-
-
-var createWorldCreator = function() {
+window.createWorldCreator = function() {
     var creator = {};
 
     creator.createFloors = function(floorCount, floorHeight, errorHandler) {
@@ -221,7 +218,7 @@ var createWorldCreator = function() {
 };
 
 
-var createWorldController = function(dtMax) {
+window.createWorldController = function(dtMax) {
     var controller = riot.observable({});
     controller.timeScale = 1.0;
     controller.isPaused = true;

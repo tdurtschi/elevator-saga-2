@@ -2,7 +2,7 @@
 // Interface that hides actual elevator object behind a more robust facade,
 // while also exposing relevant events, and providing some helper queue
 // functions that allow programming without async logic.
-var asElevatorInterface = function(obj, elevator, floorCount, errorHandler) {
+window.asElevatorInterface = function(obj, elevator, floorCount, errorHandler) {
     var elevatorInterface = riot.observable(obj);
 
     elevatorInterface.destinationQueue = [];

@@ -1,5 +1,5 @@
 
-var asFloor = function(obj, floorLevel, yPosition, errorHandler) {
+window.asFloor = function(obj, floorLevel, yPosition, errorHandler) {
     var floor = riot.observable(obj);
 
     floor.level = floorLevel;

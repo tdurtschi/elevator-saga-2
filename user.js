@@ -73,3 +73,5 @@ User.prototype.elevatorAvailable = function(elevator, floor) {
         this.pressFloorButton(floor);
     }
 };
+
+window.User = User;

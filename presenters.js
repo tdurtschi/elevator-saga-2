@@ -1,24 +1,24 @@
 
-function clearAll($elems) {
+window.clearAll = function($elems) {
     _.each($elems, function($elem) {
         $elem.empty();
     });
 };
 
-function setTransformPos(elem, x, y) {
+window.setTransformPos = function(elem, x, y) {
     var style = "translate(" + x + "px," + y + "px) translateZ(0)";
     elem.style.transform = style;
     elem.style["-ms-transform"] = style;
     elem.style["-webkit-transform"] = style;
 };
 
-function updateUserState($user, elem_user, user) {
+window.updateUserState = function($user, elem_user, user) {
     setTransformPos(elem_user, user.worldX, user.worldY);
     if(user.done) { $user.addClass("leaving"); }
 };
 
 
-function presentStats($parent, world) {
+window.presentStats = function($parent, world) {
 
     var elem_transportedcounter = $parent.find(".transportedcounter").get(0),
         elem_elapsedtime = $parent.find(".elapsedtime").get(0),
@@ -38,7 +38,7 @@ function presentStats($parent, world) {
     world.trigger("stats_display_changed");
 };
 
-function presentChallenge($parent, challenge, app, world, worldController, challengeNum, challengeTempl) {
+window.presentChallenge = function($parent, challenge, app, world, worldController, challengeNum, challengeTempl) {
     var $challenge = $(riot.render(challengeTempl, {
         challenge: challenge,
         num: challengeNum,
@@ -64,14 +64,14 @@ function presentChallenge($parent, challenge, app, world, worldController, chall
     });
 };
 
-function presentFeedback($parent, feedbackTempl, world, title, message, url) {
+window.presentFeedback = function($parent, feedbackTempl, world, title, message, url) {
     $parent.html(riot.render(feedbackTempl, {title: title, message: message, url: url, paddingTop: world.floors.length * world.floorHeight * 0.2}));
     if(!url) {
         $parent.find("a").remove();
     }
 };
 
-function presentWorld($world, world, floorTempl, elevatorTempl, elevatorButtonTempl, userTempl) {
+window.presentWorld = function($world, world, floorTempl, elevatorTempl, elevatorButtonTempl, userTempl) {
     $world.css("height", world.floorHeight * world.floors.length);
 
     $world.append(_.map(world.floors, function(f) {
@@ -146,7 +146,7 @@ function presentWorld($world, world, floorTempl, elevatorTempl, elevatorButtonTe
 };
 
 
-function presentCodeStatus($parent, templ, error) {
+window.presentCodeStatus = function($parent, templ, error) {
     console.log(error);
     var errorDisplay = error ? "block" : "none";
     var successDisplay = error ? "none" : "block";
@@ -159,7 +159,7 @@ function presentCodeStatus($parent, templ, error) {
     $parent.html(status);
 };
 
-function makeDemoFullscreen() {
+window.makeDemoFullscreen = function() {
     $("body .container > *").not(".world").css("visibility", "hidden");
     $("html, body, body .container, .world").css({width: "100%", margin: "0", "padding": 0});
 };
