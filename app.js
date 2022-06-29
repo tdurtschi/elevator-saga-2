@@ -1,3 +1,4 @@
+import {getCodeObjFromCode} from "./util";
 
 var createEditor = function() {
     var lsKey = "elevatorCrushCode_v5";

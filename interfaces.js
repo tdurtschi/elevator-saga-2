@@ -1,4 +1,18 @@
 
+import {limitNumber, epsilonEquals} from "./util";
+
+const createBoolPassthroughFunction = function(owner, obj, objPropertyName) {
+    return function(val) {
+        if(typeof val !== "undefined") {
+            obj[objPropertyName] = val ? true : false;
+            obj.trigger("change:" + objPropertyName, obj[objPropertyName]);
+            return owner;
+        } else {
+            return obj[objPropertyName];
+        }
+    };
+};
+
 // Interface that hides actual elevator object behind a more robust facade,
 // while also exposing relevant events, and providing some helper queue
 // functions that allow programming without async logic.

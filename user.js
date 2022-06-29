@@ -1,3 +1,5 @@
+import {newGuard} from "./util";
+
 function User(weight) {
     newGuard(this, User);
     Movable.call(this);

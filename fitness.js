@@ -1,4 +1,4 @@
-
+import {createFrameRequester, getCodeObjFromCode} from "./util";
 var requireNothing = function() {
     return {
         description: "No requirement",

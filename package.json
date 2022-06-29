@@ -7,8 +7,10 @@
     "test": "test"
   },
   "scripts": {
-    "prebuild": "rm -rf dist/* && npm run copy-static",
-    "build": "esbuild app.js base.js challenges.js elevator.js fitness.js fitnessworker.js floor.js interfaces.js movable.js presenters.js user.js world.js --bundle --outdir=dist",
+    "prebuild": "rm -rf dist/* && npm run copy-static && npm run build-tests",
+    "build": "esbuild app.js polyfill.js challenges.js elevator.js fitness.js fitnessworker.js floor.js interfaces.js movable.js presenters.js user.js world.js --bundle --outdir=dist",
+    "prebuild-tests": "mkdir dist/test || cp -r test/*.html dist/test && cp -r test/jasmine dist/test/jasmine",
+    "build-tests": "esbuild test/tests.js --bundle --outdir=dist/test",
     "copy-static": "cp -r font-awesome-4.1-1.0 dist/ && cp -r libs dist/ && cp *.html dist/ && cp *.css dist/",
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "serve dist/",

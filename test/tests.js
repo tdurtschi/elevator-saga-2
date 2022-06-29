@@ -1,4 +1,4 @@
-
+import {createFrameRequester, getCodeObjFromCode} from "../util";
 
 var timeForwarder = function(dt, stepSize, fn) {
 	var accumulated = 0.0;

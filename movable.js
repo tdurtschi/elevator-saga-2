@@ -1,3 +1,4 @@
+import {newGuard} from "./util";
 
 var EPSILON = 0.00001;
 

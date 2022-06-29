@@ -1,3 +1,5 @@
+import {limitNumber, epsilonEquals, newGuard} from "./util";
+
 function newElevStateHandler(elevator) { elevator.handleNewState(); }
 
 function Elevator(speedFloorsPerSec, floorCount, floorHeight, maxUsers) {
@@ -156,7 +158,7 @@ Elevator.prototype.goToFloor = function(floor) {
 };
 
 Elevator.prototype.getFirstPressedFloor = function() {
-    deprecationWarning("getFirstPressedFloor");
+    console.warn("You are using a deprecated feature scheduled for removal: " + "getFirstPressedFloor");
     for(var i=0; i<this.buttonStates.length; i++) {
         if(this.buttonStates[i]) { return i; }
     }
@@ -257,3 +259,15 @@ Elevator.prototype.handleNewState = function() {
 };
 
 window.Elevator = Elevator;
+
+const distanceNeededToAchieveSpeed = function(currentSpeed, targetSpeed, acceleration) {
+    // v² = u² + 2a * d
+    var requiredDistance = (Math.pow(targetSpeed, 2) - Math.pow(currentSpeed, 2)) / (2 * acceleration);
+    return requiredDistance;
+};
+
+const accelerationNeededToAchieveChangeDistance = function(currentSpeed, targetSpeed, distance) {
+    // v² = u² + 2a * d
+    var requiredAcceleration = 0.5 * ((Math.pow(targetSpeed, 2) - Math.pow(currentSpeed, 2)) / distance);
+    return requiredAcceleration;
+};
