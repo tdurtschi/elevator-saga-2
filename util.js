@@ -6,6 +6,18 @@ export const epsilonEquals = function(a, b) {
     return Math.abs(a-b) < 0.00000001;
 };
 
+export const linearInterpolate = function(value0, value1, x) {
+    return value0 + (value1 - value0) * x;
+};
+
+const powInterpolate = function(value0, value1, x, a) {
+    return value0 + (value1 - value0) * Math.pow(x, a) / (Math.pow(x, a) + Math.pow(1-x, a));
+};
+export const coolInterpolate = function(value0, value1, x) {
+    return powInterpolate(value0, value1, x, 1.3);
+};
+
+
 export const newGuard = function(obj, type) {
     if(!(obj instanceof type)) { throw "Incorrect instantiation, got " + typeof obj + " but expected " + type; }
 }

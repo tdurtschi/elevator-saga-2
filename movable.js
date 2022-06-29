@@ -1,17 +1,4 @@
-import {newGuard} from "./util";
-
-var EPSILON = 0.00001;
-
-window.linearInterpolate = function(value0, value1, x) {
-    return value0 + (value1 - value0) * x;
-};
-window.powInterpolate = function(value0, value1, x, a) {
-    return value0 + (value1 - value0) * Math.pow(x, a) / (Math.pow(x, a) + Math.pow(1-x, a));
-};
-window.coolInterpolate = function(value0, value1, x) {
-    return powInterpolate(value0, value1, x, 1.3);
-};
-window.DEFAULT_INTERPOLATOR = coolInterpolate;
+import {newGuard, coolInterpolate} from "./util";
 
 var _tmpPosStorage = [0,0];
 
@@ -82,7 +69,7 @@ Movable.prototype.moveToOverTime = function(newX, newY, timeToSpend, interpolato
     this.currentTask = true;
     if(newX === null) { newX = this.x; }
     if(newY === null) { newY = this.y; }
-    if(typeof interpolator === "undefined") { interpolator = DEFAULT_INTERPOLATOR; }
+    if(typeof interpolator === "undefined") { interpolator = coolInterpolate; }
     var origX = this.x;
     var origY = this.y;
     var timeSpent = 0.0;
@@ -137,4 +124,4 @@ Movable.prototype.setParent = function(movableParent) {
     }
 };
 
-window.Movable = Movable;
+export default Movable;

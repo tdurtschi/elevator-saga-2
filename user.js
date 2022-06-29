@@ -1,4 +1,5 @@
-import {newGuard} from "./util";
+import {newGuard, linearInterpolate} from "./util";
+import Movable from "./movable";
 
 function User(weight) {
     newGuard(this, User);

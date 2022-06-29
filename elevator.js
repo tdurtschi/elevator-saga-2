@@ -1,4 +1,5 @@
 import {limitNumber, epsilonEquals, newGuard} from "./util";
+import Movable from "./movable";
 
 function newElevStateHandler(elevator) { elevator.handleNewState(); }
 

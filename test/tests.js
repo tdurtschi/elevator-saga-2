@@ -1,4 +1,5 @@
 import {createFrameRequester, getCodeObjFromCode} from "../util";
+import Movable from "../movable";
 
 var timeForwarder = function(dt, stepSize, fn) {
 	var accumulated = 0.0;
@@ -96,8 +97,8 @@ describe("Elevator Saga", function() {
 			expect(m.worldX).toBe(2.0);
 			expect(m.worldY).toBe(3.0);
 		});
+
 		it("moves to destination over time", function() {
-			//obj.moveToOverTime = function(newX, newY, timeToSpend, interpolator, cb) {
 			m.moveToOverTime(2.0, 3.0, 10.0, handlers.someHandler);
 			timeForwarder(10.0, 0.1, function(dt) { m.update(dt) });
 			expect(m.x).toBe(2.0);
