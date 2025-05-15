@@ -1,3 +1,5 @@
+import Elevator from "./elevator";
+
 window.createWorldCreator = function() {
     var creator = {};
 
@@ -181,7 +183,7 @@ window.createWorldCreator = function() {
                     users.splice(i, 1);
                 }
             }
-            
+
             recalculateStats();
         };
 

@@ -18,7 +18,6 @@
     <script type="text/javascript" src="../movable.js"></script>
     <script type="text/javascript" src="../floor.js"></script>
     <script type="text/javascript" src="../user.js"></script>
-    <script type="text/javascript" src="../elevator.js"></script>
     <script type="text/javascript" src="../interfaces.js"></script>
     <script type="text/javascript" src="../world.js"></script>
     <script type="text/javascript" src="../presenters.js"></script>
@@ -34,21 +33,22 @@
     <div id="results_floor"><h4></h4></div>
 
 
-    <script type="text/javascript">
+    <script type="module">
+        import Elevator from "../elevator.js";
 
         var now = (function() {
-         
+
           // Returns the number of milliseconds elapsed since either the browser navigationStart event or 
           // the UNIX epoch, depending on availability.
           // Where the browser supports 'performance' we use that as it is more accurate (microsoeconds
           // will be returned in the fractional part) and more reliable as it does not rely on the system time. 
           // Where 'performance' is not available, we will fall back to Date().getTime().
-         
+
           // jsFiddle: http://jsfiddle.net/davidwaterston/xCXvJ
-         
-         
+
+
           var performance = window.performance || {};
-            
+
           performance.now = (function() {
             return performance.now    ||
             performance.webkitNow     ||
@@ -57,9 +57,9 @@
             performance.mozNow        ||
             function() { return new Date().getTime(); };
           })();
-                  
+
           return performance.now();         
-         
+
         });
 
         // First blow through the allocation system to make first test more predictable..

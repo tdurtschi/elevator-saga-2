@@ -259,8 +259,6 @@ Elevator.prototype.handleNewState = function() {
     this.previousTruncFutureFloorIfStopped = futureTruncFloorIfStopped;
 };
 
-window.Elevator = Elevator;
-
 const distanceNeededToAchieveSpeed = function(currentSpeed, targetSpeed, acceleration) {
     // v² = u² + 2a * d
     var requiredDistance = (Math.pow(targetSpeed, 2) - Math.pow(currentSpeed, 2)) / (2 * acceleration);
@@ -272,3 +270,5 @@ const accelerationNeededToAchieveChangeDistance = function(currentSpeed, targetS
     var requiredAcceleration = 0.5 * ((Math.pow(targetSpeed, 2) - Math.pow(currentSpeed, 2)) / distance);
     return requiredAcceleration;
 };
+
+export default Elevator;
