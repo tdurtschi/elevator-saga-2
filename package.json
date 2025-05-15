@@ -18,15 +18,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/magwo/elevatorsaga.git"
+    "url": "git+https://github.com/tdurtschi/elevator-saga-2.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/magwo/elevatorsaga/issues"
+    "url": "https://github.com/tdurtschi/elevator-saga-2/issues"
   },
-  "homepage": "https://github.com/magwo/elevatorsaga#readme",
+  "homepage": "https://github.com/tdurtschi/elevator-saga-2#readme",
   "devDependencies": {
     "esbuild": "^0.14.38"
   },
