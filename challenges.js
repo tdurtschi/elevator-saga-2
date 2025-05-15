@@ -1,5 +1,5 @@
 
-var requireUserCountWithinTime = function(userCount, timeLimit) {
+export var requireUserCountWithinTime = function(userCount, timeLimit) {
     return {
         description: "Transport <span class='emphasis-color'>" + userCount + "</span> people in <span class='emphasis-color'>" + timeLimit.toFixed(0) + "</span> seconds or less",
         evaluate: function(world) {
@@ -12,7 +12,7 @@ var requireUserCountWithinTime = function(userCount, timeLimit) {
     };
 };
 
-var requireUserCountWithMaxWaitTime = function(userCount, maxWaitTime) {
+export var requireUserCountWithMaxWaitTime = function(userCount, maxWaitTime) {
     return {
         description: "Transport <span class='emphasis-color'>" + userCount + "</span> people and let no one wait more than <span class='emphasis-color'>" + maxWaitTime.toFixed(1) + "</span> seconds",
         evaluate: function(world) {
@@ -25,7 +25,7 @@ var requireUserCountWithMaxWaitTime = function(userCount, maxWaitTime) {
     };
 };
 
-var requireUserCountWithinTimeWithMaxWaitTime = function(userCount, timeLimit, maxWaitTime) {
+export var requireUserCountWithinTimeWithMaxWaitTime = function(userCount, timeLimit, maxWaitTime) {
     return {
        description: "Transport <span class='emphasis-color'>" + userCount + "</span> people in <span class='emphasis-color'>" + timeLimit.toFixed(0) + "</span> seconds or less and let no one wait more than <span class='emphasis-color'>" + maxWaitTime.toFixed(1) + "</span> seconds",
        evaluate: function(world) {
@@ -38,7 +38,7 @@ var requireUserCountWithinTimeWithMaxWaitTime = function(userCount, timeLimit, m
     };
 };
 
-var requireUserCountWithinMoves = function(userCount, moveLimit) {
+export var requireUserCountWithinMoves = function(userCount, moveLimit) {
     return {
         description: "Transport <span class='emphasis-color'>" + userCount + "</span> people using <span class='emphasis-color'>" + moveLimit + "</span> elevator moves or less",
         evaluate: function(world) {
@@ -51,7 +51,7 @@ var requireUserCountWithinMoves = function(userCount, moveLimit) {
     };
 };
 
-var requireDemo = function() {
+export var requireDemo = function() {
     return {
         description: "Perpetual demo",
         evaluate: function() { return null; }
@@ -59,7 +59,7 @@ var requireDemo = function() {
 };
 
 /* jshint laxcomma:true */
-window.challenges = [
+export const challenges = [
      {options: {floorCount: 3, elevatorCount: 1, spawnRate: 0.3}, condition: requireUserCountWithinTime(15, 60)}
     ,{options: {floorCount: 5, elevatorCount: 1, spawnRate: 0.4}, condition: requireUserCountWithinTime(20, 60)}
     ,{options: {floorCount: 5, elevatorCount: 1, spawnRate: 0.5, elevatorCapacities: [6]}, condition: requireUserCountWithinTime(23, 60)}

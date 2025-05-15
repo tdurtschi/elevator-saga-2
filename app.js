@@ -1,4 +1,5 @@
 import {getCodeObjFromCode} from "./util";
+import {challenges} from "./challenges";
 
 var createEditor = function() {
     var lsKey = "elevatorCrushCode_v5";
@@ -110,14 +111,11 @@ var createEditor = function() {
     return returnObj;
 };
 
-
 var createParamsUrl = function(current, overrides) {
     return "#" + _.map(_.merge(current, overrides), function(val, key) {
         return key + "=" + val;
     }).join(",");
 };
-
-
 
 $(function() {
     var tsKey = "elevatorTimeScale";
@@ -167,7 +165,6 @@ $(function() {
         }
         app.currentChallengeIndex = challengeIndex;
         app.world = app.worldCreator.createWorld(challenges[challengeIndex].options);
-        window.world = app.world;
 
         clearAll([$world, $feedback]);
         presentStats($stats, app.world);
@@ -208,16 +205,6 @@ $(function() {
     });
     editor.on("change", function() {
         $("#fitness_message").addClass("faded");
-        var codeStr = editor.getCode();
-        // fitnessSuite(codeStr, true, function(results) {
-        //     var message = "";
-        //     if(!results.error) {
-        //         message = "Fitness avg wait times: " + _.map(results, function(r){ return r.options.description + ": " + r.result.avgWaitTime.toPrecision(3) + "s" }).join("&nbsp&nbsp&nbsp");
-        //     } else {
-        //         message = "Could not compute fitness due to error: " + results.error;
-        //     }
-        //     $("#fitness_message").html(message).removeClass("faded");
-        // });
     });
     editor.trigger("change");
 
