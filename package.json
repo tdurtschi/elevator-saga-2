@@ -12,8 +12,9 @@
     "prebuild-tests": "$(mkdir dist/test) && cp -r test/*.html dist/test && cp -r test/jasmine dist/test/jasmine",
     "build-tests": "esbuild test/tests.js test/challenges.test.js --bundle --outdir=dist/test",
     "copy-static": "cp -r font-awesome-4.1-1.0 dist/ && cp -r libs dist/ && cp *.html dist/ && cp *.css dist/",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "serve dist/",
+    "pretest": "npm run build",
+    "test": "playwright test",
     "watch": "npm run build -- --watch"
   },
   "repository": {
@@ -28,6 +29,8 @@
   },
   "homepage": "https://github.com/tdurtschi/elevator-saga-2#readme",
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.18",
     "esbuild": "^0.14.38"
   },
   "dependencies": {
