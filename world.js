@@ -1,4 +1,5 @@
 import Elevator from "./elevator";
+import asFloor from "./floor";
 
 window.createWorldCreator = function() {
     var creator = {};
