@@ -1,24 +1,24 @@
 
-window.clearAll = function($elems) {
+function clearAll($elems) {
     _.each($elems, function($elem) {
         $elem.empty();
     });
-};
+}
 
-window.setTransformPos = function(elem, x, y) {
+function setTransformPos(elem, x, y) {
     var style = "translate(" + x + "px," + y + "px) translateZ(0)";
     elem.style.transform = style;
     elem.style["-ms-transform"] = style;
     elem.style["-webkit-transform"] = style;
-};
+}
 
-window.updateUserState = function($user, elem_user, user) {
+function updateUserState($user, elem_user, user) {
     setTransformPos(elem_user, user.worldX, user.worldY);
     if(user.done) { $user.addClass("leaving"); }
-};
+}
 
 
-window.presentStats = function($parent, world) {
+function presentStats($parent, world) {
 
     var elem_transportedcounter = $parent.find(".transportedcounter").get(0),
         elem_elapsedtime = $parent.find(".elapsedtime").get(0),
@@ -36,9 +36,9 @@ window.presentStats = function($parent, world) {
         elem_movecount.textContent = world.moveCount;
     });
     world.trigger("stats_display_changed");
-};
+}
 
-window.presentChallenge = function($parent, challenge, app, world, worldController, challengeNum, challengeTempl) {
+function presentChallenge($parent, challenge, app, world, worldController, challengeNum, challengeTempl) {
     var $challenge = $(riot.render(challengeTempl, {
         challenge: challenge,
         num: challengeNum,
@@ -62,16 +62,16 @@ window.presentChallenge = function($parent, challenge, app, world, worldControll
         var timeScale = Math.round(worldController.timeScale / 1.618);
         worldController.setTimeScale(timeScale);
     });
-};
+}
 
-window.presentFeedback = function($parent, feedbackTempl, world, title, message, url) {
+function presentFeedback($parent, feedbackTempl, world, title, message, url) {
     $parent.html(riot.render(feedbackTempl, {title: title, message: message, url: url, paddingTop: world.floors.length * world.floorHeight * 0.2}));
     if(!url) {
         $parent.find("a").remove();
     }
-};
+}
 
-window.presentWorld = function($world, world, floorTempl, elevatorTempl, elevatorButtonTempl, userTempl) {
+function presentWorld($world, world, floorTempl, elevatorTempl, elevatorButtonTempl, userTempl) {
     $world.css("height", world.floorHeight * world.floors.length);
 
     $world.append(_.map(world.floors, function(f) {
@@ -143,10 +143,10 @@ window.presentWorld = function($world, world, floorTempl, elevatorTempl, elevato
         });
         $world.append($user);
     });
-};
+}
 
 
-window.presentCodeStatus = function($parent, templ, error) {
+function presentCodeStatus($parent, templ, error) {
     console.log(error);
     var errorDisplay = error ? "block" : "none";
     var successDisplay = error ? "none" : "block";
@@ -157,9 +157,21 @@ window.presentCodeStatus = function($parent, templ, error) {
     }
     var status = riot.render(templ, {errorMessage: errorMessage, errorDisplay: errorDisplay, successDisplay: successDisplay});
     $parent.html(status);
-};
+}
 
-window.makeDemoFullscreen = function() {
+function makeDemoFullscreen() {
     $("body .container > *").not(".world").css("visibility", "hidden");
     $("html, body, body .container, .world").css({width: "100%", margin: "0", "padding": 0});
+}
+
+export {
+    clearAll,
+    setTransformPos,
+    updateUserState,
+    presentStats,
+    presentChallenge,
+    presentFeedback,
+    presentWorld,
+    presentCodeStatus,
+    makeDemoFullscreen
 };

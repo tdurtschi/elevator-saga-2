@@ -1,5 +1,14 @@
 import {getCodeObjFromCode} from "./util";
 import {challenges} from "./challenges";
+import {
+    clearAll,
+    presentStats,
+    presentChallenge,
+    presentFeedback,
+    presentWorld,
+    presentCodeStatus,
+    makeDemoFullscreen
+} from "./presenters";
 
 var createEditor = function() {
     var lsKey = "elevatorCrushCode_v5";
