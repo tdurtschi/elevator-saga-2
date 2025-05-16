@@ -8,7 +8,7 @@
   },
   "scripts": {
     "prebuild": "rm -rf dist/* && npm run copy-static && npm run build-tests",
-    "build": "esbuild app.js polyfill.js interfaces.js movable.js presenters.js user.js world.js --bundle --outdir=dist",
+    "build": "esbuild app.js polyfill.js movable.js presenters.js user.js world.js --bundle --outdir=dist",
     "prebuild-tests": "$(mkdir dist/test) && cp -r test/*.html dist/test && cp -r test/jasmine dist/test/jasmine",
     "build-tests": "esbuild test/tests.js test/challenges.test.js --bundle --outdir=dist/test",
     "copy-static": "cp -r font-awesome-4.1-1.0 dist/ && cp -r libs dist/ && cp *.html dist/ && cp *.css dist/",
