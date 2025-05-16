@@ -9,6 +9,7 @@ import {
     presentCodeStatus,
     makeDemoFullscreen
 } from "./presenters";
+import {createWorldCreator, createWorldController} from "./world";
 
 var createEditor = function() {
     var lsKey = "elevatorCrushCode_v5";

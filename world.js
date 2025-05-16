@@ -1,8 +1,9 @@
 import Elevator from "./elevator";
 import asFloor from "./floor";
 import { asElevatorInterface } from "./interfaces";
+import User from "./user";
 
-window.createWorldCreator = function() {
+export function createWorldCreator() {
     var creator = {};
 
     creator.createFloors = function(floorCount, floorHeight, errorHandler) {
@@ -222,7 +223,7 @@ window.createWorldCreator = function() {
 };
 
 
-window.createWorldController = function(dtMax) {
+export function createWorldController(dtMax) {
     var controller = riot.observable({});
     controller.timeScale = 1.0;
     controller.isPaused = true;

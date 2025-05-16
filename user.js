@@ -77,4 +77,4 @@ User.prototype.elevatorAvailable = function(elevator, floor) {
     }
 };
 
-window.User = User;
+export default User;

@@ -2,6 +2,8 @@ import {createFrameRequester, getCodeObjFromCode} from "../util";
 import Movable from "../movable";
 import Elevator from "../elevator";
 import { asElevatorInterface } from "../interfaces";
+import User from "../user";
+import { createWorldController } from "../world";
 
 var timeForwarder = function(dt, stepSize, fn) {
 	var accumulated = 0.0;
