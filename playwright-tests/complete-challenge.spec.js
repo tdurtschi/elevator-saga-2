@@ -5,7 +5,7 @@ let macOS = process.platform === 'darwin' //darwin is macOS
 let modifier = macOS ? 'Meta' : 'Control';
 
 const PROGRAM = `
-{
+({
     init: function(elevators, floors) {
         var rotator = 0;
         _.each(floors, function(floor) {
@@ -25,7 +25,7 @@ const PROGRAM = `
     },
         update: function(dt, elevators, floors) {
         }
-}
+})
 `;
 
 test('Completes the challenge', async ({ page }) => {
@@ -40,14 +40,10 @@ test('Completes the challenge', async ({ page }) => {
     await page.locator('.timescale_increase').click();
     await page.locator('.timescale_increase').click();
 
-    const codeMirror = await page.locator('.CodeMirror');
-    codeMirror.locator(".CodeMirror-lines").nth(0).click();
-
-    var textarea = await codeMirror.locator("textarea");
-
-    await textarea.press(`${modifier}+A`);
-    await textarea.press("Delete");
-    await textarea.fill(PROGRAM);
+    const monacoEditor = page.locator(".monaco-editor").nth(0);
+    await monacoEditor.click();
+    await page.keyboard.press("Meta+KeyA")
+    await page.keyboard.type(PROGRAM);
 
     await page.locator('#button_apply').click();
 

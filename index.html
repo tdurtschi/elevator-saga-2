@@ -18,7 +18,6 @@
     <script type="text/javascript" src="libs/codemirror/mode/javascript/javascript.js"></script>
 
     <script type="text/javascript" src="libs/unobservable.js"></script>
-
     <script type="text/javascript" src="app.js"></script>
 
 
@@ -74,7 +73,8 @@
     </script>
 
     <script type="text/plain" id="default-elev-implementation">
-{
+/** @type {Solution} */
+({
     init: function(elevators, floors) {
         var elevator = elevators[0]; // Let's use the first elevator
 
@@ -88,42 +88,8 @@
     update: function(dt, elevators, floors) {
         // We normally don't need to do anything here
     }
-}
+})
     </script>
-    <script type="text/plain" id="devtest-elev-implementation">
-{
-    init: function(elevators, floors) {
-        var selectElevatorForFloorPickup = function(floorNum) {
-            return _.max(elevators, function(e) {
-                return (_.contains(e.destinationQueue, floorNum) ? 4 : 0) +
-                    (-e.destinationQueue.length*e.destinationQueue.length) +
-                    (-e.loadFactor()*e.loadFactor() * 3);
-            });
-        };
-
-        _.each(floors, function(floor) {
-            floor.on("down_button_pressed up_button_pressed", function() {
-                var elevator = selectElevatorForFloorPickup(floor.level);
-                if(!_.contains(elevator.destinationQueue, floor.level)) {
-                    elevator.goToFloor(floor.level);
-                }
-            });
-        });
-        _.each(elevators, function(elevator) {
-            elevator.on("floor_button_pressed", function(floorNum) {
-                elevator.goToFloor(floorNum);
-            });
-            elevator.on("idle", function() {
-                elevator.goToFloor(0);
-            });
-        });
-    },
-    update: function(dt, elevators, floors) {
-    }
-}
-    </script>
-
-
 </head>
 <body>
     <div class="container">
@@ -157,7 +123,7 @@
 
         <div class="codestatus"></div>
         <div class="code">
-            <textarea name="Code" id="code"></textarea>
+            <div id="editor"></div>
         </div>
         <button id="button_reset" style="float: left">Reset</button>
         <button id="button_resetundo" style="float: left">Undo reset</button>
@@ -177,5 +143,7 @@
             <h4><a href="test/index.html">Run tests</a></h4>
         </div>
     </div>
+    <!-- Load Monaco Editor from CDN; from: https://log.schemescape.com/posts/web-development/embedding-monaco-from-cdn.html -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.29.1/min/vs/loader.min.js"></script>
 </body>
 </html>
