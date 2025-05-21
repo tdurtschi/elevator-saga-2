@@ -1,8 +1,8 @@
 
 
 html, body {
-    background-color: #181c2c; /* light: #fbf9f7; */
-    color: #dedfdf;
+    background-color: #121212; /* Dark theme background */
+    color: #E0E0E0;
     margin: 0;
     padding: 0;
 }
@@ -16,21 +16,16 @@ h1, h2, h3, h4, h5 {
 }
 
 .emphasis-color {
-    color: #F1F2D8;
-    text-shadow: 0 2px 0.4pt #555;
+    color: #59ce5e;
+    text-shadow: 0 2px 0.4pt #333;
 }
 
 .error-color {
-    color: #d54;
+    color: #CF6679;
 }
 
 a {
-    color: #dedfdf;
-    /*font-weight: bold;*/
-    /*text-decoration: none;*/
-}
-a:hover {
-    /*text-decoration: underline;*/
+    color: #4CAF50;
 }
 
 h2, h3, h4, h5 {
@@ -66,10 +61,10 @@ button {
     font-family: monospace;
     padding-left: 16px;
     padding-right: 16px;
-    color: #dedfdf;
-    background-color: #32384c;
-    text-shadow: 0 0 2px #aaa;
-    border: 1px solid #666;
+    color: #E0E0E0;
+    background-color: #2E7D32;
+    text-shadow: 0 0 2px #1E1E1E;
+    border: 1px solid #4CAF50;
     border-radius: 5px;
     margin-right: 5px;
 }
@@ -163,7 +158,7 @@ button.right {
 .world {
     position: relative;
     width: 1220px;
-    background-color: #333;
+    background-color: #1E1E1E;
     padding: 0;
     overflow: hidden;
 }
@@ -172,8 +167,8 @@ button.right {
     position: relative;
     height: 100%;
     width: 938px;
-    border-right: 1px solid black;
-    border-left: 1px solid black;
+    border-right: 1px solid #333333;
+    border-left: 1px solid #333333;
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -190,7 +185,7 @@ button.right {
 }
 
 .statscontainer div {
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #4CAF50;
 }
 
 .statscontainer div, .statscontainer span {
@@ -216,7 +211,7 @@ button.right {
     padding-top: 20px;
     line-height: 20px;
     text-align: center;
-    background-color: rgba(44,44,44, 0.6);
+    background-color: rgba(71, 190, 80, 0.15);
     z-index: 5;
     overflow: hidden;
 }
@@ -229,29 +224,30 @@ button.right {
 }
 
 .user {
-    color: white;
-    text-shadow: 0 1px 3px black;
+    color: #E0E0E0;
+    text-shadow: 0 1px 3px #121212;
     z-index: 2;
 }
 
 .user.happy {
+    color: #81C784;
 }
 
 .user.frustrated {
-    color: yellow;
+    color: #FFC107;
 }
 
 .user.disappointed {
-    color: red;
+    color: #CF6679;
 }
 
 .user.leaving {
-    color: #eee;
+    color: #A0A0A0;
 }
 
 .elevator {
-    background-color: #4F8686;
-    border: 2px solid white;
+    background-color: #000000;
+    border: 2px solid #4CAF50;
     height: 46px;
     z-index: 1;
 }
@@ -271,11 +267,11 @@ button.right {
 }
 
 .elevator .directionindicator .fa{
-    color: rgba(255, 255, 255, 0.2);
+    color: rgba(224, 224, 224, 0.2); /* Light gray with opacity */
 }
 
 .elevator .directionindicator .fa.activated{
-    color: #33ff44;
+    color: #81C784; /* Light green accent */
 }
 
 .elevator .floorindicator {
@@ -284,7 +280,7 @@ button.right {
     width: 100%;
     font-size: 15px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(224, 224, 224, 0.3); /* Light gray with opacity */
 }
 
 
@@ -296,7 +292,7 @@ button.right {
     text-align: center;
     font-size: 8px;
     line-height: 8px;
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(224, 224, 224, 0.3); /* Light gray with opacity */
 }
 .elevator .buttonpress {
     cursor: pointer;
@@ -304,31 +300,31 @@ button.right {
     display: inline-block;
 }
 .elevator .buttonpress.activated {
-    color: #33ff44;
+    color: #81C784; /* Light green accent */
 }
 
 .floor {
     position: absolute;
     width: 100%;
     height: 49px;
-    background-color: rgba(255, 255, 255, 0.1);
-    background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.2), rgba(255,255,255,0.24), rgba(255,255,255,0.1)); /* Standard syntax */
-    border-bottom: 1px solid #333;
+    background-color: rgba(46, 125, 50, 0.1); /* Dark green with opacity */
+    background: linear-gradient(rgba(46,125,50,0.05), rgba(46,125,50,0.1), rgba(46,125,50,0.15), rgba(46,125,50,0.05)); /* Green gradient */
+    border-bottom: 1px solid #333333; /* Dark gray */
 }
 
 .floor .buttonindicator {
     cursor: pointer;
     line-height: 50px;
     padding-left: 50px;
-    color: rgba(255, 255, 255, 0.2);
+    color: rgba(224, 224, 224, 0.2); /* Light gray with opacity */
 }
 .floor .buttonindicator .activated {
-    color: rgba(55, 255, 55, 1.0);
+    color: #81C784; /* Light green accent */
 }
 
 .floor .floornumber {
     position: absolute;
-    color: rgba(255, 255, 255, 0.15);
+    color: rgba(76, 175, 80, 0.2); /* Medium green with opacity */
     font-size: 32px;
     line-height: 50px;
     padding-left: 10px;
@@ -343,29 +339,33 @@ button.right {
 }
 
 .help {
+    font-family: Oswald, Arial, Helvetica, sans-serif;
     margin-top: 20px;
     margin-bottom: 30px;
+    padding: 16px;
+    background-color: #293f29;
 }
 
 .help p {
     max-width: 75%;
+    font-size: 15pt;
 }
 
 .doctable {
     margin-top: 10px;
     margin-bottom: 20px;
-    color: #555;
+    color: #dfdfdf;
     border: none;
 }
 
 .doctable th, .doctable td  {
     text-align: left;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(76, 175, 80, 0.2); /* Medium green with opacity */
 }
 
 .doctable tr td:first-child {
     padding-right: 5px;
-    color: #333;
+    color: #81C784; /* Light green accent */
 }
 
 .doctable td {
