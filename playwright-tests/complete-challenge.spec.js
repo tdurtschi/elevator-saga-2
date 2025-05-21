@@ -40,10 +40,20 @@ test('Completes the challenge', async ({ page }) => {
     await page.locator('.timescale_increase').click();
     await page.locator('.timescale_increase').click();
 
-    const monacoEditor = page.locator(".monaco-editor").nth(0);
+    let monacoEditor = page.locator(".monaco-editor .view-line").nth(0);
     await monacoEditor.click();
-    await page.keyboard.press("Meta+KeyA")
+    await page.keyboard.press("Home");
+    for (let i = 0; i < 20; i++) {
+        await page.keyboard.press("Shift+ArrowDown")
+    }
+    await page.keyboard.press("Backspace");
+
     await page.keyboard.type(PROGRAM);
+
+    for (let i = 0; i < 20; i++) {
+        await page.keyboard.press("Shift+ArrowDown")
+    }
+    await page.keyboard.press("Backspace");
 
     await page.locator('#button_apply').click();
 
