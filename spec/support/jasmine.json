@@ -1,9 +1,8 @@
 {
   "spec_dir": "test",
   "spec_files": [
-    "challenges.test.js",
-    "movable.test.js",
-    "tests.js"
+    "*.test.js",
+    "*tests.js"
   ],
   "helpers": [
     "helpers/setup.cjs"
