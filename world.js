@@ -2,6 +2,7 @@ import Elevator from "./elevator";
 import asFloor from "./floor";
 import { asElevatorInterface } from "./interfaces";
 import User from "./user";
+const _ = require("lodash");
 
 export function createWorldCreator() {
     var creator = {};

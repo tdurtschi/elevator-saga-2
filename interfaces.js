@@ -1,5 +1,6 @@
 
 import {limitNumber, epsilonEquals} from "./util";
+const _ = require("lodash");
 
 const createBoolPassthroughFunction = function(owner, obj, objPropertyName) {
     return function(val) {

@@ -1,9 +1,12 @@
+import "../libs/riot.js";
+import "../libs/unobservable.js";
 import {createFrameRequester, getCodeObjFromCode} from "../util";
 import Movable from "../movable";
 import Elevator from "../elevator";
 import { asElevatorInterface } from "../interfaces";
 import User from "../user";
 import { createWorldController } from "../world";
+const _ = require("lodash");
 
 var timeForwarder = function(dt, stepSize, fn) {
 	var accumulated = 0.0;

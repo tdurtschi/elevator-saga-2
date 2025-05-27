@@ -1,3 +1,4 @@
+import "./libs/riot.js";
 import {getCodeObjFromCode} from "./util";
 import {challenges} from "./challenges";
 import {
@@ -11,6 +12,7 @@ import {
 } from "./presenters";
 import {createWorldCreator, createWorldController} from "./world";
 import {typeDeclarations} from "./types";
+const _ = require("lodash");
 
 const createEditorAsync = () => new Promise((resolve, reject) => {
     var lsKey = "elevatorCrushCode_v5";

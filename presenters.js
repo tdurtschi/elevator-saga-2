@@ -1,3 +1,4 @@
+const _ = require("lodash");
 
 function clearAll($elems) {
     _.each($elems, function($elem) {

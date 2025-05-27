@@ -1,5 +1,6 @@
 import {limitNumber, epsilonEquals, newGuard} from "./util";
 import Movable from "./movable";
+const _ = require("lodash");
 
 function newElevStateHandler(elevator) { elevator.handleNewState(); }
 

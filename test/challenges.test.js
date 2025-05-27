@@ -1,4 +1,7 @@
 import {requireUserCountWithinTime, requireUserCountWithMaxWaitTime, requireUserCountWithinMoves, requireUserCountWithinTimeWithMaxWaitTime} from "../challenges";
+import "../libs/riot.js";
+import "../libs/unobservable.js";
+const _ = require("lodash");
 
 describe("Challenge requirements", function() {
     var fakeWorld = null;
