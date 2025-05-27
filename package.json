@@ -14,7 +14,8 @@
     "copy-static": "cp -r font-awesome-4.1-1.0 dist/ && cp -r libs dist/ && cp *.html dist/ && cp *.css dist/",
     "serve": "serve dist/",
     "pretest": "npm run build",
-    "test": "playwright test",
+    "test:jasmine": "jasmine",
+    "test": "npm run test:jasmine && playwright test",
     "watch": "npm run build -- --watch"
   },
   "repository": {
@@ -31,7 +32,9 @@
   "devDependencies": {
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.18",
-    "esbuild": "^0.14.38"
+    "esbuild": "^0.14.38",
+    "jasmine": "^5.1.0",
+    "jsdom": "^24.0.0"
   },
   "dependencies": {
     "jquery": "^2.1.1",
