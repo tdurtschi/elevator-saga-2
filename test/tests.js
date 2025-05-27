@@ -1,13 +1,12 @@
 import $ from "jquery";
-import "../libs/riot.js";
 import "../libs/unobservable.js";
-import {createFrameRequester, getCodeObjFromCode} from "../util";
-import Movable from "../movable";
-import Elevator from "../elevator";
-import { asElevatorInterface } from "../interfaces";
-import User from "../user";
-import { createWorldController } from "../world";
-const _ = require("lodash");
+import {createFrameRequester, getCodeObjFromCode} from "../util.js";
+import Movable from "../movable.js";
+import Elevator from "../elevator.js";
+import { asElevatorInterface } from "../interfaces.js";
+import User from "../user.js";
+import { createWorldController } from "../world.js";
+import _ from "lodash";
 
 var timeForwarder = function(dt, stepSize, fn) {
 	var accumulated = 0.0;
@@ -275,7 +274,9 @@ describe("Elevator Saga", function() {
 				timeForwarder(5.0, STEPSIZE, function(dt) {
 					e.update(dt);
 					e.updateElevatorMovement(dt);
-					expect(e.getExactCurrentFloor()).toBeWithinRange(1.0, 3.0, "(STEPSIZE is " + STEPSIZE + ")");
+
+					expect(e.getExactCurrentFloor()).toBeGreaterThanOrEqual(1.0, "(STEPSIZE is " + STEPSIZE + ")");
+					expect(e.getExactCurrentFloor()).toBeLessThanOrEqual(3.0, "(STEPSIZE is " + STEPSIZE + ")");
 				});
 				expect(e.getExactCurrentFloor()).toEqual(3.0);
 			});

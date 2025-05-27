@@ -1,6 +1,6 @@
 
-import {limitNumber, epsilonEquals} from "./util";
-const _ = require("lodash");
+import {limitNumber, epsilonEquals} from "./util.js";
+import _ from "lodash";
 
 const createBoolPassthroughFunction = function(owner, obj, objPropertyName) {
     return function(val) {
@@ -13,6 +13,7 @@ const createBoolPassthroughFunction = function(owner, obj, objPropertyName) {
         }
     };
 };
+
 
 // Interface that hides actual elevator object behind a more robust facade,
 // while also exposing relevant events, and providing some helper queue

@@ -1,8 +1,8 @@
-import Elevator from "./elevator";
-import asFloor from "./floor";
-import { asElevatorInterface } from "./interfaces";
-import User from "./user";
-const _ = require("lodash");
+import Elevator from "./elevator.js";
+import asFloor from "./floor.js";
+import { asElevatorInterface } from "./interfaces.js";
+import User from "./user.js";
+import _ from "lodash";
 
 export function createWorldCreator() {
     var creator = {};

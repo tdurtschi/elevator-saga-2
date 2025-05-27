@@ -1,7 +1,5 @@
-import "../libs/riot.js";
-import "../libs/unobservable.js";
-import Movable from "../movable";
-const _ = require("lodash");
+
+import Movable from "../movable.js";
 
 describe("Movable", function() {
     var movable;

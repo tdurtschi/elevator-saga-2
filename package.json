@@ -25,6 +25,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/tdurtschi/elevator-saga-2/issues"
   },

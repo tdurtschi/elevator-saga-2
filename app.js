@@ -1,7 +1,6 @@
 import $ from "jquery";
-import "./libs/riot.js";
-import {getCodeObjFromCode} from "./util";
-import {challenges} from "./challenges";
+import {getCodeObjFromCode} from "./util.js";
+import {challenges} from "./challenges.js";
 import {
     clearAll,
     presentStats,
@@ -10,10 +9,10 @@ import {
     presentWorld,
     presentCodeStatus,
     makeDemoFullscreen
-} from "./presenters";
-import {createWorldCreator, createWorldController} from "./world";
-import {typeDeclarations} from "./types";
-const _ = require("lodash");
+} from "./presenters.js";
+import {createWorldCreator, createWorldController} from "./world.js";
+import {typeDeclarations} from "./types.js";
+import _ from "lodash";
 
 const createEditorAsync = () => new Promise((resolve, reject) => {
     var lsKey = "elevatorCrushCode_v5";

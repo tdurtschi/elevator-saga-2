@@ -1,10 +1,11 @@
-import {newGuard, coolInterpolate} from "./util";
+import {newGuard, coolInterpolate} from "./util.js";
+import "./libs/unobservable.js";
 
 var _tmpPosStorage = [0,0];
 
 function Movable() {
     newGuard(this, Movable);
-    unobservable.Observable.call(this);
+    window.unobservable.Observable.call(this);
     var movable = this;
     movable.x = 0.0;
     movable.y = 0.0;
@@ -15,7 +16,7 @@ function Movable() {
 
     movable.trigger('new_state', movable);
 }
-Movable.prototype = Object.create(unobservable.Observable.prototype);
+Movable.prototype = Object.create(window.unobservable.Observable.prototype);
 
 Movable.prototype.updateDisplayPosition = function(forceTrigger) {
     this.getWorldPosition(_tmpPosStorage);
@@ -23,7 +24,7 @@ Movable.prototype.updateDisplayPosition = function(forceTrigger) {
     var oldY = this.worldY;
     this.worldX = _tmpPosStorage[0];
     this.worldY = _tmpPosStorage[1];
-    if(oldX !== this.worldX || oldY !== this.worldY || forceTrigger === true) {
+    if(oldX !== this.worldX || oldY !== this.worldY || forceTrigger === true) {
         this.trigger('new_display_state', this);
     }
 };

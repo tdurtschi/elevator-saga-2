@@ -37,7 +37,7 @@ export const getCodeObjFromCode = function(code) {
         code = "(" + code + ")";
     }
     /* jslint evil:true */
-    obj = eval(code);
+    var obj = eval(code);
     /* jshint evil:false */
     if(typeof obj.init !== "function") {
         throw "Code must contain an init function";

@@ -1,5 +1,5 @@
 import $ from "jquery";
-const _ = require("lodash");
+import _ from "lodash";
 
 function clearAll($elems) {
     _.each($elems, function($elem) {
