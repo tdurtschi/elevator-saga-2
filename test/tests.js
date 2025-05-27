@@ -275,8 +275,8 @@ describe("Elevator Saga", function() {
 					e.update(dt);
 					e.updateElevatorMovement(dt);
 
-					expect(e.getExactCurrentFloor()).toBeGreaterThanOrEqual(1.0, "(STEPSIZE is " + STEPSIZE + ")");
-					expect(e.getExactCurrentFloor()).toBeLessThanOrEqual(3.0, "(STEPSIZE is " + STEPSIZE + ")");
+					expect(e.getExactCurrentFloor() >= 1.0).toBeTruthy("(STEPSIZE is " + STEPSIZE + ")");
+					expect(e.getExactCurrentFloor() <= 3.0).toBeTruthy("(STEPSIZE is " + STEPSIZE + ")");
 				});
 				expect(e.getExactCurrentFloor()).toEqual(3.0);
 			});
