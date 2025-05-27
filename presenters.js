@@ -1,3 +1,4 @@
+import $ from "jquery";
 const _ = require("lodash");
 
 function clearAll($elems) {

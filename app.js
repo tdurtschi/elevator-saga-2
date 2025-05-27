@@ -1,3 +1,4 @@
+import $ from "jquery";
 import "./libs/riot.js";
 import {getCodeObjFromCode} from "./util";
 import {challenges} from "./challenges";

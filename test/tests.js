@@ -1,3 +1,4 @@
+import $ from "jquery";
 import "../libs/riot.js";
 import "../libs/unobservable.js";
 import {createFrameRequester, getCodeObjFromCode} from "../util";
