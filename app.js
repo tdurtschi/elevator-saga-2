@@ -15,6 +15,8 @@ import {createWorldCreator, createWorldController} from "./world.js";
 import {typeDeclarations} from "./types.js";
 import _ from "lodash";
 
+window._ = _;
+
 const createEditorAsync = () => new Promise((resolve, reject) => {
     var lsKey = "elevatorCrushCode_v5";
 
