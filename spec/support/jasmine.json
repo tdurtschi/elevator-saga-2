@@ -6,7 +6,7 @@
     "tests.js"
   ],
   "helpers": [
-    "helpers/**/*.cjs"
+    "helpers/setup.cjs"
   ],
   "stopSpecOnExpectationFailure": false,
   "random": false

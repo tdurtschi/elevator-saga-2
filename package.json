@@ -14,7 +14,7 @@
     "copy-static": "cp -r font-awesome-4.1-1.0 dist/ && cp -r libs dist/ && cp *.html dist/ && cp *.css dist/",
     "serve": "serve dist/",
     "pretest": "npm run build",
-    "test:jasmine": "jasmine",
+    "test:jasmine": "node --experimental-vm-modules node_modules/jasmine/bin/jasmine.js",
     "test": "npm run test:jasmine && playwright test",
     "watch": "npm run build -- --watch"
   },
@@ -35,7 +35,7 @@
     "@types/node": "^22.15.18",
     "esbuild": "^0.14.38",
     "jasmine": "^5.1.0",
-    "jsdom": "^24.0.0"
+    "jsdom": "^22.1.0"
   },
   "dependencies": {
     "jquery": "^2.1.1",
