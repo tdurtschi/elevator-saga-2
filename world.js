@@ -129,6 +129,12 @@ export function createWorldCreator() {
         // Bind them all together
         for(var i=0; i < world.elevators.length; ++i) {
             world.elevators[i].on("entrance_available", handleElevAvailability);
+            world.elevators[i].on("indicatorstate_change", function() {
+                var elevator = this;
+                if(elevator.isOnAFloor() && !elevator.isMoving && !elevator.isFull()) {
+                    world.elevatorInterfaces[world.elevators.indexOf(elevator)].goToFloor(elevator.currentFloor, true);
+                }
+            });
         }
 
         var handleButtonRepressing = function(eventName, floor) {
