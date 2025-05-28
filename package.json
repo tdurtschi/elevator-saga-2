@@ -16,7 +16,8 @@
     "pretest": "npm run build",
     "test:jasmine": "node --experimental-vm-modules node_modules/jasmine/bin/jasmine.js",
     "test": "npm run test:jasmine && playwright test",
-    "watch": "npm run build -- --watch"
+    "watch": "npm run build -- --watch",
+    "clean": "rm -rf dist && rm -rf node_modules && rm -rf test-results && rm -rf playwright_report"
   },
   "repository": {
     "type": "git",
