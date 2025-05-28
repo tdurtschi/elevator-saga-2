@@ -1,9 +1,6 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
-let macOS = process.platform === 'darwin' //darwin is macOS
-let modifier = macOS ? 'Meta' : 'Control';
-
 const PROGRAM = `
 ({
     init: function(elevators, floors) {
