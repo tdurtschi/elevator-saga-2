@@ -1,5 +1,5 @@
 Elevator Saga 2
 ===================
-The elevator programming game
+The elevator programming game. [Play it now!](https://tdurtschi.github.io/elevator-saga-2/)
 
 Based on the original Elevator Saga by magwo https://github.com/magwo/elevatorsaga
