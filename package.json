@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "prebuild": "rm -rf dist/* && npm run copy-static && npm run build-tests",
+    "prebuild": "rm -rf dist/* && mkdir -p dist && npm run copy-static && npm run build-tests",
     "build": "esbuild app.js --bundle --outdir=dist",
     "prebuild-tests": "$(mkdir dist/test) && cp -r test/*.html dist/test && cp -r test/jasmine dist/test/jasmine",
     "build-tests": "esbuild test/tests.js test/challenges.test.js test/movable.test.js --bundle --outdir=dist/test",
