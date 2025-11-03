@@ -1,4 +1,6 @@
-const prompt = new Promise((resolve, reject) => {
+export const defaultPrompt = "When the elevator is idle, it should go to floor 0, then floor 1, and repeat.\n"
+
+const systemPrompt = new Promise((resolve, reject) => {
     fetch('elevator-saga-prompt.md').then(function(resp) {
         if (!resp.ok) throw new Error('Failed to fetch elevator-saga-prompt.md: ' + resp.status);
         return resp.text();
@@ -22,8 +24,8 @@ export function sendMessage(query) {
     // Only send if there's a message
     if (!query.trim()) return;
 
-    return prompt.then(promptText => 
-        fetch("http://localhost:8081/api/hello?prompt=" + encodeURIComponent(`${promptText}\n The player's prompt is: "${query}"`))
+    return systemPrompt.then(sp => 
+        fetch("http://localhost:8081/api/hello?prompt=" + encodeURIComponent(`${sp}\n The player's prompt is: "${query}"`))
     )
     .then(response => response.text())
     .then(sanitizeResponse);

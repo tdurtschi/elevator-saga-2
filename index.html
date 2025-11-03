@@ -126,10 +126,12 @@
     <div class="codestatus"></div>
     <div class="aiprompt">
         <form id="aiprompt-form">
-            <label for="aiprompt-input">Describe the elevator behavior you want (max 200 characters):</label><br>
-            <input type="text" id="aiprompt-input" name="aiprompt-input" maxlength="200" size="50"
-                   placeholder="" value="The elevator should go to floor 1, then floor 2, and repeat.">
+            <label for="aiprompt-input">Describe the elevator behavior you want with a plain-text prompt, then generate the js code to operate the elevators.</label><br>
             <button type="submit">Generate code</button>
+            <input type="radio" name="editor-tab" value="prompt" id="tab-prompt">
+            <label for="tab-prompt" title="Show prompt input">Prompt</label>
+            <input type="radio" name="editor-tab" value="code" id="tab-code" checked>
+            <label for="tab-code" title="Show generated code">Code</label>
         </form>
     </div>
     <div class="code">
