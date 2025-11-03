@@ -14,6 +14,7 @@ import {
 import {createWorldCreator, createWorldController} from "./world.js";
 import {typeDeclarations} from "./types.js";
 import _ from "lodash";
+import { sendMessage } from "./ai.js";
 
 window._ = _;
 
@@ -109,6 +110,23 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
 
         $("#button_apply").click(function () {
             returnObj.trigger("apply_code");
+        });
+
+        $("#aiprompt-form").submit(function (event) {
+            event.preventDefault();
+
+            const promptInput = $("#aiprompt-input").val().trim();
+            if (promptInput.length === 0) {
+                alert("Please enter a description for the elevator behavior.");
+                return;
+            }
+
+            sendMessage(promptInput).then(responseText => {
+                cm.setValue(`({
+init: ${responseText.trim()},
+update: function (dt, elevators, floors) {}
+})`)
+            });
         });
 
         resolve(returnObj);

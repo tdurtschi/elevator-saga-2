@@ -124,6 +124,14 @@
     </div>
 
     <div class="codestatus"></div>
+    <div class="aiprompt">
+        <form id="aiprompt-form">
+            <label for="aiprompt-input">Describe the elevator behavior you want (max 200 characters):</label><br>
+            <input type="text" id="aiprompt-input" name="aiprompt-input" maxlength="200" size="50"
+                   placeholder="" value="The elevator should go to floor 1, then floor 2, and repeat.">
+            <button type="submit">Generate code</button>
+        </form>
+    </div>
     <div class="code">
         <div id="editor"></div>
     </div>
