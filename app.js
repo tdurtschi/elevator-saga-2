@@ -14,7 +14,7 @@ import {
 import {createWorldCreator, createWorldController} from "./world.js";
 import {typeDeclarations} from "./types.js";
 import _ from "lodash";
-import { defaultPrompt, sendMessage } from "./ai.js";
+import { defaultPrompt, sendMessage, updateSettings } from "./ai.js";
 
 window._ = _;
 
@@ -137,11 +137,21 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
                 return;
             }
 
+            const oldLabel = $("#aiprompt-form button[type=submit]").text();
+            $("#aiprompt-form button[type=submit]")
+                .attr("disabled", true)
+                .text("Loading...");
             sendMessage(promptInput).then(responseText => {
                 codeModel.setValue(`({
 init: ${responseText.trim()},
 update: function (dt, elevators, floors) {}
 })`)
+            }).catch((e) => {
+                alert("Error from AI service: " + e.message);
+            }).then(() => {
+                $("#aiprompt-form button[type=submit]")
+                    .attr("disabled", false)
+                    .text(oldLabel);
             });
         });
 
@@ -152,6 +162,10 @@ update: function (dt, elevators, floors) {}
          $("#tab-code").click(function() {
             editor.setModel(codeModel)
         })
+
+        $("#ai-settings-config").click(async function() {
+            await updateSettings();
+        });
 
         resolve(returnObj);
     });

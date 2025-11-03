@@ -126,12 +126,12 @@
     <div class="codestatus"></div>
     <div class="aiprompt">
         <form id="aiprompt-form">
-            <label for="aiprompt-input">Describe the elevator behavior you want with a plain-text prompt, then generate the js code to operate the elevators.</label><br>
-            <button type="submit">Generate code</button>
+            <p>Describe the elevator behavior you want with a plain English prompt, then generate your program. Or, write the code yourself!</p><br>
             <input type="radio" name="editor-tab" value="prompt" id="tab-prompt">
             <label for="tab-prompt" title="Show prompt input">Prompt</label>
             <input type="radio" name="editor-tab" value="code" id="tab-code" checked>
             <label for="tab-code" title="Show generated code">Code</label>
+            <button type="submit">Generate code from prompt</button>
         </form>
     </div>
     <div class="code">
@@ -139,6 +139,7 @@
     </div>
     <button id="button_reset" style="float: left">Reset</button>
     <button id="button_resetundo" style="float: left">Undo reset</button>
+    <button type="button" id="ai-settings-config" style="float: left">AI Settings ⛭</button>
     <button id="button_apply" style="float: right">Apply</button>
     <button id="button_save" style="float: right">Save</button>
     <span id="save_message" style="float: right"></span>
