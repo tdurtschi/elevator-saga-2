@@ -146,6 +146,9 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
 init: ${responseText.trim()},
 update: function (dt, elevators, floors) {}
 })`)
+                editor.setModel(codeModel);
+                $("#tab-code").click();
+                editor.getAction('editor.action.formatDocument').run()
             }).catch((e) => {
                 alert("Error from AI service: " + e.message);
             }).then(() => {
