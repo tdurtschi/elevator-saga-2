@@ -128,7 +128,7 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
             returnObj.trigger("apply_code");
         });
 
-        $("#aiprompt-form").submit(function (event) {
+        $("#button-generate").click(function (event) {
             event.preventDefault();
 
             const promptInput = promptModel.getValue().trim();
@@ -137,8 +137,8 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
                 return;
             }
 
-            const oldLabel = $("#aiprompt-form button[type=submit]").text();
-            $("#aiprompt-form button[type=submit]")
+            const oldLabel = $("#button-generate").text();
+            $("#button-generate")
                 .attr("disabled", true)
                 .text("Loading...");
             sendMessage(promptInput).then(responseText => {
@@ -152,7 +152,7 @@ update: function (dt, elevators, floors) {}
             }).catch((e) => {
                 alert("Error from AI service: " + e.message);
             }).then(() => {
-                $("#aiprompt-form button[type=submit]")
+                $("#button-generate")
                     .attr("disabled", false)
                     .text(oldLabel);
             });

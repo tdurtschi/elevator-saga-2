@@ -17,8 +17,7 @@ function(elevators, floors) {
 }
 ```
 
-Your response MUST be in the above format. Do not include any explanations or other text. Use minimal code comments.
-
+Your response MUST be in the above format. Do not include any explanations or other text, except for code comments which are allowed if the player's prompt specifically asks for them.
 
 Your response should ONLY include logic provided in the player's prompt. Helping the player by adding additional logic is cheating!
 
