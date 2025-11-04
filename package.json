@@ -10,7 +10,7 @@
     "prebuild": "rm -rf dist/* && mkdir -p dist && npm run copy-static && npm run build-tests",
     "build": "esbuild app.js --bundle --outdir=dist",
     "build-tests": "esbuild test/tests.js test/challenges.test.js test/movable.test.js --bundle --outdir=dist/test",
-    "copy-static": "cp -r font-awesome-4.1-1.0 dist/ && cp -r libs dist/ && cp *.html dist/ && cp *.css dist/",
+    "copy-static": "cp -r font-awesome-4.1-1.0 dist/ && cp -r libs dist/ && cp *.html dist/ && cp *.css dist/ && cp *.md dist/",
     "serve": "serve dist/",
     "pretest": "npm run build",
     "test:jasmine": "node --experimental-vm-modules node_modules/jasmine/bin/jasmine.js",
@@ -40,6 +40,9 @@
   "dependencies": {
     "jquery": "^2.1.1",
     "lodash": "^3.6.0",
-    "serve": "^13.0.2"
+    "marked": "^5.1.2",
+    "openai": "^6.7.0",
+    "serve": "^13.0.2",
+    "sweetalert2": "^11.26.3"
   }
 }

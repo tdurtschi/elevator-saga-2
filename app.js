@@ -14,11 +14,16 @@ import {
 import {createWorldCreator, createWorldController} from "./world.js";
 import {typeDeclarations} from "./types.js";
 import _ from "lodash";
+import { defaultPrompt, sendMessage, updateSettings } from "./ai.js";
 
 window._ = _;
 
+let editor = null;
+let codeModel, promptModel = null;
+
 const createEditorAsync = () => new Promise((resolve, reject) => {
     var lsKey = "elevatorCrushCode_v5";
+    var lspKey = "elevatorCrushPrompt_v1";
 
     // Load Monaco Editor from CDN
     require.config({paths: {"vs": "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.29.1/min/vs/"}});
@@ -32,61 +37,73 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
     };
 
     require(["vs/editor/editor.main"], function () {
-        // Create the editor with some sample JavaScript code
-        const cm = monaco.editor.create(document.getElementById("editor"), {
-            theme: "vs-dark",
-            folding: false,
-            minimap: {enabled: false},
-            language: "javascript",
-            value: "// code goes here\n"
-        });
+        if(!editor){
+            codeModel = monaco.editor.createModel("// code goes here\n", "javascript", "inmemory://model/code");
+            promptModel = monaco.editor.createModel(defaultPrompt, "text/plain", "inmemory://model/prompt");
+            
+            editor = monaco.editor.create(document.getElementById("editor"), {
+                theme: "vs-dark",
+                folding: false,
+                minimap: {enabled: false},
+                language: "javascript",
+                model: codeModel,
+            });
+        }
 
         // Add type declarations
         monaco.languages.typescript.javascriptDefaults.addExtraLib(typeDeclarations);
 
         var reset = function () {
-            cm.setValue($("#default-elev-implementation").text().trim());
+            codeModel.setValue($("#default-elev-implementation").text().trim());
+            promptModel.setValue(defaultPrompt);
         };
         var saveCode = function () {
-            localStorage.setItem(lsKey, cm.getValue());
+            localStorage.setItem(lsKey, codeModel.getValue());
+            localStorage.setItem(lspKey, promptModel.getValue());
             $("#save_message").text("Code saved " + new Date().toTimeString());
             returnObj.trigger("change");
         };
 
         var existingCode = localStorage.getItem(lsKey);
-        if (existingCode) {
-            cm.setValue(existingCode);
+        var existingPrompt = localStorage.getItem(lspKey);
+        if (existingCode || existingPrompt) {
+            if (existingPrompt) {
+                promptModel.setValue(existingPrompt);
+            }
+            if (existingCode) {
+                codeModel.setValue(existingCode);
+            }
         } else {
             reset();
         }
 
         $("#button_save").click(function () {
             saveCode();
-            cm.focus();
+            editor.focus();
         });
 
         $("#button_reset").click(function () {
             if (confirm("Do you really want to reset to the default implementation?")) {
-                localStorage.setItem("develevateBackupCode", cm.getValue());
+                localStorage.setItem("develevateBackupCode", editor.getValue());
                 reset();
             }
-            cm.focus();
+            editor.focus();
         });
 
         $("#button_resetundo").click(function () {
             if (confirm("Do you want to bring back the code as before the last reset?")) {
-                cm.setValue(localStorage.getItem("develevateBackupCode") || "");
+                codeModel.setValue(localStorage.getItem("develevateBackupCode") || "");
             }
-            cm.focus();
+            editor.focus();
         });
 
         var returnObj = riot.observable({});
         var autoSaver = _.debounce(saveCode, 1000);
-        cm.onDidChangeModelContent = autoSaver;
+        editor.onDidChangeModelContent = autoSaver;
 
         returnObj.getCodeObj = function () {
             console.log("Getting code...");
-            var code = cm.getValue();
+            var code = editor.getValue();
             var obj;
             try {
                 obj = getCodeObjFromCode(code);
@@ -98,17 +115,59 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
             return obj;
         };
         returnObj.setCode = function (code) {
-            cm.setValue(code);
+            codeModel.setValue(code);
         };
         returnObj.getCode = function () {
-            return cm.getValue();
+            return codeModel.getValue();
         }
         returnObj.setDevTestCode = function () {
-            cm.setValue($("#devtest-elev-implementation").text().trim());
+            codeModel.setValue($("#devtest-elev-implementation").text().trim());
         }
 
         $("#button_apply").click(function () {
             returnObj.trigger("apply_code");
+        });
+
+        $("#button-generate").click(function (event) {
+            event.preventDefault();
+
+            const promptInput = promptModel.getValue().trim();
+            if (promptInput.length === 0) {
+                alert("Please enter a description for the elevator behavior.");
+                return;
+            }
+
+            const oldLabel = $("#button-generate").text();
+            $("#button-generate")
+                .attr("disabled", true)
+                .text("Loading...");
+            sendMessage(promptInput).then(responseText => {
+                codeModel.setValue(`({
+init: ${responseText.trim()},
+update: function (dt, elevators, floors) {}
+})`)
+                editor.setModel(codeModel);
+                $("#tab-code").click();
+                editor.getAction('editor.action.formatDocument').run()
+            }).catch((e) => {
+                alert("Error from AI service: " + e.message);
+            }).then(() => {
+                $("#button-generate")
+                    .attr("disabled", false)
+                    .text(oldLabel);
+            });
+        });
+
+        $("#tab-prompt").click(function() {
+            editor.setModel(promptModel)
+        })
+
+         $("#tab-code").click(function() {
+            editor.setModel(codeModel)
+        })
+
+        $("#ai-settings-config").click(async function() {
+            await updateSettings();
         });
 
         resolve(returnObj);
