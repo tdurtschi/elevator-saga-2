@@ -10,11 +10,11 @@ const models = [
   "Qwen3-0.6B-q4f16_1-MLC"
 ];
 
-const model = models[0];
-
 export const fetchSettings = async () => {
   let settingsStr = localStorage.getItem(aiKey);
   let settings = JSON.parse(settingsStr || "{}");
+  console.log("current", settings);
+  
   const result = await Swal.fire({
     title: "AI Settings",
     theme: "dark",
@@ -26,6 +26,8 @@ export const fetchSettings = async () => {
     focusConfirm: false,
     showCancelButton: true,
     preConfirm: () => {
+      console.log( document.querySelector('input[name="rate"]:checked').value.trim());
+      
       return document.querySelector('input[name="rate"]:checked').value.trim();
     },
   });
@@ -42,13 +44,17 @@ const getSettings = async () => {
   if (settingsStr) {
     settings = JSON.parse(settingsStr);
   } else {
-    settings = await fetchSettings();
-    localStorage.setItem(aiKey, JSON.stringify(settings));
+    settings = await updateSettings()
   }
   return settings;
 }
+export const updateSettings = async () => {
+  var settings = await fetchSettings();
+  localStorage.setItem(aiKey, JSON.stringify(settings));
+  return settings;
+}
 
-const createClient = async () => { 
+const createClient = async (settings) => { 
   const initProgressCallback = (progress) => {
     if (progress.progress == 1) {
       $("#loading_message").text("");
@@ -57,7 +63,6 @@ const createClient = async () => {
     }
     console.log("Model loading progress:", progress);
   };
-  var settings = await getSettings();
   const engine = await CreateMLCEngine(settings.modelName, { initProgressCallback });
   return engine;
 };
@@ -84,6 +89,26 @@ const systemPrompt = new Promise((resolve, reject) => {
     });
 });
 
+export function getInstructions() {
+  let instructions = localStorage.getItem("ai-instructions");
+
+  if (instructions) {
+    return Promise.resolve(instructions);
+  } 
+  return systemPrompt;
+}
+
+export function resetInstructions() {
+  return systemPrompt.then(sp => {
+    localStorage.setItem("ai-instructions", sp)
+    return sp;
+  });
+}
+
+export function setInstructions(newInstructions) {
+  localStorage.setItem("ai-instructions", newInstructions);
+}
+
 const sanitizeResponse = (response) => {
   const functionIndex = response.indexOf("function");
   const endIndex = response.lastIndexOf("}") + 1;
@@ -97,11 +122,13 @@ export async function sendMessage(query) {
   // Only send if there's a message
   if (!query.trim()) return;
 
-  if (!client) {
-    client = await createClient();
+  const settings = await getSettings();
+  if (!client || client.modelName !== settings.modelName) {
+    client = await createClient(settings);
+    client.modelName = settings.modelName;
   }
 
-  return systemPrompt
+  return getInstructions()
     .then((sp) =>
       client.completions.create({
         seed: 1,

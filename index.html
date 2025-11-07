@@ -124,8 +124,10 @@
     <div class="codestatus"></div>
     <div class="aiprompt">
         <form id="tabs-form">
+            <input type="radio" name="editor-tab" value="prompt" id="tab-instructions">
+            <label for="tab-instructions" title="Show system instructions">AI Instructions</label>
             <input type="radio" name="editor-tab" value="prompt" id="tab-prompt">
-            <label for="tab-prompt" title="Show prompt input">AI Prompt</label>
+            <label for="tab-prompt" title="Show prompt input">Prompt</label>
             <input type="radio" name="editor-tab" value="code" id="tab-code" checked>
             <label for="tab-code" title="Show generated code">Code</label>
         </form>

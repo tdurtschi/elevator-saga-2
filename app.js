@@ -14,12 +14,12 @@ import {
 import {createWorldCreator, createWorldController} from "./world.js";
 import {typeDeclarations} from "./types.js";
 import _ from "lodash";
-import { defaultPrompt, sendMessage, fetchSettings } from "./ai.js";
+import { defaultPrompt, sendMessage, updateSettings, getInstructions, resetInstructions, setInstructions } from "./ai.js";
 
 window._ = _;
 
 let editor = null;
-let codeModel, promptModel = null;
+let codeModel, promptModel, instructionsModel = null;
 
 const createEditorAsync = () => new Promise((resolve, reject) => {
     var lsKey = "elevatorCrushCode_v5";
@@ -40,11 +40,13 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
         if(!editor){
             codeModel = monaco.editor.createModel("// code goes here\n", "javascript", "inmemory://model/code");
             promptModel = monaco.editor.createModel(defaultPrompt, "text/plain", "inmemory://model/prompt");
+            instructionsModel = monaco.editor.createModel("", "text/plain", "inmemory://model/instructions");
             
             editor = monaco.editor.create(document.getElementById("editor"), {
                 theme: "vs-dark",
                 folding: false,
                 minimap: {enabled: false},
+                wordWrap: "on",
                 language: "javascript",
                 model: codeModel,
             });
@@ -56,10 +58,12 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
         var reset = function () {
             codeModel.setValue($("#default-elev-implementation").text().trim());
             promptModel.setValue(defaultPrompt);
+            resetInstructions().then(sp => instructionsModel.setValue(sp))
         };
         var saveCode = function () {
             localStorage.setItem(lsKey, codeModel.getValue());
             localStorage.setItem(lspKey, promptModel.getValue());
+            setInstructions(instructionsModel.getValue());
             $("#save_message").text("Code saved " + new Date().toTimeString());
             returnObj.trigger("change");
         };
@@ -76,6 +80,7 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
         } else {
             reset();
         }
+        getInstructions().then(i => instructionsModel.setValue(i))
 
         $("#button_save").click(function () {
             saveCode();
@@ -83,7 +88,7 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
         });
 
         $("#button_reset").click(function () {
-            if (confirm("Do you really want to reset to the default implementation?")) {
+            if (confirm("Do you really want to reset to the default implementation? This will erase your changes to the instructions, prompt AND code tabs!.")) {
                 localStorage.setItem("develevateBackupCode", editor.getValue());
                 reset();
             }
@@ -125,12 +130,13 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
         }
 
         $("#button_apply").click(function () {
+            saveCode();
             returnObj.trigger("apply_code");
         });
 
         $("#button-generate").click(function (event) {
             event.preventDefault();
-
+            setInstructions(instructionsModel.getValue());
             const promptInput = promptModel.getValue().trim();
             if (promptInput.length === 0) {
                 alert("Please enter a description for the elevator behavior.");
@@ -164,12 +170,18 @@ update: function (dt, elevators, floors) {}
             editor.setModel(promptModel)
         })
 
+        $("#tab-instructions").click(function() {
+            console.log("Here!");
+            
+            editor.setModel(instructionsModel)
+        })
+
          $("#tab-code").click(function() {
             editor.setModel(codeModel)
         })
 
         $("#ai-settings-config").click(async function() {
-            await fetchSettings();
+            await updateSettings();
         });
 
         resolve(returnObj);
