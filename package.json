@@ -38,9 +38,9 @@
     "jsdom": "^22.1.0"
   },
   "dependencies": {
+    "@mlc-ai/web-llm": "^0.2.79",
     "jquery": "^2.1.1",
     "lodash": "^3.6.0",
-    "marked": "^5.1.2",
     "openai": "^6.7.0",
     "serve": "^13.0.2",
     "sweetalert2": "^11.26.3"

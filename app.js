@@ -14,7 +14,7 @@ import {
 import {createWorldCreator, createWorldController} from "./world.js";
 import {typeDeclarations} from "./types.js";
 import _ from "lodash";
-import { defaultPrompt, sendMessage, updateSettings } from "./ai.js";
+import { defaultPrompt, sendMessage, fetchSettings } from "./ai.js";
 
 window._ = _;
 
@@ -143,6 +143,7 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
                 .text("Loading...");
             sendMessage(promptInput).then(responseText => {
                 codeModel.setValue(`({
+/** @type {Solution} */
 init: ${responseText.trim()},
 update: function (dt, elevators, floors) {}
 })`)
@@ -150,6 +151,7 @@ update: function (dt, elevators, floors) {}
                 $("#tab-code").click();
                 editor.getAction('editor.action.formatDocument').run()
             }).catch((e) => {
+                console.error(e);
                 alert("Error from AI service: " + e.message);
             }).then(() => {
                 $("#button-generate")
@@ -167,7 +169,7 @@ update: function (dt, elevators, floors) {}
         })
 
         $("#ai-settings-config").click(async function() {
-            await updateSettings();
+            await fetchSettings();
         });
 
         resolve(returnObj);

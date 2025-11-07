@@ -93,7 +93,7 @@ button.right {
     opacity: 0.4;
 }
 
-#save_message, #fitness_message {
+#save_message, #fitness_message, #loading_message {
     font-size: 12px;
     line-height: 30px;
     margin: 0 20px;

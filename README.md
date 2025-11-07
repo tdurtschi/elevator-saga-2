@@ -6,5 +6,5 @@ Based on the original Elevator Saga by magwo https://github.com/magwo/elevatorsa
 
 Note about AI
 ===================
+AI functionality requires a WebLLM compatible browser.
 
-AI functionality requires access to an OpenAI-compatible API. This can be configured inside the app.

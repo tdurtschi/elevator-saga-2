@@ -1,69 +1,65 @@
-import OpenAI from "openai";
 import Swal from "sweetalert2";
+import { CreateMLCEngine } from "@mlc-ai/web-llm";
+import $ from "jquery";
 
 const aiKey = "ai-settings";
-let settingsStr = localStorage.getItem(aiKey);
-let settings;
-if (settingsStr) {
-  settings = JSON.parse(settingsStr);
-}
 
-export const updateSettings = async () => {
-  const shouldReloadAfterUpdate = settings !== null;
+const models = [
+  "Hermes-3-Llama-3.2-3B-q4f16_1-MLC", 
+  "Llama-3.2-1B-Instruct-q4f32_1-MLC",
+  "Qwen3-0.6B-q4f16_1-MLC"
+];
+
+const model = models[0];
+
+export const fetchSettings = async () => {
+  let settingsStr = localStorage.getItem(aiKey);
+  let settings = JSON.parse(settingsStr || "{}");
   const result = await Swal.fire({
     title: "AI Settings",
     theme: "dark",
     html: `
-                <p>AI prompts require an OpenAI-compatible API. Please add API details below:</p>
-                Url: <input id="swal-api-url" class="swal2-input" value="${
-                  settings?.apiUrl ?? ""
-                }" placeholder="API URL (e.g. http://localhost:8080/v1/chat)">
-                <br/>
-                API Key: <input id="swal-api-key" class="swal2-input" value="${
-                  settings?.apiKey ?? ""
-                }" placeholder="API Key">
-                <br/>
-                Model: <input id="swal-model-name" class="swal2-input" value="${
-                  settings?.modelName ?? ""
-                }" placeholder="Model Name (e.g. huggingfacetb_smollm3-3b)">
+                <p>AI prompts require a browser compable with <a href="https://webllm.mlc.ai/">WebLLM</a>.</p>
+                Model name: 
+                ${models.map(model => "<br><label><input type='radio' name='rate' value='" + model + "'" + (settings?.modelName === model ? " checked" : "") + "> " + model + "</label>").join('')}
             `,
     focusConfirm: false,
     showCancelButton: true,
     preConfirm: () => {
-      return [
-        document.getElementById("swal-api-url").value.trim(),
-        document.getElementById("swal-api-key").value.trim(),
-        document.getElementById("swal-model-name").value.trim(),
-      ];
+      return document.querySelector('input[name="rate"]:checked').value.trim();
     },
   });
 
-  const [apiUrl, apiKey, modelName] = result.value;
-  settings = { apiUrl, apiKey, modelName };
-  localStorage.setItem(aiKey, JSON.stringify(settings));
-  if(shouldReloadAfterUpdate) {
-    location.reload();
-  }
+  const modelName = result.value;
+  settings = { modelName };
 
   return settings;
 };
 
-const createClient = async () => {
+const getSettings = async () => {
+  let settings;
   let settingsStr = localStorage.getItem(aiKey);
   if (settingsStr) {
     settings = JSON.parse(settingsStr);
+  } else {
+    settings = await fetchSettings();
+    localStorage.setItem(aiKey, JSON.stringify(settings));
   }
+  return settings;
+}
 
-  if (!settings) {
-    settings = await updateSettings();
-  }
-
-  const client = new OpenAI({
-    baseURL: settings.apiUrl,
-    apiKey: settings.apiKey,
-    dangerouslyAllowBrowser: true,
-  });
-  return client;
+const createClient = async () => { 
+  const initProgressCallback = (progress) => {
+    if (progress.progress == 1) {
+      $("#loading_message").text("");
+    } else {
+      $("#loading_message").text(progress.text + "..");
+    }
+    console.log("Model loading progress:", progress);
+  };
+  var settings = await getSettings();
+  const engine = await CreateMLCEngine(settings.modelName, { initProgressCallback });
+  return engine;
 };
 
 let client;
@@ -108,16 +104,21 @@ export async function sendMessage(query) {
   return systemPrompt
     .then((sp) =>
       client.completions.create({
-        model: settings.modelName,
-        seed: 0,
+        seed: 1,
         messages: [
+          { role: "system",
+            content: sp
+          },
           {
             role: "user",
-            content: `${sp}\n The player's prompt is: "${query}"`,
+            content: query,
           },
         ],
       })
     )
-    .then((response) => response.choices[0].message.content)
+    .then((response) => {
+      console.log(response);
+      return response.choices[0]?.text ?? ""
+    })
     .then(sanitizeResponse);
 }
