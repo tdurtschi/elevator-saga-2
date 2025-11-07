@@ -8,3 +8,5 @@ Note about AI
 ===================
 AI functionality requires a WebLLM compatible browser.
 
+backlog
+- bug when cancelling on 'ai settings'
