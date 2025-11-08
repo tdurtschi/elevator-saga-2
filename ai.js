@@ -34,13 +34,17 @@ export const fetchSettings = async () => {
                 </div>
             `,
     focusConfirm: false,
-    showCancelButton: true,
+    showCancelButton: settingsStr != null,
     preConfirm: () => {
       console.log( document.querySelector('input[name="rate"]:checked').value.trim());
       
       return document.querySelector('input[name="rate"]:checked').value.trim();
     },
   });
+
+  if(result.isDismissed) {
+    return settings;
+  }
 
   const modelName = result.value;
   settings = { modelName };
