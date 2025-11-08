@@ -93,12 +93,26 @@ button.right {
     opacity: 0.4;
 }
 
-#save_message, #fitness_message, #loading_message {
+#save_message, #fitness_message {
     font-size: 12px;
     line-height: 30px;
     margin: 0 20px;
 }
 
+#loading_message {
+    font-size: 12px;
+    line-height: 30px;
+}
+
+#model-options {
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 150px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    font-size: 14px;
+}
 
 .left {
     float: left;

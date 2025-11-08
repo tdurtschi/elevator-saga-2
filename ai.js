@@ -1,14 +1,22 @@
 import Swal from "sweetalert2";
 import { CreateMLCEngine } from "@mlc-ai/web-llm";
 import $ from "jquery";
+import { allModels } from "./models.js";
 
 const aiKey = "ai-settings";
 
-const models = [
-  "Hermes-3-Llama-3.2-3B-q4f16_1-MLC", 
-  "Llama-3.2-1B-Instruct-q4f32_1-MLC",
-  "Qwen3-0.6B-q4f16_1-MLC"
-];
+const models = allModels.map(m => m.model_id).sort();
+// [
+//   "Hermes-3-Llama-3.2-3B-q4f16_1-MLC", 
+//   "Llama-3.2-1B-Instruct-q4f32_1-MLC",
+//   "Phi-3.5-mini-instruct-q4f32_1-MLC",
+//   "Qwen2.5-Coder-3B-Instruct-q4f16_1-MLC"
+// ];
+
+let client;
+
+export const defaultPrompt =
+  "When the elevator is idle, it should go to floor 0, then floor 1, and repeat.\n";
 
 export const fetchSettings = async () => {
   let settingsStr = localStorage.getItem(aiKey);
@@ -21,7 +29,9 @@ export const fetchSettings = async () => {
     html: `
                 <p>AI prompts require a browser compable with <a href="https://webllm.mlc.ai/">WebLLM</a>.</p>
                 Model name: 
-                ${models.map(model => "<br><label><input type='radio' name='rate' value='" + model + "'" + (settings?.modelName === model ? " checked" : "") + "> " + model + "</label>").join('')}
+                <div id="model-options">
+                ${models.map(model => "<br><label tooltip=><input type='radio' name='rate' value='" + model + "'" + (settings?.modelName === model ? " checked" : "") + "> " + model + "</label>").join('')}
+                </div>
             `,
     focusConfirm: false,
     showCancelButton: true,
@@ -64,13 +74,9 @@ const createClient = async (settings) => {
     console.log("Model loading progress:", progress);
   };
   const engine = await CreateMLCEngine(settings.modelName, { initProgressCallback });
+  engine.modelName = settings.modelName;
   return engine;
 };
-
-let client;
-
-export const defaultPrompt =
-  "When the elevator is idle, it should go to floor 0, then floor 1, and repeat.\n";
 
 const systemPrompt = new Promise((resolve, reject) => {
   fetch("elevator-saga-prompt.md")
@@ -125,7 +131,6 @@ export async function sendMessage(query) {
   const settings = await getSettings();
   if (!client || client.modelName !== settings.modelName) {
     client = await createClient(settings);
-    client.modelName = settings.modelName;
   }
 
   return getInstructions()
