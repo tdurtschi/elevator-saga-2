@@ -4,8 +4,6 @@ import $ from "jquery";
 import { allModels } from "./models.js";
 import { getAiSettings, patchAiSettings } from "./persistence.js";
 
-const aiKey = "ai-settings";
-
 const models = allModels.map(m => m.model_id).sort();
 
 // Alternate list of 'recommended' models:
@@ -21,7 +19,7 @@ let client;
 export const defaultPrompt =
   "When the elevator is idle, it should go to floor 0, then floor 1, and repeat.\n";
 
-export const fetchSettings = async () => {
+export const fetchNewSettingsFromUser = async () => {
   let settings = getAiSettings();
   console.log("current", settings);
   
@@ -61,8 +59,9 @@ const getSettings = async () => {
   }
   return settings;
 }
+
 export const updateSettings = async () => {
-  var settings = await fetchSettings();
+  var settings = await fetchNewSettingsFromUser();
   patchAiSettings(settings);
   return settings;
 }

@@ -15,7 +15,7 @@ import {createWorldCreator, createWorldController} from "./world.js";
 import {typeDeclarations} from "./types.js";
 import _ from "lodash";
 import { defaultPrompt, sendMessage, updateSettings, getInstructions, resetInstructions, setInstructions } from "./ai.js";
-import { getBackupCode, getPrompt, getTimeScale, setBackupCode, getCode, setCode, setPrompt, setTimeScale } from "./persistence.js";
+import { getBackupCode, getPrompt, getTimeScale, setBackupCode, getCode, setCode, setPrompt, setTimeScale, getAiSettings, patchAiSettings } from "./persistence.js";
 
 window._ = _;
 
@@ -181,6 +181,21 @@ update: function (dt, elevators, floors) {}
         $("#ai-settings-config").click(async function() {
             await updateSettings();
         });
+
+        $("#ai-toggle").click(function() {
+            var { aiEnabled } = getAiSettings();
+            aiEnabled = !aiEnabled;
+            patchAiSettings({ aiEnabled });
+            document.location.reload();
+        });
+
+        var { aiEnabled } = getAiSettings();
+        if( aiEnabled ) {
+            $("#ai-toggle").text("Disable AI");
+            $("#ai-settings-config").attr("style", "display: inline; float: left;");
+            $("#button-generate").attr("style", "display: inline;");
+            $("#tabs-form").attr("style", "display: block;");
+        }
 
         resolve(returnObj);
     });
