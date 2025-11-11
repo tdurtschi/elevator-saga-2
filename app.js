@@ -15,6 +15,7 @@ import {createWorldCreator, createWorldController} from "./world.js";
 import {typeDeclarations} from "./types.js";
 import _ from "lodash";
 import { defaultPrompt, sendMessage, updateSettings, getInstructions, resetInstructions, setInstructions } from "./ai.js";
+import { getBackupCode, getPrompt, getTimeScale, setBackupCode, getCode, setCode, setPrompt, setTimeScale } from "./persistence.js";
 
 window._ = _;
 
@@ -22,9 +23,6 @@ let editor = null;
 let codeModel, promptModel, instructionsModel = null;
 
 const createEditorAsync = () => new Promise((resolve, reject) => {
-    var lsKey = "elevatorCrushCode_v5";
-    var lspKey = "elevatorCrushPrompt_v1";
-
     // Load Monaco Editor from CDN
     require.config({paths: {"vs": "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.29.1/min/vs/"}});
     window.MonacoEnvironment = {
@@ -61,15 +59,15 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
             resetInstructions().then(sp => instructionsModel.setValue(sp))
         };
         var saveCode = function () {
-            localStorage.setItem(lsKey, codeModel.getValue());
-            localStorage.setItem(lspKey, promptModel.getValue());
+            setCode(codeModel.getValue());
+            setPrompt(promptModel.getValue());
             setInstructions(instructionsModel.getValue());
             $("#save_message").text("Code saved " + new Date().toTimeString());
             returnObj.trigger("change");
         };
 
-        var existingCode = localStorage.getItem(lsKey);
-        var existingPrompt = localStorage.getItem(lspKey);
+        var existingCode = getCode();
+        var existingPrompt = getPrompt();
         if (existingCode || existingPrompt) {
             if (existingPrompt) {
                 promptModel.setValue(existingPrompt);
@@ -89,7 +87,7 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
 
         $("#button_reset").click(function () {
             if (confirm("Do you really want to reset to the default implementation? This will erase your changes to the instructions, prompt AND code tabs!.")) {
-                localStorage.setItem("develevateBackupCode", editor.getValue());
+                setBackupCode(editor.getValue());
                 reset();
             }
             editor.focus();
@@ -97,7 +95,7 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
 
         $("#button_resetundo").click(function () {
             if (confirm("Do you want to bring back the code as before the last reset?")) {
-                codeModel.setValue(localStorage.getItem("develevateBackupCode") || "");
+                codeModel.setValue(getBackupCode() || "");
             }
             editor.focus();
         });
@@ -195,7 +193,6 @@ var createParamsUrl = function (current, overrides) {
 };
 
 $(function () {
-    var tsKey = "elevatorTimeScale";
     riot.route(function (path) {
         createEditorAsync().then(editor => {
             var params = {};
@@ -249,7 +246,7 @@ $(function () {
                 presentWorld($world, app.world, floorTempl, elevatorTempl, elevatorButtonTempl, userTempl);
 
                 app.worldController.on("timescale_changed", function () {
-                    localStorage.setItem(tsKey, app.worldController.timeScale);
+                    setTimeScale(app.worldController.timeScale);
                     presentChallenge($challenge, challenges[challengeIndex], app, app.world, app.worldController, challengeIndex + 1, challengeTempl);
                 });
 
@@ -294,7 +291,7 @@ $(function () {
             }, {});
             var requestedChallenge = 0;
             var autoStart = false;
-            var timeScale = parseFloat(localStorage.getItem(tsKey)) || 2.0;
+            var timeScale = parseFloat(getTimeScale()) || 2.0;
             _.each(params, function (val, key) {
                 if (key === "challenge") {
                     requestedChallenge = _.parseInt(val) - 1;

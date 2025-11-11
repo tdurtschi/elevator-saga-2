@@ -2,10 +2,13 @@ import Swal from "sweetalert2";
 import { CreateMLCEngine } from "@mlc-ai/web-llm";
 import $ from "jquery";
 import { allModels } from "./models.js";
+import { getAiSettings, patchAiSettings } from "./persistence.js";
 
 const aiKey = "ai-settings";
 
 const models = allModels.map(m => m.model_id).sort();
+
+// Alternate list of 'recommended' models:
 // [
 //   "Hermes-3-Llama-3.2-3B-q4f16_1-MLC", 
 //   "Llama-3.2-1B-Instruct-q4f32_1-MLC",
@@ -19,8 +22,7 @@ export const defaultPrompt =
   "When the elevator is idle, it should go to floor 0, then floor 1, and repeat.\n";
 
 export const fetchSettings = async () => {
-  let settingsStr = localStorage.getItem(aiKey);
-  let settings = JSON.parse(settingsStr || "{}");
+  let settings = getAiSettings();
   console.log("current", settings);
   
   const result = await Swal.fire({
@@ -34,7 +36,7 @@ export const fetchSettings = async () => {
                 </div>
             `,
     focusConfirm: false,
-    showCancelButton: settingsStr != null,
+    showCancelButton: settings != null,
     preConfirm: () => {
       console.log( document.querySelector('input[name="rate"]:checked').value.trim());
       
@@ -53,18 +55,15 @@ export const fetchSettings = async () => {
 };
 
 const getSettings = async () => {
-  let settings;
-  let settingsStr = localStorage.getItem(aiKey);
-  if (settingsStr) {
-    settings = JSON.parse(settingsStr);
-  } else {
+  let settings = getAiSettings();
+  if (settings == null) {
     settings = await updateSettings()
   }
   return settings;
 }
 export const updateSettings = async () => {
   var settings = await fetchSettings();
-  localStorage.setItem(aiKey, JSON.stringify(settings));
+  patchAiSettings(settings);
   return settings;
 }
 
@@ -100,7 +99,7 @@ const systemPrompt = new Promise((resolve, reject) => {
 });
 
 export function getInstructions() {
-  let instructions = localStorage.getItem("ai-instructions");
+  let { instructions } = getSettings() || {};
 
   if (instructions) {
     return Promise.resolve(instructions);
@@ -110,13 +109,13 @@ export function getInstructions() {
 
 export function resetInstructions() {
   return systemPrompt.then(sp => {
-    localStorage.setItem("ai-instructions", sp)
+    patchAiSettings({ instructions: sp})
     return sp;
   });
 }
 
 export function setInstructions(newInstructions) {
-  localStorage.setItem("ai-instructions", newInstructions);
+  patchAiSettings({ instructions: newInstructions });
 }
 
 const sanitizeResponse = (response) => {
