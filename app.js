@@ -183,13 +183,13 @@ update: function (dt, elevators, floors) {}
         });
 
         $("#ai-toggle").click(function() {
-            var { aiEnabled } = getAiSettings();
+            var { aiEnabled } = getAiSettings() || {};
             aiEnabled = !aiEnabled;
             patchAiSettings({ aiEnabled });
             document.location.reload();
         });
 
-        var { aiEnabled } = getAiSettings();
+        var { aiEnabled } = getAiSettings() || {};
         if( aiEnabled ) {
             $("#ai-toggle").text("Disable AI");
             $("#ai-settings-config").attr("style", "display: inline; float: left;");
