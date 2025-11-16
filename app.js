@@ -78,7 +78,10 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
         } else {
             reset();
         }
-        getInstructions().then(i => instructionsModel.setValue(i))
+        var { aiEnabled } = getAiSettings() || {};
+        if( aiEnabled ) {
+            getInstructions().then(i => instructionsModel.setValue(i))
+        }
 
         $("#button_save").click(function () {
             saveCode();
@@ -170,7 +173,7 @@ update: function (dt, elevators, floors) {}
 
         $("#tab-instructions").click(function() {
             console.log("Here!");
-            
+
             editor.setModel(instructionsModel)
         })
 
@@ -208,46 +211,44 @@ var createParamsUrl = function (current, overrides) {
 };
 
 $(function () {
+    var params = {};
+
+    var $world = $(".innerworld");
+    var $stats = $(".statscontainer");
+    var $feedback = $(".feedbackcontainer");
+    var $challenge = $(".challenge");
+    var $codestatus = $(".codestatus");
+
+    var floorTempl = document.getElementById("floor-template").innerHTML.trim();
+    var elevatorTempl = document.getElementById("elevator-template").innerHTML.trim();
+    var elevatorButtonTempl = document.getElementById("elevatorbutton-template").innerHTML.trim();
+    var userTempl = document.getElementById("user-template").innerHTML.trim();
+    var challengeTempl = document.getElementById("challenge-template").innerHTML.trim();
+    var feedbackTempl = document.getElementById("feedback-template").innerHTML.trim();
+    var codeStatusTempl = document.getElementById("codestatus-template").innerHTML.trim();
+    var app = riot.observable({});
+    app.worldController = createWorldController(1.0 / 60.0);
+    app.worldCreator = createWorldCreator();
+    app.world = undefined;
+    app.currentChallengeIndex = 0;
+
+    app.startStopOrRestart = function () {
+        if (app.world.challengeEnded) {
+            app.startChallenge(app.currentChallengeIndex);
+        } else {
+            app.worldController.setPaused(!app.worldController.isPaused);
+        }
+    };
+
     riot.route(function (path) {
         createEditorAsync().then(editor => {
-            var params = {};
-
-            var $world = $(".innerworld");
-            var $stats = $(".statscontainer");
-            var $feedback = $(".feedbackcontainer");
-            var $challenge = $(".challenge");
-            var $codestatus = $(".codestatus");
-
-            var floorTempl = document.getElementById("floor-template").innerHTML.trim();
-            var elevatorTempl = document.getElementById("elevator-template").innerHTML.trim();
-            var elevatorButtonTempl = document.getElementById("elevatorbutton-template").innerHTML.trim();
-            var userTempl = document.getElementById("user-template").innerHTML.trim();
-            var challengeTempl = document.getElementById("challenge-template").innerHTML.trim();
-            var feedbackTempl = document.getElementById("feedback-template").innerHTML.trim();
-            var codeStatusTempl = document.getElementById("codestatus-template").innerHTML.trim();
-
-            var app = riot.observable({});
-            app.worldController = createWorldController(1.0 / 60.0);
             app.worldController.on("usercode_error", function (e) {
                 console.log("World raised code error", e);
                 editor.trigger("usercode_error", e);
             });
 
-            console.log(app.worldController);
-            app.worldCreator = createWorldCreator();
-            app.world = undefined;
-
-            app.currentChallengeIndex = 0;
-
-            app.startStopOrRestart = function () {
-                if (app.world.challengeEnded) {
-                    app.startChallenge(app.currentChallengeIndex);
-                } else {
-                    app.worldController.setPaused(!app.worldController.isPaused);
-                }
-            };
-
             app.startChallenge = function (challengeIndex, autoStart) {
+                console.log("Starting challenge", challengeIndex, app.world);
                 if (typeof app.world !== "undefined") {
                     app.world.unWind();
                     // TODO: Investigate if memory leaks happen here
