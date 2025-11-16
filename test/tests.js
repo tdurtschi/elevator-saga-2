@@ -5,7 +5,7 @@ import Movable from "../movable.js";
 import Elevator from "../elevator.js";
 import User from "../user.js";
 import { createWorldController } from "../world.js";
-import _ from "lodash";
+import _ from "lodash-es";
 import {timeForwarder} from "./helpers/timeForwarder.js";
 
 describe("Elevator Saga", function() {

@@ -1,6 +1,6 @@
 
 import {limitNumber, epsilonEquals} from "./util.js";
-import _ from "lodash";
+import _ from "lodash-es";
 
 const createBoolPassthroughFunction = function(owner, obj, objPropertyName) {
     return function(val) {
@@ -75,7 +75,8 @@ export function asElevatorInterface(obj, elevator, floorCount, errorHandler) {
     elevator.on("stopped", function(position) {
         if(elevatorInterface.destinationQueue.length && epsilonEquals(_.first(elevatorInterface.destinationQueue), position)) {
             // Reached the destination, so remove element at front of queue
-            elevatorInterface.destinationQueue = _.rest(elevatorInterface.destinationQueue);
+            console.log("elevatorInterface.destinationQueue", elevatorInterface.destinationQueue);
+            elevatorInterface.destinationQueue = _.tail(elevatorInterface.destinationQueue);
             if(elevator.isOnAFloor()) {
                 elevator.wait(1, function() {
                     elevatorInterface.checkDestinationQueue();

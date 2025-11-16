@@ -13,7 +13,7 @@ import {
 } from "./presenters.js";
 import {createWorldCreator, createWorldController} from "./world.js";
 import {typeDeclarations} from "./types.js";
-import _ from "lodash";
+import _ from "lodash-es";
 import { defaultPrompt, sendMessage, updateSettings, getInstructions, resetInstructions, setInstructions } from "./ai.js";
 import { getBackupCode, getPrompt, getTimeScale, setBackupCode, getCode, setCode, setPrompt, setTimeScale, getAiSettings, patchAiSettings } from "./persistence.js";
 

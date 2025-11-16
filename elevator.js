@@ -1,6 +1,6 @@
 import {limitNumber, epsilonEquals, newGuard} from "./util.js";
 import Movable from "./movable.js";
-import _ from "lodash";
+import _ from "lodash-es";
 
 class Elevator extends Movable {
     constructor(speedFloorsPerSec, floorCount, floorHeight, maxUsers) {

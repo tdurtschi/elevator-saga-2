@@ -1,6 +1,6 @@
 import { asElevatorInterface } from "../interfaces.js";
 import Elevator from "../elevator.js";
-import _ from "lodash";
+import _ from "lodash-es";
 import {timeForwarder} from "./helpers/timeForwarder.js";
 import $ from "jquery";
 

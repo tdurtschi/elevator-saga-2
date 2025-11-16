@@ -2,7 +2,7 @@ import Elevator from "./elevator.js";
 import asFloor from "./floor.js";
 import { asElevatorInterface } from "./interfaces.js";
 import User from "./user.js";
-import _ from "lodash";
+import _ from "lodash-es";
 
 export function createWorldCreator() {
     var creator = {};
