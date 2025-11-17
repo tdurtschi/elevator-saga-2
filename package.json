@@ -9,7 +9,7 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "vite build",
-    "postbuild": "cp -r font-awesome-4.1-1.0 dist/ && cp -r libs dist/ && cp *.css dist/ && cp *.md dist/ && cp -r images dist/",
+    "postbuild": "cp -r font-awesome-4.1-1.0/fonts dist/ && cp -r libs dist/ && cp *.css dist/ && cp *.md dist/ && cp -r images dist/",
     "serve": "vite preview --port 3000 --strictPort",
     "dev": "vite",
     "pretest": "npm run build",
