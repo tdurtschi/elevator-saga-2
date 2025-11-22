@@ -108,11 +108,6 @@ button.right {
     line-height: 30px;
 }
 
-#loading_message {
-    font-size: 12px;
-    line-height: 30px;
-}
-
 #model-options {
     text-align: left;
     margin-top: 10px;
@@ -418,4 +413,13 @@ button.right {
     display: flex;
     justify-content: space-between;
     margin-top: 10px;
+}
+
+#loading_message {
+    font-family: monospace;
+    padding: 4px;
+    min-height:38px;
+    max-height:38px;
+    overflow-y: scroll;
+    scrollbar-color: #4CAF50 #1E1E1E;
 }

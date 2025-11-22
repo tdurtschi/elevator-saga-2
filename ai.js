@@ -1,8 +1,8 @@
 import Swal from "sweetalert2";
 import { CreateMLCEngine } from "@mlc-ai/web-llm";
-import $ from "jquery";
 import { allModels } from "./models.js";
 import { getAiSettings, patchAiSettings } from "./persistence.js";
+import {log} from "./terminal-logger.js";
 
 const models = allModels.map(m => m.model_id).sort();
 
@@ -68,11 +68,7 @@ export const updateSettings = async () => {
 
 const createClient = async (settings) => { 
   const initProgressCallback = (progress) => {
-    if (progress.progress == 1) {
-      $("#loading_message").text("");
-    } else {
-      $("#loading_message").text(progress.text + "..");
-    }
+    log(progress.text + "...");
     console.log("Model loading progress:", progress);
   };
   const engine = await CreateMLCEngine(settings.modelName, { initProgressCallback });

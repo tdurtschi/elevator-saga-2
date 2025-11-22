@@ -3,6 +3,7 @@ import asFloor from "./floor.js";
 import { asElevatorInterface } from "./interfaces.js";
 import User from "./user.js";
 import _ from "lodash-es";
+import {log} from "./terminal-logger.js";
 
 export function createWorldCreator() {
     var creator = {};
@@ -272,7 +273,7 @@ export function createWorldController(dtMax) {
     controller.handleUserCodeError = function(e) {
         controller.setPaused(true);
         console.log("Usercode error on update", e);
-        controller.trigger("usercode_error", e);
+        log(e, "error");
     };
 
     controller.setPaused = function(paused) {

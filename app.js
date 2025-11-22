@@ -8,7 +8,6 @@ import {
     presentChallenge,
     presentFeedback,
     presentWorld,
-    presentCodeStatus,
     makeDemoFullscreen
 } from "./presenters.js";
 import {createWorldCreator, createWorldController} from "./world.js";
@@ -16,6 +15,7 @@ import {typeDeclarations} from "./types.js";
 import _ from "lodash-es";
 import { defaultPrompt, sendMessage, updateSettings, getInstructions, resetInstructions, setInstructions } from "./ai.js";
 import { getBackupCode, getPrompt, getTimeScale, setBackupCode, getCode, setCode, setPrompt, setTimeScale, getAiSettings, patchAiSettings } from "./persistence.js";
+import {clearLog, log} from "./terminal-logger.js";
 
 window._ = _;
 
@@ -172,8 +172,6 @@ update: function (dt, elevators, floors) {}
         })
 
         $("#tab-instructions").click(function() {
-            console.log("Here!");
-
             editor.setModel(instructionsModel)
         })
 
@@ -217,7 +215,6 @@ $(function () {
     var $stats = $(".statscontainer");
     var $feedback = $(".feedbackcontainer");
     var $challenge = $(".challenge");
-    var $codestatus = $(".codestatus");
 
     var floorTempl = document.getElementById("floor-template").innerHTML.trim();
     var elevatorTempl = document.getElementById("elevator-template").innerHTML.trim();
@@ -225,7 +222,6 @@ $(function () {
     var userTempl = document.getElementById("user-template").innerHTML.trim();
     var challengeTempl = document.getElementById("challenge-template").innerHTML.trim();
     var feedbackTempl = document.getElementById("feedback-template").innerHTML.trim();
-    var codeStatusTempl = document.getElementById("codestatus-template").innerHTML.trim();
     var app = riot.observable({});
     app.worldController = createWorldController(1.0 / 60.0);
     app.worldCreator = createWorldCreator();
@@ -241,14 +237,15 @@ $(function () {
     };
 
     riot.route(function (path) {
+        clearLog();
         createEditorAsync().then(editor => {
             app.worldController.on("usercode_error", function (e) {
-                console.log("World raised code error", e);
+                log("World raised code error", e);
                 editor.trigger("usercode_error", e);
             });
 
             app.startChallenge = function (challengeIndex, autoStart) {
-                console.log("Starting challenge", challengeIndex, app.world);
+                log("Starting challenge", challengeIndex, app.world);
                 if (typeof app.world !== "undefined") {
                     app.world.unWind();
                     // TODO: Investigate if memory leaks happen here
@@ -287,11 +284,14 @@ $(function () {
             editor.on("apply_code", function () {
                 app.startChallenge(app.currentChallengeIndex, true);
             });
-            editor.on("code_success", function () {
-                presentCodeStatus($codestatus, codeStatusTempl);
-            });
             editor.on("usercode_error", function (error) {
-                presentCodeStatus($codestatus, codeStatusTempl, error);
+                console.log(error);
+                var errorMessage = error;
+                if(error && error.stack) {
+                    errorMessage = error.stack;
+                    errorMessage = errorMessage.replace(/\n/g, "<br>");
+                }
+                log(errorMessage, "error");
             });
             editor.on("change", function () {
                 $("#fitness_message").addClass("faded");
