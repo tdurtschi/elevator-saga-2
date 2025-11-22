@@ -108,9 +108,16 @@ button.right {
     line-height: 30px;
 }
 
-#model-options {
+
+#recommended-model-options {
     text-align: left;
-    margin-top: 10px;
+    margin-bottom: 10px;
+    overflow-x: hidden;
+    font-size: 14px;
+}
+
+#other-model-options {
+    text-align: left;
     margin-bottom: 10px;
     height: 150px;
     overflow-y: scroll;
