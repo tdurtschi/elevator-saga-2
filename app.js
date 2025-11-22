@@ -63,7 +63,7 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
             setPrompt(promptModel.getValue());
             setInstructions(instructionsModel.getValue());
             $("#save_message").text("Code saved " + new Date().toTimeString());
-            returnObj.trigger("change");
+            editorService.trigger("change");
         };
 
         var existingCode = getCode();
@@ -103,36 +103,36 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
             editor.focus();
         });
 
-        var returnObj = riot.observable({});
+        var editorService = riot.observable({});
         var autoSaver = _.debounce(saveCode, 1000);
         editor.onDidChangeModelContent = autoSaver;
 
-        returnObj.getCodeObj = function () {
+        editorService.getCodeObj = function () {
             console.log("Getting code...");
             var code = editor.getValue();
             var obj;
             try {
                 obj = getCodeObjFromCode(code);
-                returnObj.trigger("code_success");
+                editorService.trigger("code_success");
             } catch (e) {
-                returnObj.trigger("usercode_error", e);
+                editorService.trigger("usercode_error", e);
                 return null;
             }
             return obj;
         };
-        returnObj.setCode = function (code) {
+        editorService.setCode = function (code) {
             codeModel.setValue(code);
         };
-        returnObj.getCode = function () {
+        editorService.getCode = function () {
             return codeModel.getValue();
         }
-        returnObj.setDevTestCode = function () {
+        editorService.setDevTestCode = function () {
             codeModel.setValue($("#devtest-elev-implementation").text().trim());
         }
 
         $("#button_apply").click(function () {
             saveCode();
-            returnObj.trigger("apply_code");
+            editorService.trigger("apply_code");
         });
 
         $("#button-generate").click(function (event) {
@@ -198,7 +198,7 @@ update: function (dt, elevators, floors) {}
             $("#tabs-form").attr("style", "display: block;");
         }
 
-        resolve(returnObj);
+        resolve(editorService);
     });
 });
 
@@ -238,10 +238,10 @@ $(function () {
 
     riot.route(function (path) {
         clearLog();
-        createEditorAsync().then(editor => {
+        createEditorAsync().then(editorService => {
             app.worldController.on("usercode_error", function (e) {
-                log("World raised code error", e);
-                editor.trigger("usercode_error", e);
+                log("World raised code error", "error");
+                editorService.trigger("usercode_error", e);
             });
 
             app.startChallenge = function (challengeIndex, autoStart) {
@@ -276,15 +276,15 @@ $(function () {
                     }
                 });
 
-                var codeObj = editor.getCodeObj();
+                var codeObj = editorService.getCodeObj();
                 console.log("Starting...");
                 app.worldController.start(app.world, codeObj, window.requestAnimationFrame, autoStart);
             };
 
-            editor.on("apply_code", function () {
+            editorService.on("apply_code", function () {
                 app.startChallenge(app.currentChallengeIndex, true);
             });
-            editor.on("usercode_error", function (error) {
+            editorService.on("usercode_error", function (error) {
                 console.log(error);
                 var errorMessage = error;
                 if(error && error.stack) {
@@ -293,10 +293,10 @@ $(function () {
                 }
                 log(errorMessage, "error");
             });
-            editor.on("change", function () {
+            editorService.on("change", function () {
                 $("#fitness_message").addClass("faded");
             });
-            editor.trigger("change");
+            editorService.trigger("change");
 
             params = _.reduce(path.split(","), function (result, p) {
                 var match = p.match(/(\w+)=(\w+$)/);
@@ -321,7 +321,7 @@ $(function () {
                 } else if (key === "timescale") {
                     timeScale = parseFloat(val);
                 } else if (key === "devtest") {
-                    editor.setDevTestCode();
+                    editorService.setDevTestCode();
                 } else if (key === "fullscreen") {
                     makeDemoFullscreen();
                 }

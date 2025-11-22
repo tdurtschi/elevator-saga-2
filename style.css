@@ -197,7 +197,7 @@ button.right {
     top: 0;
     right: 0px;
     width: 240px;
-    height: 200px;
+    height: 110px;
     padding: 20px;
     z-index: 1;
 }
@@ -415,11 +415,24 @@ button.right {
     margin-top: 10px;
 }
 
-#loading_message {
+#terminal-output {
     font-family: monospace;
     padding: 4px;
     min-height:38px;
     max-height:38px;
     overflow-y: scroll;
     scrollbar-color: #4CAF50 #1E1E1E;
+}
+
+.fa-button:hover{
+    color: #cccccc;
+    position: relative;
+    top: 1px;
+    cursor: pointer;
+}
+
+.fa-button:active {
+    position: relative;
+    top: 2px;
+    cursor: pointer;
 }

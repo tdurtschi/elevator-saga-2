@@ -272,7 +272,7 @@ export function createWorldController(dtMax) {
 
     controller.handleUserCodeError = function(e) {
         controller.setPaused(true);
-        console.log("Usercode error on update", e);
+        log("Usercode error on update:", "error");
         log(e, "error");
     };
 
