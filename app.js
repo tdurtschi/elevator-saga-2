@@ -67,11 +67,16 @@ $(function () {
                 app.currentChallengeIndex = challengeIndex;
                 app.world = app.worldCreator.createWorld(challenges[challengeIndex].options);
 
+                // Reset paused state before rendering so the button shows "Start"
+                app.worldController.isPaused = true;
+
                 clearAll([$world, $feedback]);
                 presentStats($stats, app.world);
                 presentChallenge($challenge, challenges[challengeIndex], app, app.world, app.worldController, challengeIndex + 1);
                 presentWorld($world, app.world);
 
+                // Remove any previous timescale listener before adding a fresh one
+                app.worldController.off("timescale_changed");
                 app.worldController.on("timescale_changed", function () {
                     setTimeScale(app.worldController.timeScale);
                     presentChallenge($challenge, challenges[challengeIndex], app, app.world, app.worldController, challengeIndex + 1);
