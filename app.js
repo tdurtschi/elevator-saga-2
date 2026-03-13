@@ -53,11 +53,6 @@ $(function () {
     handleRoute(function (path) {
         clearLog();
         createEditorAsync().then(editorService => {
-            app.worldController.on("usercode_error", function (e) {
-                log("World raised code error", "error");
-                editorService.trigger("usercode_error", e);
-            });
-
             app.startChallenge = function (challengeIndex, autoStart) {
                 log("Starting challenge", challengeIndex, app.world);
                 if (typeof app.world !== "undefined") {
