@@ -216,8 +216,6 @@ $(function () {
     var $feedback = $(".feedbackcontainer");
     var $challenge = $(".challenge");
 
-    var elevatorTempl = document.getElementById("elevator-template").innerHTML.trim();
-    var elevatorButtonTempl = document.getElementById("elevatorbutton-template").innerHTML.trim();
     var userTempl = document.getElementById("user-template").innerHTML.trim();
     var challengeTempl = document.getElementById("challenge-template").innerHTML.trim();
     var feedbackTempl = document.getElementById("feedback-template").innerHTML.trim();
@@ -255,7 +253,7 @@ $(function () {
                 clearAll([$world, $feedback]);
                 presentStats($stats, app.world);
                 presentChallenge($challenge, challenges[challengeIndex], app, app.world, app.worldController, challengeIndex + 1, challengeTempl);
-                presentWorld($world, app.world, elevatorTempl, elevatorButtonTempl, userTempl);
+                presentWorld($world, app.world, userTempl);
 
                 app.worldController.on("timescale_changed", function () {
                     setTimeScale(app.worldController.timeScale);

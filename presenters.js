@@ -73,7 +73,7 @@ function presentFeedback($parent, feedbackTempl, world, title, message, url) {
     }
 }
 
-function presentWorld($world, world, elevatorTempl, elevatorButtonTempl, userTempl) {
+function presentWorld($world, world, userTempl) {
     $world.css("height", world.floorHeight * world.floors.length);
 
     $world.append(_.map(world.floors, function(f) {
@@ -104,12 +104,17 @@ function presentWorld($world, world, elevatorTempl, elevatorButtonTempl, userTem
     function renderElevatorButtons(states) {
         // This is a rarely executed inner-inner loop, does not need efficiency
         return _.map(states, function(b, i) {
-            return riot.render(elevatorButtonTempl, {floorNum: i});
+            return `<span class="buttonpress">${i}</span>`;
         }).join("");
     };
 
     function setUpElevator(e) {
-        var $elevator = $(riot.render(elevatorTempl, {e: e}));
+        var $elevator = $(`<div class="elevator movable" style="width: ${e.width}px">
+            <span class="directionindicator directionindicatorup"><i class="fa fa-arrow-circle-up up activated"></i></span>
+            <span class="floorindicator"><span></span></span>
+            <span class="directionindicator directionindicatordown"><i class="fa fa-arrow-circle-down down activated"></i></span>
+            <span class="buttonindicator"></span>
+        </div>`);
         var elem_elevator = $elevator.get(0);
         $elevator.find(".buttonindicator").html(renderElevatorButtons(e.buttonStates));
         var $buttons = _.map($elevator.find(".buttonindicator").children(), function(c) { return $(c); });
