@@ -29,9 +29,9 @@
 - [ ] Extract an `Editor` abstraction with a `getValue()`/`setValue()` interface so the editor can be swapped or mocked in tests
 - [ ] Decouple `presenters.js` — pull position calculations and state logic into pure functions, separate from DOM queries
 
-### Remove riot.js (2 steps)
-- [ ] **Step 1 — replace riot templating:** Remove `<script type="text/template">` tags from `index.html` and replace `riot.render()` calls in `presenters.js` with vanilla JS DOM construction (`document.createElement` / template literals). riot.observable event bus can stay for now.
-- [ ] **Step 2 — replace riot.observable:** Replace `riot.observable({})` event buses (used in `app.js`, `presenters.js`, and throughout core classes) with vanilla `EventTarget` or a small native pub/sub. Removes the riot dependency entirely.
+### Remove riot.js (done ✓)
+- [x] **Step 1 — replace riot templating:** Remove `<script type="text/template">` tags from `index.html` and replace `riot.render()` calls in `presenters.js` with vanilla JS template literals.
+- [x] **Step 2 — replace riot.observable:** Replace `riot.observable()` with `unobservable.observable()` across `app.js`, `floor.js`, `interfaces.js`, `world.js`. Replace `riot.route()` with a native hashchange handler. Delete `libs/riot.js`.
 
 ### Reactive UI layer
 - [ ] Introduce a `Ticker` abstraction to replace raw `requestAnimationFrame` — injectable in tests (manual step function) vs. production (real rAF). This gives the simulation a clean clock interface that the UI can bind to, laying the groundwork for a reactive update pattern.
