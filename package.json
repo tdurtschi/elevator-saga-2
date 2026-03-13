@@ -42,6 +42,7 @@
     "jquery": "^2.1.1",
     "lodash": "^3.6.0",
     "lodash-es": "^4.17.21",
+    "monaco-editor": "^0.55.1",
     "openai": "^6.7.0",
     "serve": "^13.0.2",
     "sweetalert2": "^11.26.3"
