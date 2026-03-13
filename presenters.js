@@ -40,13 +40,17 @@ function presentStats($parent, world) {
     world.trigger("stats_display_changed");
 }
 
-function presentChallenge($parent, challenge, app, world, worldController, challengeNum, challengeTempl) {
-    var $challenge = $(riot.render(challengeTempl, {
-        challenge: challenge,
-        num: challengeNum,
-        timeScale: worldController.timeScale.toFixed(0) + "x",
-        startButtonText: world.challengeEnded ? "<i class='fa fa-repeat'></i> Restart" : (worldController.isPaused ? "Start" : "Pause")
-    }));
+function presentChallenge($parent, challenge, app, world, worldController, challengeNum) {
+    var startButtonText = world.challengeEnded ? "<i class='fa fa-repeat'></i> Restart" : (worldController.isPaused ? "Start" : "Pause");
+    var $challenge = $(`<div class="left">
+            <h3>Challenge #${challengeNum}: ${challenge.condition.description}</h3>
+        </div>
+        <button class="right startstop unselectable" style="width: 140px">${startButtonText}</button>
+        <h3 class="right">
+            <i class="fa fa-minus-square timescale_decrease unselectable"></i>
+            <span class="emphasis-color" style="display: inline-block; width: 22px; text-align: center">${worldController.timeScale.toFixed(0)}x</span>
+            <i class="fa fa-plus-square timescale_increase unselectable"></i>
+        </h3>`);
     $parent.html($challenge);
 
     $parent.find(".startstop").on("click", function() {
@@ -66,14 +70,15 @@ function presentChallenge($parent, challenge, app, world, worldController, chall
     });
 }
 
-function presentFeedback($parent, feedbackTempl, world, title, message, url) {
-    $parent.html(riot.render(feedbackTempl, {title: title, message: message, url: url, paddingTop: world.floors.length * world.floorHeight * 0.2}));
-    if(!url) {
-        $parent.find("a").remove();
-    }
+function presentFeedback($parent, world, title, message, url) {
+    $parent.html(`<div class="feedback">
+        <h2 class="emphasis-color">${title}</h2>
+        <p class="emphasis-color">${message}</p>
+        ${url ? `<a href="${url}" class="emphasis-color">Next challenge <i class="fa fa-caret-right blink" style="text-decoration: blink"></i></a>` : ""}
+    </div>`);
 }
 
-function presentWorld($world, world, userTempl) {
+function presentWorld($world, world) {
     $world.css("height", world.floorHeight * world.floors.length);
 
     $world.append(_.map(world.floors, function(f) {
@@ -147,7 +152,7 @@ function presentWorld($world, world, userTempl) {
     }));
 
     world.on("new_user", function(user) {
-        var $user = $(riot.render(userTempl, {u: user, state: user.done ? "leaving" : ""}));
+        var $user = $(`<i class="movable fa user fa-${user.displayType} ${user.done ? "leaving" : ""}"></i>`);
         var elem_user = $user.get(0);
 
         user.on("new_display_state", function() { updateUserState($user, elem_user, user); })

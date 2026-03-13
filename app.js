@@ -216,9 +216,6 @@ $(function () {
     var $feedback = $(".feedbackcontainer");
     var $challenge = $(".challenge");
 
-    var userTempl = document.getElementById("user-template").innerHTML.trim();
-    var challengeTempl = document.getElementById("challenge-template").innerHTML.trim();
-    var feedbackTempl = document.getElementById("feedback-template").innerHTML.trim();
     var app = riot.observable({});
     app.worldController = createWorldController(1.0 / 60.0);
     app.worldCreator = createWorldCreator();
@@ -252,12 +249,12 @@ $(function () {
 
                 clearAll([$world, $feedback]);
                 presentStats($stats, app.world);
-                presentChallenge($challenge, challenges[challengeIndex], app, app.world, app.worldController, challengeIndex + 1, challengeTempl);
-                presentWorld($world, app.world, userTempl);
+                presentChallenge($challenge, challenges[challengeIndex], app, app.world, app.worldController, challengeIndex + 1);
+                presentWorld($world, app.world);
 
                 app.worldController.on("timescale_changed", function () {
                     setTimeScale(app.worldController.timeScale);
-                    presentChallenge($challenge, challenges[challengeIndex], app, app.world, app.worldController, challengeIndex + 1, challengeTempl);
+                    presentChallenge($challenge, challenges[challengeIndex], app, app.world, app.worldController, challengeIndex + 1);
                 });
 
                 app.world.on("stats_changed", function () {
@@ -266,9 +263,9 @@ $(function () {
                         app.world.challengeEnded = true;
                         app.worldController.setPaused(true);
                         if (challengeStatus) {
-                            presentFeedback($feedback, feedbackTempl, app.world, "Success!", "Challenge completed", createParamsUrl(params, {challenge: (challengeIndex + 2)}));
+                            presentFeedback($feedback, app.world, "Success!", "Challenge completed", createParamsUrl(params, {challenge: (challengeIndex + 2)}));
                         } else {
-                            presentFeedback($feedback, feedbackTempl, app.world, "Challenge failed", "Maybe your program needs an improvement?", "");
+                            presentFeedback($feedback, app.world, "Challenge failed", "Maybe your program needs an improvement?", "");
                         }
                     }
                 });
