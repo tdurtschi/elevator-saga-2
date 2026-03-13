@@ -97,7 +97,7 @@ describe("Elevator Saga", function() {
 		beforeEach(function() {
 			controller = createWorldController(DT_MAX);
 			fakeWorld = { update: function(dt) {}, init: function() {}, updateDisplayPositions: function() {}, trigger: function() {} };
-			fakeWorld = riot.observable(fakeWorld);
+			fakeWorld = window.unobservable.observable(fakeWorld);
 			fakeCodeObj = { init: function() {}, update: function() {} };
 			frameRequester = createFrameRequester(10.0);
 			spyOn(fakeWorld, "update").and.callThrough();

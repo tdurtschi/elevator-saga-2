@@ -11,10 +11,10 @@ global.window = window;
 global.document = window.document;
 global.navigator = { userAgent: 'node.js' };
 
-// Load riot.js by executing it in the window context (avoids ESM require issues)
-const riotSrc = fs.readFileSync(path.join(__dirname, '../../libs/riot.js'), 'utf8');
-vm.runInNewContext(riotSrc, window);
-global.riot = window.riot;
+// Load unobservable.js by executing it in the window context (avoids ESM require issues)
+const unobservableSrc = fs.readFileSync(path.join(__dirname, '../../libs/unobservable.js'), 'utf8');
+vm.runInNewContext(unobservableSrc, window);
+global.unobservable = window.unobservable;
 
 // If jQuery or other libs need additional globals, add them here
 // (e.g., global.$ = require('jquery'); if needed, but imports handle it)

@@ -1,4 +1,5 @@
 import Elevator from "./elevator.js";
+import "./libs/unobservable.js";
 import asFloor from "./floor.js";
 import { asElevatorInterface } from "./interfaces.js";
 import User from "./user.js";
@@ -70,7 +71,7 @@ export function createWorldCreator() {
         var defaultOptions = { floorHeight: 50, floorCount: 4, elevatorCount: 2, spawnRate: 0.5 };
         options = _.defaults(_.clone(options), defaultOptions);
         var world = {floorHeight: options.floorHeight, transportedCounter: 0};
-        riot.observable(world);
+        window.unobservable.observable(world);
 
         var handleUserCodeError = function(e) {
             world.trigger("usercode_error", e);
@@ -226,7 +227,7 @@ export function createWorldCreator() {
 
 
 export function createWorldController(dtMax) {
-    var controller = riot.observable({});
+    var controller = window.unobservable.observable({});
     controller.timeScale = 1.0;
     controller.isPaused = true;
     controller.start = function(world, codeObj, animationFrameRequester, autoStart) {

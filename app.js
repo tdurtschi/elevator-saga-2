@@ -1,5 +1,5 @@
 import $ from "jquery";
-import "./libs/riot.js";
+import "./libs/unobservable.js";
 import {getCodeObjFromCode} from "./util.js";
 import {challenges} from "./challenges.js";
 import {
@@ -103,7 +103,7 @@ const createEditorAsync = () => new Promise((resolve, reject) => {
             editor.focus();
         });
 
-        var editorService = riot.observable({});
+        var editorService = window.unobservable.observable({});
         var autoSaver = _.debounce(saveCode, 1000);
         editor.onDidChangeModelContent = autoSaver;
 
@@ -216,7 +216,7 @@ $(function () {
     var $feedback = $(".feedbackcontainer");
     var $challenge = $(".challenge");
 
-    var app = riot.observable({});
+    var app = window.unobservable.observable({});
     app.worldController = createWorldController(1.0 / 60.0);
     app.worldCreator = createWorldCreator();
     app.world = undefined;
@@ -230,7 +230,12 @@ $(function () {
         }
     };
 
-    riot.route(function (path) {
+    const handleRoute = (fn) => {
+        window.addEventListener('hashchange', () => fn(window.location.hash));
+        fn(window.location.hash);
+    };
+
+    handleRoute(function (path) {
         clearLog();
         createEditorAsync().then(editorService => {
             app.worldController.on("usercode_error", function (e) {

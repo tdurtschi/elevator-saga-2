@@ -1,5 +1,6 @@
 
 import {limitNumber, epsilonEquals} from "./util.js";
+import "./libs/unobservable.js";
 import _ from "lodash-es";
 
 const createBoolPassthroughFunction = function(owner, obj, objPropertyName) {
@@ -19,7 +20,7 @@ const createBoolPassthroughFunction = function(owner, obj, objPropertyName) {
 // while also exposing relevant events, and providing some helper queue
 // functions that allow programming without async logic.
 export function asElevatorInterface(obj, elevator, floorCount, errorHandler) {
-    var elevatorInterface = riot.observable(obj);
+    var elevatorInterface = window.unobservable.observable(obj);
 
     elevatorInterface.destinationQueue = [];
 

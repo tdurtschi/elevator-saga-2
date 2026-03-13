@@ -1,7 +1,8 @@
+import "./libs/unobservable.js";
 
 class Floor {
     constructor(floorLevel, yPosition, errorHandler) {
-        riot.observable(this);
+        window.unobservable.observable(this);
         
         this.level = floorLevel;
         this.yPosition = yPosition;
