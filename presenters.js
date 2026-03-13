@@ -73,11 +73,17 @@ function presentFeedback($parent, feedbackTempl, world, title, message, url) {
     }
 }
 
-function presentWorld($world, world, floorTempl, elevatorTempl, elevatorButtonTempl, userTempl) {
+function presentWorld($world, world, elevatorTempl, elevatorButtonTempl, userTempl) {
     $world.css("height", world.floorHeight * world.floors.length);
 
     $world.append(_.map(world.floors, function(f) {
-        var $floor = $(riot.render(floorTempl, f));
+        var $floor = $(`<div class="floor" style="top: ${f.yPosition}px">
+            <span class="floornumber">${f.level}</span>
+            <span class="buttonindicator">
+                <i class="fa fa-arrow-circle-up up"></i>
+                <i class="fa fa-arrow-circle-down down"></i>
+            </span>
+        </div>`);
         var $up = $floor.find(".up");
         var $down = $floor.find(".down");
         f.on("buttonstate_change", function(buttonStates) {
