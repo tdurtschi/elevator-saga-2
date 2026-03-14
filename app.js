@@ -14,15 +14,10 @@ import _ from "lodash-es";
 import { getTimeScale, setTimeScale } from "./persistence.js";
 import {clearLog, log} from "./terminal-logger.js";
 import {createEditorAsync} from "./editor.js";
-import { parseParams, startRouter } from "./router.js";
+import { createParamsUrl, parseParams, startRouter } from "./router.js";
 
 window._ = _;
 
-var createParamsUrl = function (current, overrides) {
-    return "#" + _.map(_.merge(current, overrides), function (val, key) {
-        return key + "=" + val;
-    }).join(",");
-};
 
 $(function () {
     var $world = $(".innerworld");
