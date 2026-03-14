@@ -1,6 +1,5 @@
 import $ from "jquery";
 import "./libs/unobservable.js";
-import { challenges } from "./challenges.js";
 import { makeDemoFullscreen } from "./presenters.js";
 import { createWorldCreator, createWorldController } from "./world.js";
 import _ from "lodash-es";
@@ -58,11 +57,6 @@ $(function () {
             _.each(routeParams, function (val, key) {
                 if (key === "challenge") {
                     requestedChallenge = _.parseInt(val) - 1;
-                    if (requestedChallenge < 0 || requestedChallenge >= challenges.length) {
-                        console.log("Invalid challenge index", requestedChallenge);
-                        console.log("Defaulting to first challenge");
-                        requestedChallenge = 0;
-                    }
                 } else if (key === "autostart") {
                     autoStart = val === "false" ? false : true;
                 } else if (key === "timescale") {

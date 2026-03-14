@@ -16,6 +16,10 @@ export function createChallengeController({ editorService, worldController, worl
     controller.world = undefined;
 
     controller.startChallenge = function (challengeIndex, autoStart) {
+        if (challengeIndex < 0 || challengeIndex >= challenges.length) {
+            console.log("Invalid challenge index", challengeIndex, "— defaulting to 0");
+            challengeIndex = 0;
+        }
         log("Starting challenge", challengeIndex);
         if (typeof controller.world !== "undefined") {
             controller.world.unWind();
