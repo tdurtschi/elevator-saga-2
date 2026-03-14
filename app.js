@@ -14,6 +14,7 @@ import _ from "lodash-es";
 import { getTimeScale, setTimeScale } from "./persistence.js";
 import {clearLog, log} from "./terminal-logger.js";
 import {createEditorAsync} from "./editor.js";
+import { parseParams, startRouter } from "./router.js";
 
 window._ = _;
 
@@ -21,16 +22,6 @@ var createParamsUrl = function (current, overrides) {
     return "#" + _.map(_.merge(current, overrides), function (val, key) {
         return key + "=" + val;
     }).join(",");
-};
-
-var parseParams = function (path) {
-    return _.reduce(path.split(","), function (result, p) {
-        var match = p.match(/(\w+)=(\w+$)/);
-        if (match) {
-            result[match[1]] = match[2];
-        }
-        return result;
-    }, {});
 };
 
 $(function () {
@@ -44,10 +35,6 @@ $(function () {
     app.worldCreator = createWorldCreator();
     app.world = undefined;
     app.currentChallengeIndex = 0;
-
-    // params is shared between the route handler (which writes it) and
-    // startChallenge (which reads it to build the next-challenge URL)
-    var params = {};
 
     app.startStopOrRestart = function () {
         if (app.world.challengeEnded) {
@@ -90,7 +77,7 @@ $(function () {
                     app.world.challengeEnded = true;
                     app.worldController.setPaused(true);
                     if (challengeStatus) {
-                        presentFeedback($feedback, app.world, "Success!", "Challenge completed", createParamsUrl(params, {challenge: (challengeIndex + 2)}));
+                        presentFeedback($feedback, app.world, "Success!", "Challenge completed", createParamsUrl(parseParams(window.location.hash), {challenge: (challengeIndex + 2)}));
                     } else {
                         presentFeedback($feedback, app.world, "Challenge failed", "Maybe your program needs an improvement?", "");
                     }
@@ -118,17 +105,15 @@ $(function () {
         });
         editorService.trigger("change");
 
-        // Route handler — parse params and start the right challenge.
-        // Runs on initial load and on every hashchange.
-        var handleRoute = function (path) {
+        // Route handler — runs on initial load and on every hashchange.
+        startRouter(function (routeParams) {
             clearLog();
-            params = parseParams(path);
 
             var requestedChallenge = 0;
             var autoStart = false;
             var timeScale = parseFloat(getTimeScale()) || 2.0;
 
-            _.each(params, function (val, key) {
+            _.each(routeParams, function (val, key) {
                 if (key === "challenge") {
                     requestedChallenge = _.parseInt(val) - 1;
                     if (requestedChallenge < 0 || requestedChallenge >= challenges.length) {
@@ -149,9 +134,6 @@ $(function () {
 
             app.worldController.setTimeScale(timeScale);
             app.startChallenge(requestedChallenge, autoStart);
-        };
-
-        window.addEventListener('hashchange', () => handleRoute(window.location.hash));
-        handleRoute(window.location.hash);
+        });
     });
 });
