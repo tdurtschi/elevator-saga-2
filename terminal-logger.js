@@ -22,7 +22,7 @@ export const init = () => {
 }
 function copyToClipboard() {
     var text = $("#terminal-output > div").map(function() { return $(this).text(); }).get().join( "\n");
-    navigator.clipboard.writeText(text).then((result) => log(result))
+    navigator.clipboard.writeText(text)
         .catch(e => log(e))
 }
 

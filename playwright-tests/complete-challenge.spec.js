@@ -46,6 +46,21 @@ test('Completes the challenge', async ({ page }) => {
     await expect(page.locator('.feedback')).toHaveText(/Success!/i, { timeout: 15000 });
 });
 
+test('Next challenge link advances to challenge 2', async ({ page }) => {
+    await waitForApp(page);
+
+    for (let i = 0; i < 6; i++) await page.locator('.timescale_increase').click();
+    await setEditorCode(page, PROGRAM);
+    await page.locator('#button_apply').click();
+    await expect(page.locator('.feedback')).toHaveText(/Success!/i, { timeout: 15000 });
+
+    await page.locator('.feedback a').click();
+
+    await expect(page.locator('.challenge h3').first()).toContainText('Challenge #2');
+    await expect(page.locator('.feedbackcontainer')).toBeEmpty();
+    await expect(page.locator('.startstop')).toHaveText('Start');
+});
+
 test('Changing the challenge resets the game state', async ({ page }) => {
     await waitForApp(page);
 
