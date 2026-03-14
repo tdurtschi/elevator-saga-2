@@ -1,23 +1,16 @@
 import $ from "jquery";
 import "./libs/unobservable.js";
-import {challenges} from "./challenges.js";
-import {
-    clearAll,
-    presentStats,
-    presentChallenge,
-    presentFeedback,
-    presentWorld,
-    makeDemoFullscreen
-} from "./presenters.js";
-import {createWorldCreator, createWorldController} from "./world.js";
+import { challenges } from "./challenges.js";
+import { makeDemoFullscreen } from "./presenters.js";
+import { createWorldCreator, createWorldController } from "./world.js";
 import _ from "lodash-es";
-import { getTimeScale, setTimeScale } from "./persistence.js";
-import {clearLog, log} from "./terminal-logger.js";
-import {createEditorAsync} from "./editor.js";
-import { createParamsUrl, parseParams, startRouter } from "./router.js";
+import { getTimeScale } from "./persistence.js";
+import { clearLog, log } from "./terminal-logger.js";
+import { createEditorAsync } from "./editor.js";
+import { parseParams, startRouter } from "./router.js";
+import { createChallengeController } from "./challenge-controller.js";
 
 window._ = _;
-
 
 $(function () {
     var $world = $(".innerworld");
@@ -25,67 +18,22 @@ $(function () {
     var $feedback = $(".feedbackcontainer");
     var $challenge = $(".challenge");
 
-    var app = window.unobservable.observable({});
-    app.worldController = createWorldController(1.0 / 60.0);
-    app.worldCreator = createWorldCreator();
-    app.world = undefined;
-    app.currentChallengeIndex = 0;
+    var worldController = createWorldController(1.0 / 60.0);
+    var worldCreator = createWorldCreator();
 
-    app.startStopOrRestart = function () {
-        if (app.world.challengeEnded) {
-            app.startChallenge(app.currentChallengeIndex);
-        } else {
-            app.worldController.setPaused(!app.worldController.isPaused);
-        }
-    };
-
-    // Editor is initialised once. Everything that depends on it lives below.
     createEditorAsync().then(function (editorService) {
+        var challengeController = createChallengeController({
+            editorService,
+            worldController,
+            worldCreator,
+            $world,
+            $stats,
+            $feedback,
+            $challenge,
+        });
 
-        app.startChallenge = function (challengeIndex, autoStart) {
-            log("Starting challenge", challengeIndex);
-            if (typeof app.world !== "undefined") {
-                app.world.unWind();
-                // TODO: Investigate if memory leaks happen here
-            }
-            app.currentChallengeIndex = challengeIndex;
-            app.world = app.worldCreator.createWorld(challenges[challengeIndex].options);
-
-            // Reset paused state before rendering so the button shows "Start"
-            app.worldController.isPaused = true;
-
-            clearAll([$world, $feedback]);
-            presentStats($stats, app.world);
-            presentChallenge($challenge, challenges[challengeIndex], app, app.world, app.worldController, challengeIndex + 1);
-            presentWorld($world, app.world);
-
-            // Remove any previous timescale listener before adding a fresh one
-            app.worldController.off("timescale_changed");
-            app.worldController.on("timescale_changed", function () {
-                setTimeScale(app.worldController.timeScale);
-                presentChallenge($challenge, challenges[challengeIndex], app, app.world, app.worldController, challengeIndex + 1);
-            });
-
-            app.world.on("stats_changed", function () {
-                var challengeStatus = challenges[challengeIndex].condition.evaluate(app.world);
-                if (challengeStatus !== null) {
-                    app.world.challengeEnded = true;
-                    app.worldController.setPaused(true);
-                    if (challengeStatus) {
-                        presentFeedback($feedback, app.world, "Success!", "Challenge completed", createParamsUrl(parseParams(window.location.hash), {challenge: (challengeIndex + 2)}));
-                    } else {
-                        presentFeedback($feedback, app.world, "Challenge failed", "Maybe your program needs an improvement?", "");
-                    }
-                }
-            });
-
-            var codeObj = editorService.getCodeObj();
-            app.worldController.start(app.world, codeObj, window.requestAnimationFrame, autoStart);
-        };
-
-        // Wire editor events once
         editorService.on("apply_code", function () {
-            app.startChallenge(app.currentChallengeIndex, true);
+            challengeController.startChallenge(challengeController.currentChallengeIndex, true);
         });
         editorService.on("usercode_error", function (error) {
             var errorMessage = error;
@@ -100,7 +48,6 @@ $(function () {
         });
         editorService.trigger("change");
 
-        // Route handler — runs on initial load and on every hashchange.
         startRouter(function (routeParams) {
             clearLog();
 
@@ -127,8 +74,8 @@ $(function () {
                 }
             });
 
-            app.worldController.setTimeScale(timeScale);
-            app.startChallenge(requestedChallenge, autoStart);
+            worldController.setTimeScale(timeScale);
+            challengeController.startChallenge(requestedChallenge, autoStart);
         });
     });
 });
