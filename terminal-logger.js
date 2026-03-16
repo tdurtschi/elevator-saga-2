@@ -1,29 +1,38 @@
-import $ from "jquery";
+const hasDom = typeof document !== 'undefined';
 
 export const log = (message, level) => {
-    var date = new Date();
-    var timestamp = `[${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}] `;
+    if (!hasDom) {
+        console.log(message);
+        return;
+    }
+    const date = new Date();
+    const timestamp = `[${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}] `;
 
-    const newDiv = $("<div>").html(timestamp + message);
-    if(level === 'error') newDiv.get(0).style = "color: #ed4848;";
+    const div = document.createElement('div');
+    div.innerHTML = timestamp + message;
+    if (level === 'error') div.style.color = '#ed4848';
 
-    let $logContainer = $("#terminal-output");
-    $logContainer.append(newDiv);
+    const container = document.getElementById('terminal-output');
+    container.appendChild(div);
+    div.scrollIntoView({ block: 'nearest' });
+};
 
-    newDiv.get(0).scrollIntoView({container: "nearest"});
-}
-
-export const clearLog = () => $("#terminal-output").text("");
+export const clearLog = () => {
+    if (hasDom) document.getElementById('terminal-output').textContent = '';
+};
 
 export const init = () => {
-    console.log("hi! 2")
-    $(".clear-log").click(() => clearLog());
-    $(".copy-log").click(copyToClipboard);
-}
+    document.querySelector('.clear-log').addEventListener('click', clearLog);
+    document.querySelector('.copy-log').addEventListener('click', copyToClipboard);
+};
+
 function copyToClipboard() {
-    var text = $("#terminal-output > div").map(function() { return $(this).text(); }).get().join( "\n");
-    navigator.clipboard.writeText(text)
-        .catch(e => log(e))
+    const text = Array.from(document.querySelectorAll('#terminal-output > div'))
+        .map(el => el.textContent)
+        .join('\n');
+    navigator.clipboard.writeText(text).catch(e => log(e));
 }
 
-$(init);
+if (hasDom) {
+    document.addEventListener('DOMContentLoaded', init);
+}
