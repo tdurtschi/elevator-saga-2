@@ -8,8 +8,11 @@ import { clearLog, log } from "./terminal-logger.js";
 import { createEditorAsync } from "./editor.js";
 import { parseParams, startRouter } from "./router.js";
 import { createChallengeController } from "./challenge-controller.js";
+import { initThemeToggle } from "./theme.js";
 
 window._ = _;
+
+initThemeToggle();
 
 $(function () {
     var $world = $(".innerworld");
