@@ -27,8 +27,13 @@ export const createEditorAsync = () => new Promise((resolve) => {
         promptModel = monaco.editor.createModel(defaultPrompt, "text/plain", "inmemory://model/prompt");
         instructionsModel = monaco.editor.createModel("", "text/plain", "inmemory://model/instructions");
 
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        prefersDark.addEventListener('change', e => {
+            monaco.editor.setTheme(e.matches ? 'vs-dark' : 'vs');
+        });
+
         editor = monaco.editor.create(document.getElementById("editor"), {
-            theme: "vs-dark",
+            theme: prefersDark.matches ? 'vs-dark' : 'vs',
             folding: false,
             minimap: {enabled: false},
             wordWrap: "on",

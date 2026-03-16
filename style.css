@@ -43,11 +43,55 @@
     --inactive-faint: rgba(224, 224, 224, 0.2);
     --inactive-medium: rgba(224, 224, 224, 0.3);
 
+    /* Buttons (always dark green bg, so text stays light regardless of theme) */
+    --button-text: #E0E0E0;
+    --button-text-shadow: #121212;
+
     /* Scrollbar */
     --scrollbar-thumb: #4CAF50;
     --scrollbar-track: #1E1E1E;
 }
 
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --bg-page: #f5f5f5;
+        --bg-surface: #e8e8e8;
+        --bg-elevator: #c8c8c8;
+        --bg-help: #e8f5e9;
+        --bg-feedback: rgba(46, 125, 50, 0.1);
+        --bg-floor-gradient: linear-gradient(
+            rgba(46,125,50,0.03),
+            rgba(46,125,50,0.07),
+            rgba(46,125,50,0.11),
+            rgba(46,125,50,0.03)
+        );
+
+        --text-primary: #212121;
+        --text-shadow: #f5f5f5;
+        --text-doc: #333333;
+
+        --border-color: #cccccc;
+
+        --accent-light: #388E3C;
+        --accent-hover: #1B5E20;
+        --accent-muted: rgba(46, 125, 50, 0.3);
+
+        --color-emphasis: #2E7D32;
+        --color-emphasis-shadow: #ccc;
+        --color-error: #B71C1C;
+
+        --color-user-happy: #2E7D32;
+        --color-user-frustrated: #E65100;
+        --color-user-disappointed: #B71C1C;
+        --color-user-leaving: #616161;
+
+        --inactive-faint: rgba(0, 0, 0, 0.2);
+        --inactive-medium: rgba(0, 0, 0, 0.3);
+
+        --scrollbar-track: #e0e0e0;
+    }
+}
 
 html, body {
     background-color: var(--bg-page);
@@ -110,9 +154,9 @@ button {
     font-family: monospace;
     padding-left: 16px;
     padding-right: 16px;
-    color: var(--text-primary);
+    color: var(--button-text);
     background-color: var(--accent-dark);
-    text-shadow: 0 0 2px var(--text-shadow);
+    text-shadow: 0 0 2px var(--button-text-shadow);
     border: 1px solid var(--accent);
     border-radius: 5px;
     margin-right: 5px;
