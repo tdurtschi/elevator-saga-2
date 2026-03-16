@@ -1,4 +1,5 @@
 import { challenges } from "./challenges.js";
+import { rafTicker } from "./ticker.js";
 import {
     clearAll,
     presentStats,
@@ -57,7 +58,7 @@ export function createChallengeController({ editorService, worldController, worl
         });
 
         var codeObj = editorService.getCodeObj();
-        worldController.start(controller.world, codeObj, window.requestAnimationFrame, autoStart);
+        worldController.start(controller.world, codeObj, rafTicker, autoStart);
     };
 
     controller.startStopOrRestart = function () {
