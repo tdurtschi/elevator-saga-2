@@ -7,7 +7,7 @@ import {getCodeObjFromCode} from "./util.js";
 import {typeDeclarations} from "./types.js";
 import {defaultPrompt, sendMessage, updateSettings, getInstructions, resetInstructions, setInstructions} from "./ai.js";
 import {getBackupCode, getPrompt, setBackupCode, getCode, setCode, setPrompt, getAiSettings, patchAiSettings} from "./persistence.js";
-import "./libs/unobservable.js";
+import { observable } from "./libs/unobservable.js";
 
 window.monaco = monaco;
 
@@ -91,7 +91,7 @@ export const createEditorAsync = () => new Promise((resolve) => {
         editor.focus();
     });
 
-    var editorService = window.unobservable.observable({});
+    var editorService = observable({});
     var autoSaver = _.debounce(saveCode, 1000);
     editor.onDidChangeModelContent = autoSaver;
 

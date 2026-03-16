@@ -1,5 +1,5 @@
 import $ from "jquery";
-import "../libs/unobservable.js";
+import { observable } from "../libs/unobservable.js";
 import {createFrameRequester, getCodeObjFromCode} from "../util.js";
 import Movable from "../movable.js";
 import Elevator from "../elevator.js";
@@ -97,7 +97,7 @@ describe("Elevator Saga", function() {
 		beforeEach(function() {
 			controller = createWorldController(DT_MAX);
 			fakeWorld = { update: function(dt) {}, init: function() {}, updateDisplayPositions: function() {}, trigger: function() {} };
-			fakeWorld = window.unobservable.observable(fakeWorld);
+			fakeWorld = observable(fakeWorld);
 			fakeCodeObj = { init: function() {}, update: function() {} };
 			frameRequester = createFrameRequester(10.0);
 			spyOn(fakeWorld, "update").and.callThrough();

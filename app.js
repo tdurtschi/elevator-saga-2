@@ -1,5 +1,4 @@
 import $ from "jquery";
-import "./libs/unobservable.js";
 import { makeDemoFullscreen } from "./presenters.js";
 import { createWorldCreator, createWorldController } from "./world.js";
 import _ from "lodash-es";

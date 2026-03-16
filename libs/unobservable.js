@@ -1,4 +1,4 @@
-(function(unobservable) { "use strict";
+"use strict";
 
 // Black magic stuff
 function CustomArray(numPreallocated) {
@@ -16,9 +16,9 @@ CustomArray.prototype.removeAt = function(index) {
     this.len--;
 }
 
-unobservable.observable = function(obj, options) {
+export function observable(obj, options) {
     options = options || {};
-    options.numPreallocatedHandlers = options.numPreallocatedHandlers || 0;
+    options.numPreallocatedHandlers = options.numPreallocatedHandlers || 0;
     options.addDataMembers = (typeof options.addDataMembers !== "undefined") ? options.addDataMembers : true;
     if(options.addDataMembers) {
         obj.callbacks = {};
@@ -101,12 +101,11 @@ unobservable.observable = function(obj, options) {
         return this;
     };
     return obj;
-};
+}
 
-unobservable.Observable = function() {
+export const Observable = function() {
     this.callbacks = {};
 };
-unobservable.observable(unobservable.Observable.prototype, {numPreallocatedHandlers: 2, addDataMembers: false});
-unobservable.asObservable = unobservable.observable;
-unobservable.CustomArray = CustomArray; // Expose for testability
-})((typeof window !== "undefined" ? window.unobservable = {} : (typeof exports !== "undefined" ? exports : self.unobservable = {})));
+observable(Observable.prototype, {numPreallocatedHandlers: 2, addDataMembers: false});
+
+export { CustomArray }; // Expose for testability

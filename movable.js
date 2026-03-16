@@ -1,9 +1,9 @@
 import {newGuard, coolInterpolate} from "./util.js";
-import "./libs/unobservable.js";
+import { Observable } from "./libs/unobservable.js";
 
 var _tmpPosStorage = [0,0];
 
-class Movable extends window.unobservable.Observable {
+class Movable extends Observable {
     constructor() {
         super();
         newGuard(this, Movable);
