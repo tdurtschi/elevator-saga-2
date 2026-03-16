@@ -1,57 +1,12 @@
 
 :root {
-    /* Backgrounds */
-    --bg-page: #121212;
-    --bg-surface: #1E1E1E;
-    --bg-elevator: #000000;
-    --bg-help: #293f29;
-    --bg-feedback: rgba(71, 190, 80, 0.15);
-    --bg-floor-gradient: linear-gradient(
-        rgba(46,125,50,0.05),
-        rgba(46,125,50,0.1),
-        rgba(46,125,50,0.15),
-        rgba(46,125,50,0.05)
-    );
-
-    /* Text */
-    --text-primary: #E0E0E0;
-    --text-shadow: #121212;
-    --text-doc: #dfdfdf;
-
-    /* Borders */
-    --border-color: #333333;
-
-    /* Accent (green scale) */
+    /* These vars are theme-invariant; everything else lives in [data-theme] */
     --accent: #4CAF50;
-    --accent-light: #81C784;
     --accent-dark: #2E7D32;
-    --accent-hover: #388E3C;
-    --accent-muted: rgba(76, 175, 80, 0.2);
-
-    /* Semantic */
-    --color-emphasis: #59ce5e;
-    --color-emphasis-shadow: #333;
-    --color-error: #CF6679;
-
-    /* User states */
-    --color-user-happy: #81C784;
-    --color-user-frustrated: #FFC107;
-    --color-user-disappointed: #CF6679;
-    --color-user-leaving: #A0A0A0;
-
-    /* Inactive UI elements */
-    --inactive-faint: rgba(224, 224, 224, 0.2);
-    --inactive-medium: rgba(224, 224, 224, 0.3);
-
-    /* Buttons (always dark green bg, so text stays light regardless of theme) */
     --button-text: #E0E0E0;
     --button-text-shadow: #121212;
-
-    /* Scrollbar */
     --scrollbar-thumb: #4CAF50;
-    --scrollbar-track: #1E1E1E;
 }
-
 
 /* Light theme */
 html[data-theme="light"] {
@@ -68,7 +23,6 @@ html[data-theme="light"] {
     );
     --text-primary: #212121;
     --text-shadow: #f5f5f5;
-    --text-doc: #333333;
     --border-color: #cccccc;
     --accent-light: #388E3C;
     --accent-hover: #1B5E20;
@@ -100,7 +54,6 @@ html[data-theme="dark"] {
     );
     --text-primary: #E0E0E0;
     --text-shadow: #121212;
-    --text-doc: #dfdfdf;
     --border-color: #333333;
     --accent-light: #81C784;
     --accent-hover: #388E3C;
@@ -127,9 +80,14 @@ html, body {
 body {
     font-family: monospace;
 }
+
 h1, h2, h3, h4, h5 {
     margin-top: 0.4em;
     margin-bottom: 0.3em;
+}
+
+h2, h3, h4, h5 {
+    font-weight: normal;
 }
 
 .emphasis-color {
@@ -145,17 +103,6 @@ a {
     color: var(--accent);
 }
 
-h2, h3, h4, h5 {
-    font-weight: normal;
-}
-
-dl dd {
-    font: 15px Arial, Helvetica, sans-serif;
-    margin-bottom: 1em;
-    margin-left: 1em;
-    width: 40%;
-}
-
 .container {
     width: 1220px;
     margin: 0 auto;
@@ -163,11 +110,6 @@ dl dd {
 }
 
 .unselectable {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
 }
 
@@ -203,12 +145,8 @@ button.right {
 
 .blink {
     animation: blink 0.5s steps(3, start) infinite;
-    -webkit-animation: blink 0.5s steps(3, start) infinite;
 }
 @keyframes blink {
-    to { visibility: hidden; }
-}
-@-webkit-keyframes blink {
     to { visibility: hidden; }
 }
 
@@ -224,7 +162,6 @@ button.right {
     font-size: 12px;
     line-height: 30px;
 }
-
 
 #recommended-model-options {
     text-align: left;
@@ -270,7 +207,6 @@ button.right {
     padding: 0 4px;
 }
 
-
 .timescale_decrease, .timescale_increase {
     padding: 4px;
     line-height: 20px;
@@ -280,7 +216,6 @@ button.right {
 .timescale_increase {
     margin-right: 10px;
 }
-
 
 .codestatus {
     padding-top: 10px;
@@ -297,6 +232,7 @@ button.right {
     height: 575px;
     margin: 10px auto;
 }
+
 .world {
     position: relative;
     width: 1220px;
@@ -319,7 +255,7 @@ button.right {
     line-height: 10px;
     position: absolute;
     top: 0;
-    right: 0px;
+    right: 0;
     width: 240px;
     height: 110px;
     padding: 20px;
@@ -340,7 +276,6 @@ button.right {
 .statscontainer .value {
     text-align: right;
 }
-
 
 .feedbackcontainer {
     position: absolute;
@@ -408,11 +343,11 @@ button.right {
     right: 2px;
 }
 
-.elevator .directionindicator .fa{
+.elevator .directionindicator .fa {
     color: var(--inactive-faint);
 }
 
-.elevator .directionindicator .fa.activated{
+.elevator .directionindicator .fa.activated {
     color: var(--accent-light);
 }
 
@@ -425,7 +360,6 @@ button.right {
     color: var(--inactive-medium);
 }
 
-
 .elevator .buttonindicator {
     display: inline-block;
     position: absolute;
@@ -436,11 +370,13 @@ button.right {
     line-height: 8px;
     color: var(--inactive-medium);
 }
+
 .elevator .buttonpress {
     cursor: pointer;
     margin: 0;
     display: inline-block;
 }
+
 .elevator .buttonpress.activated {
     color: var(--accent-light);
 }
@@ -459,6 +395,7 @@ button.right {
     padding-left: 50px;
     color: var(--inactive-faint);
 }
+
 .floor .buttonindicator .activated {
     color: var(--accent-light);
 }
@@ -471,46 +408,12 @@ button.right {
     padding-left: 10px;
 }
 
-
 .footer {
     margin-top: 20px;
 }
+
 .footer h4 {
     font-size: 13px;
-}
-
-.help {
-    font-family: Oswald, Arial, Helvetica, sans-serif;
-    margin-top: 20px;
-    margin-bottom: 30px;
-    padding: 16px;
-    background-color: var(--bg-help);
-}
-
-.help p {
-    max-width: 75%;
-    font-size: 15pt;
-}
-
-.doctable {
-    margin-top: 10px;
-    margin-bottom: 20px;
-    color: var(--text-doc);
-    border: none;
-}
-
-.doctable th, .doctable td  {
-    text-align: left;
-    border-bottom: 1px solid var(--accent-muted);
-}
-
-.doctable tr td:first-child {
-    padding-right: 5px;
-    color: var(--accent-light);
-}
-
-.doctable td {
-    font: 13px Consolas, Monaco, monospace;
 }
 
 #button_reset, #button_resetundo {
@@ -529,7 +432,7 @@ button.right {
 
 .bg-lighter {
     background-color: var(--bg-surface);
-    padding: 0px 8px;
+    padding: 0 8px;
 }
 
 .actions-container {
@@ -541,13 +444,13 @@ button.right {
 #terminal-output {
     font-family: monospace;
     padding: 4px;
-    min-height:38px;
-    max-height:38px;
+    min-height: 38px;
+    max-height: 38px;
     overflow-y: scroll;
     scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
-.fa-button:hover{
+.fa-button:hover {
     color: #cccccc;
     position: relative;
     top: 1px;
