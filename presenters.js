@@ -171,7 +171,6 @@ function makeDemoFullscreen() {
 export {
     clearAll,
     setTransformPos,
-    updateUserState,
     presentStats,
     presentChallenge,
     presentFeedback,

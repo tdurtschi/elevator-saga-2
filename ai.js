@@ -19,7 +19,7 @@ let client;
 export const defaultPrompt =
     "When the elevator is idle, it should go to floor 0, then floor 1, and repeat.\n";
 
-export const fetchNewSettingsFromUser = async () => {
+const fetchNewSettingsFromUser = async () => {
     let settings = getAiSettings();
     console.log("current", settings);
 

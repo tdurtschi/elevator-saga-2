@@ -12,7 +12,7 @@ export const getAiSettings = () => {
   return settings;
 }
 
-export const setAiSettings = (settings) => {
+const setAiSettings = (settings) => {
     localStorage.setItem(aiKey, JSON.stringify(settings));
 }
 
