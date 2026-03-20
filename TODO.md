@@ -1,3 +1,3 @@
 # TODO
 
-- [ ] Duplication in headless-runner.test.js (it doesn't import headless-runner.js)
+- [x] Duplication in headless-runner.test.js (it doesn't import headless-runner.js)

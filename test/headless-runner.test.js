@@ -1,7 +1,4 @@
-import { challenges } from "../challenges.js";
-import { createWorldCreator, createWorldController } from "../world.js";
-import { getCodeObjFromCode } from "../util.js";
-import { createSyncTicker } from "../ticker.js";
+import { runChallenge } from "../headless-runner.js";
 
 const SOLUTION = `({
     init: function(elevators, floors) {
@@ -14,32 +11,6 @@ const SOLUTION = `({
     },
     update: function(dt, elevators, floors) {}
 })`;
-
-function runChallenge(challengeIndex, solutionCode) {
-    const challenge = challenges[challengeIndex];
-    const codeObj = getCodeObjFromCode(solutionCode);
-    const world = createWorldCreator().createWorld(challenge.options);
-    const worldController = createWorldController(1 / 60);
-
-    world.on("stats_changed", function () {
-        if (challenge.condition.evaluate(world) !== null) {
-            world.challengeEnded = true;
-        }
-    });
-
-    const ticker = createSyncTicker();
-    worldController.start(world, codeObj, ticker, true);
-    ticker.run();
-
-    return {
-        passed: challenge.condition.evaluate(world) === true,
-        transported: world.transportedCounter,
-        elapsed: world.elapsedTime,
-        maxWaitTime: world.maxWaitTime,
-        moveCount: world.moveCount,
-        challengeEnded: world.challengeEnded,
-    };
-}
 
 describe("headless runner", function () {
     describe("challenge 1 (transport 15 people in 60s)", function () {
