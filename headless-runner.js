@@ -2,13 +2,14 @@
 /**
  * Headless challenge runner — no browser required.
  *
- * Usage:
- *   node headless-runner.js <challengeIndex> <solutionFile>
+ * Single challenge:
+ *   node headless-runner.js --challenge 1 solution.js
+ *   Output: one line of JSON with the result.
  *
- * Output: a single line of JSON with the result.
- *
- * Example:
- *   node headless-runner.js 1 solution.js
+ * Campaign mode (no --challenge):
+ *   node headless-runner.js solution.js
+ *   Runs challenges 1, 2, 3... stopping when one fails or all pass.
+ *   Output: one line of JSON per challenge.
  */
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -43,27 +44,52 @@ export function runChallenge(challengeIndex, solutionCode) {
     };
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-    const challengeIndex = parseInt(process.argv[2] || '1', 10) - 1;
-    const solutionPath = process.argv[3];
-
-    if (!solutionPath) {
-        console.error('Usage: node headless-runner.js <challengeNumber> <solutionFile>');
-        process.exit(1);
-    }
-
-    if (challengeIndex < 0 || challengeIndex >= challenges.length) {
-        console.error(`Challenge must be between 1 and ${challenges.length}`);
-        process.exit(1);
-    }
-
-    const result = runChallenge(challengeIndex, readFileSync(solutionPath, 'utf8'));
-    console.log(JSON.stringify({
+function formatResult(challengeIndex, result) {
+    return JSON.stringify({
         challenge: challengeIndex + 1,
         passed: result.passed,
         transported: result.transported,
         elapsed: Math.round(result.elapsed),
         maxWaitTime: parseFloat(result.maxWaitTime.toFixed(1)),
         moveCount: result.moveCount,
-    }));
+    });
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    const args = process.argv.slice(2);
+    const challengeFlagIndex = args.indexOf('--challenge');
+    const hasChallengeFlag = challengeFlagIndex !== -1;
+
+    let challengeIndex;
+    let solutionPath;
+
+    if (hasChallengeFlag) {
+        challengeIndex = parseInt(args[challengeFlagIndex + 1], 10) - 1;
+        solutionPath = args.find((a, i) => i !== challengeFlagIndex && i !== challengeFlagIndex + 1);
+    } else {
+        solutionPath = args[0];
+    }
+
+    if (!solutionPath) {
+        console.error('Usage: node headless-runner.js [--challenge N] <solutionFile>');
+        process.exit(1);
+    }
+
+    if (hasChallengeFlag && (isNaN(challengeIndex) || challengeIndex < 0 || challengeIndex >= challenges.length)) {
+        console.error(`Challenge must be between 1 and ${challenges.length}`);
+        process.exit(1);
+    }
+
+    const code = readFileSync(solutionPath, 'utf8');
+
+    if (hasChallengeFlag) {
+        const result = runChallenge(challengeIndex, code);
+        console.log(formatResult(challengeIndex, result));
+    } else {
+        for (let i = 0; i < challenges.length; i++) {
+            const result = runChallenge(i, code);
+            console.log(formatResult(i, result));
+            if (!result.passed) break;
+        }
+    }
 }
