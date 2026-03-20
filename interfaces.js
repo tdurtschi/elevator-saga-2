@@ -76,7 +76,6 @@ export function asElevatorInterface(obj, elevator, floorCount, errorHandler) {
     elevator.on("stopped", function(position) {
         if(elevatorInterface.destinationQueue.length && epsilonEquals(_.first(elevatorInterface.destinationQueue), position)) {
             // Reached the destination, so remove element at front of queue
-            console.log("elevatorInterface.destinationQueue", elevatorInterface.destinationQueue);
             elevatorInterface.destinationQueue = _.tail(elevatorInterface.destinationQueue);
             if(elevator.isOnAFloor()) {
                 elevator.wait(1, function() {
