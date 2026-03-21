@@ -1,4 +1,4 @@
-import {newGuard, linearInterpolate} from "../util.js";
+import {newGuard, linearInterpolate} from "../libs/util.js";
 import Movable from "./movable.js";
 
 class User extends Movable {
@@ -56,7 +56,8 @@ class User extends Movable {
         }
 
         if(!elevator.isSuitableForTravelBetween(this.currentFloor, this.destinationFloor)) {
-            // Not suitable for travel - don't use this elevator
+            // Not suitable for travel - re-press the floor button so we stay visible
+            this.pressFloorButton(floor);
             return;
         }
 
