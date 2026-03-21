@@ -1,4 +1,4 @@
-import {newGuard, linearInterpolate} from "./util.js";
+import {newGuard, linearInterpolate} from "../util.js";
 import Movable from "./movable.js";
 
 class User extends Movable {

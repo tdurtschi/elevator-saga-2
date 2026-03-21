@@ -1,15 +1,15 @@
 import { challenges } from "./challenges.js";
-import { rafTicker } from "./ticker.js";
+import { rafTicker } from "../ticker.js";
 import {
     clearAll,
     presentStats,
     presentChallenge,
     presentFeedback,
     presentWorld,
-} from "./presenters.js";
-import { setTimeScale } from "./persistence.js";
-import { log } from "./terminal-logger.js";
-import { createParamsUrl, parseParams } from "./router.js";
+} from "../ui/presenters.js";
+import { setTimeScale } from "../ui/persistence.js";
+import { log } from "../ui/terminal-logger.js";
+import { createParamsUrl, parseParams } from "../ui/router.js";
 
 export function createChallengeController({ editorService, worldController, worldCreator, $world, $stats, $feedback, $challenge }) {
     var controller = {};

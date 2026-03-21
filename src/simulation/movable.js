@@ -1,5 +1,5 @@
-import {newGuard, coolInterpolate} from "./util.js";
-import { Observable } from "./libs/unobservable.js";
+import {newGuard, coolInterpolate} from "../util.js";
+import { Observable } from "../../libs/unobservable.js";
 
 var _tmpPosStorage = [0,0];
 

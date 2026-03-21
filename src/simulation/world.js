@@ -1,10 +1,10 @@
 import Elevator from "./elevator.js";
-import { observable } from "./libs/unobservable.js";
+import { observable } from "../../libs/unobservable.js";
 import asFloor from "./floor.js";
-import { asElevatorInterface } from "./interfaces.js";
+import { asElevatorInterface } from "../interfaces.js";
 import User from "./user.js";
 import _ from "lodash-es";
-import {log} from "./terminal-logger.js";
+import {log} from "../ui/terminal-logger.js";
 
 export function createWorldCreator() {
     var creator = {};

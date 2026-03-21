@@ -3,11 +3,11 @@ import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
 import $ from "jquery";
 import _ from "lodash-es";
-import {getCodeObjFromCode} from "./util.js";
+import {getCodeObjFromCode} from "../util.js";
 import {typeDeclarations} from "./types.js";
-import {defaultPrompt, sendMessage, updateSettings, getInstructions, resetInstructions, setInstructions} from "./ai.js";
+import {defaultPrompt, sendMessage, updateSettings, getInstructions, resetInstructions, setInstructions} from "../ai/ai.js";
 import {getBackupCode, getPrompt, setBackupCode, getCode, setCode, setPrompt, getAiSettings, patchAiSettings} from "./persistence.js";
-import { observable } from "./libs/unobservable.js";
+import { observable } from "../../libs/unobservable.js";
 
 window.monaco = monaco;
 

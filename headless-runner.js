@@ -13,10 +13,10 @@
  */
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
-import { challenges } from './challenges.js';
-import { createWorldCreator, createWorldController } from './world.js';
-import { getCodeObjFromCode } from './util.js';
-import { createSyncTicker } from './ticker.js';
+import { challenges } from './src/challenges/challenges.js';
+import { createWorldCreator, createWorldController } from './src/simulation/world.js';
+import { getCodeObjFromCode } from './src/util.js';
+import { createSyncTicker } from './src/ticker.js';
 
 export function runChallenge(challengeIndex, solutionCode) {
     const challenge = challenges[challengeIndex];

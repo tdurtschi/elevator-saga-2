@@ -1,4 +1,4 @@
-import {limitNumber, epsilonEquals, newGuard} from "./util.js";
+import {limitNumber, epsilonEquals, newGuard} from "../util.js";
 import Movable from "./movable.js";
 import _ from "lodash-es";
 

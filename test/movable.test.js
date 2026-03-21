@@ -1,5 +1,5 @@
 
-import Movable from "../movable.js";
+import Movable from "../src/simulation/movable.js";
 
 describe("Movable", function() {
     var movable;

@@ -1,4 +1,4 @@
-import {requireUserCountWithinTime, requireUserCountWithMaxWaitTime, requireUserCountWithinMoves, requireUserCountWithinTimeWithMaxWaitTime, requireDemo} from "../challenges.js";
+import {requireUserCountWithinTime, requireUserCountWithMaxWaitTime, requireUserCountWithinMoves, requireUserCountWithinTimeWithMaxWaitTime, requireDemo} from "../src/challenges/challenges.js";
 
 describe("Challenge requirements", function() {
     var fakeWorld = null;

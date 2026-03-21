@@ -1,13 +1,13 @@
 import $ from "jquery";
-import { makeDemoFullscreen } from "./presenters.js";
-import { createWorldCreator, createWorldController } from "./world.js";
+import { makeDemoFullscreen } from "./src/ui/presenters.js";
+import { createWorldCreator, createWorldController } from "./src/simulation/world.js";
 import _ from "lodash-es";
-import { getTimeScale } from "./persistence.js";
-import { clearLog, log } from "./terminal-logger.js";
-import { createEditorAsync } from "./editor.js";
-import { startRouter } from "./router.js";
-import { createChallengeController } from "./challenge-controller.js";
-import { initThemeToggle } from "./theme.js";
+import { getTimeScale } from "./src/ui/persistence.js";
+import { clearLog, log } from "./src/ui/terminal-logger.js";
+import { createEditorAsync } from "./src/ui/editor.js";
+import { startRouter } from "./src/ui/router.js";
+import { createChallengeController } from "./src/challenges/challenge-controller.js";
+import { initThemeToggle } from "./src/ui/theme.js";
 
 window._ = _;
 

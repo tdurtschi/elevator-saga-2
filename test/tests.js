@@ -1,10 +1,10 @@
 import $ from "jquery";
 import { observable } from "../libs/unobservable.js";
-import {createFrameRequester, getCodeObjFromCode} from "../util.js";
-import Movable from "../movable.js";
-import Elevator from "../elevator.js";
-import User from "../user.js";
-import { createWorldController } from "../world.js";
+import {createFrameRequester, getCodeObjFromCode} from "../src/util.js";
+import Movable from "../src/simulation/movable.js";
+import Elevator from "../src/simulation/elevator.js";
+import User from "../src/simulation/user.js";
+import { createWorldController } from "../src/simulation/world.js";
 import _ from "lodash-es";
 import {timeForwarder} from "./helpers/timeForwarder.js";
 

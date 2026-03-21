@@ -1,6 +1,6 @@
 
 import {limitNumber, epsilonEquals} from "./util.js";
-import { observable } from "./libs/unobservable.js";
+import { observable } from "../libs/unobservable.js";
 import _ from "lodash-es";
 
 const createBoolPassthroughFunction = function(owner, obj, objPropertyName) {

@@ -1,8 +1,8 @@
 import Swal from "sweetalert2";
 import {CreateMLCEngine} from "@mlc-ai/web-llm";
 import {allModels} from "./models.js";
-import {getAiSettings, patchAiSettings} from "./persistence.js";
-import {log} from "./terminal-logger.js";
+import {getAiSettings, patchAiSettings} from "../ui/persistence.js";
+import {log} from "../ui/terminal-logger.js";
 
 // Alternate list of 'recommended' otherModels:
 var recommendedModels = [
