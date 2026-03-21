@@ -15,7 +15,7 @@ import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { challenges } from './src/challenges/challenges.js';
 import { createWorldCreator, createWorldController } from './src/simulation/world.js';
-import { getCodeObjFromCode } from './src/util.js';
+import { getCodeObjFromCode } from './src/libs/util.js';
 import { createSyncTicker } from './src/ticker.js';
 
 export function runChallenge(challengeIndex, solutionCode) {

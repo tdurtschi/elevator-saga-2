@@ -10,7 +10,7 @@
     "ci": "npm run lint && npm run test",
     "prebuild": "rm -rf dist",
     "build": "vite build",
-    "postbuild": "cp -r font-awesome-4.1-1.0/fonts dist/ && cp -r libs dist/ && cp *.css dist/ && cp *.md dist/",
+    "postbuild": "cp -r font-awesome-4.1-1.0/fonts dist/ && cp -r src/libs dist/ && cp *.css dist/ && cp *.md dist/",
     "serve": "vite preview --port 3000 --strictPort",
     "dev": "vite",
     "pretest": "npm run build",

@@ -1,5 +1,5 @@
 import Elevator from "./elevator.js";
-import { observable } from "../../libs/unobservable.js";
+import { observable } from "../libs/unobservable.js";
 import asFloor from "./floor.js";
 import { asElevatorInterface } from "../interfaces.js";
 import User from "./user.js";

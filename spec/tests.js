@@ -1,6 +1,6 @@
 import $ from "jquery";
-import { observable } from "../libs/unobservable.js";
-import {createFrameRequester, getCodeObjFromCode} from "../src/util.js";
+import { observable } from "../src/libs/unobservable.js";
+import {createFrameRequester, getCodeObjFromCode} from "../src/libs/util.js";
 import Movable from "../src/simulation/movable.js";
 import Elevator from "../src/simulation/elevator.js";
 import User from "../src/simulation/user.js";
@@ -32,6 +32,18 @@ describe("Elevator Saga", function() {
 			u.updateDisplayPosition();
 			expect(u.worldX).toBe(1.0);
 			expect(u.worldY).toBe(1.0);
+		});
+
+		it("re-presses floor button when elevator is going the wrong direction", function() {
+			u.currentFloor = 0;
+			u.destinationFloor = 3;
+
+			var floor = { pressUpButton: jasmine.createSpy("pressUpButton"), pressDownButton: jasmine.createSpy("pressDownButton") };
+			var elevator = { isSuitableForTravelBetween: function() { return false; } };
+
+			u.elevatorAvailable(elevator, floor);
+
+			expect(floor.pressUpButton).toHaveBeenCalled();
 		});
 	});
 

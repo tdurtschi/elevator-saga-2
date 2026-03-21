@@ -33,4 +33,4 @@ Useful for quickly validating elevator solutions or testing simulation changes.
 
 ## Game mechanics reference
 
-See `PLAYER_API.md` for a full description of the elevator/floor API and how the simulation works (boarding logic, direction indicators, floor button firing behaviour). Useful context when working on anything that touches the game's user-facing behaviour.
+See `docs/PLAYER_API.md` for a full description of the elevator/floor API and how the simulation works (boarding logic, direction indicators, floor button firing behaviour). Useful context when working on anything that touches the game's user-facing behaviour.

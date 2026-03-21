@@ -1,4 +1,4 @@
-import { observable } from "../../libs/unobservable.js";
+import { observable } from "../libs/unobservable.js";
 
 class Floor {
     constructor(floorLevel, yPosition, errorHandler) {
