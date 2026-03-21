@@ -40,7 +40,7 @@ interface Elevator {
      */
     loadFactor(): number;
     /**
-     * Gets the direction the elevator is currently going to move toward. Can be \"up\", \"down\" or \"stopped\".
+     * Gets the direction the elevator is currently going to move toward. Can be "up", "down" or "stopped".
      */
     destinationDirection(): "up" | "down" | "stopped";
     /**

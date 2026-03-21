@@ -4,7 +4,11 @@
       "Bash(ls /Users/teagan/workspace/elevator-saga-2/*.md 2>/dev/null; ls /Users/teagan/workspace/elevator-saga-2/README* 2>/dev/null)",
       "Bash(npx playwright:*)",
       "Bash(npm run:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(gh issue:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh api:*)",
+      "Bash(npx jasmine:*)"
     ]
   }
 }

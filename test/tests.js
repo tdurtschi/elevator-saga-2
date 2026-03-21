@@ -16,7 +16,7 @@ describe("Elevator Saga", function() {
 			someHandler: function() { },
 			someOtherHandler: function() { }
 		};
-		$.each(handlers, function(key, value) {
+		$.each(handlers, function(key, _value) {
 			spyOn(handlers, key).and.callThrough();
 		});
 	});
@@ -96,7 +96,7 @@ describe("Elevator Saga", function() {
 		var DT_MAX = 1000.0 / 59;
 		beforeEach(function() {
 			controller = createWorldController(DT_MAX);
-			fakeWorld = { update: function(dt) {}, init: function() {}, updateDisplayPositions: function() {}, trigger: function() {} };
+			fakeWorld = { update: function(_dt) {}, init: function() {}, updateDisplayPositions: function() {}, trigger: function() {} };
 			fakeWorld = observable(fakeWorld);
 			fakeCodeObj = { init: function() {}, update: function() {} };
 			frameRequester = createFrameRequester(10.0);
@@ -258,7 +258,7 @@ describe("Elevator Saga", function() {
 			expect(e.getExactCurrentFloor()).toBeLessThan(1.15, "current floor");
 		});
 
-		it("doesnt seem to overshoot when stopping at floors", function() {
+		it("doesnt seem to overshoot when stopping at floors", function() {
 			_.each(_.range(60, 120, 2.32133), function(updatesPerSecond) {
 				var STEPSIZE = 1.0 / updatesPerSecond;
 				e.setFloorPosition(1);

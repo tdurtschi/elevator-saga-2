@@ -23,7 +23,7 @@ class Elevator extends Movable {
 
         this.currentFloor = 0;
         this.previousTruncFutureFloorIfStopped = 0;
-        this.buttonStates = _.map(_.range(floorCount), function(e, i){ return false; });
+        this.buttonStates = _.map(_.range(floorCount), function(_e, _i){ return false; });
         this.moveCount = 0;
         this.removed = false;
         this.userSlots = _.map(_.range(this.maxUsers), function(user, i) {
@@ -34,11 +34,11 @@ class Elevator extends Movable {
 
         this.on("new_state", this.handleNewState.bind(this));
 
-        this.on("change:goingUpIndicator", (value) => {
+        this.on("change:goingUpIndicator", (_value) => {
             this.trigger("indicatorstate_change", {up: this.goingUpIndicator, down: this.goingDownIndicator});
         });
 
-        this.on("change:goingDownIndicator", (value) => {
+        this.on("change:goingDownIndicator", (_value) => {
             this.trigger("indicatorstate_change", {up: this.goingUpIndicator, down: this.goingDownIndicator});
         });
     }

@@ -113,13 +113,13 @@ var defaultOptions = { floorHeight: 50, floorCount: 4, elevatorCount: 2, spawnRa
             // Use regular loops for memory/performance reasons
             // Notify floors first because overflowing users
             // will press buttons again.
-            for(var i=0, len=world.floors.length; i<len; ++i) {
+            for(let i=0, len=world.floors.length; i<len; ++i) {
                 var floor = world.floors[i];
                 if(elevator.currentFloor === i) {
                     floor.elevatorAvailable(elevator);
                 }
             }
-            for(var users=world.users, i=0, len=users.length; i < len; ++i) {
+            for(let users=world.users, i=0, len=users.length; i < len; ++i) {
                 var user = users[i];
                 if(user.currentFloor === elevator.currentFloor) {
                     user.elevatorAvailable(elevator, world.floors[elevator.currentFloor]);
@@ -153,37 +153,37 @@ var defaultOptions = { floorHeight: 50, floorCount: 4, elevatorCount: 2, spawnRa
 
         // This will cause elevators to "re-arrive" at floors if someone presses an
         // appropriate button on the floor before the elevator has left.
-        for(var i=0; i<world.floors.length; ++i) {
+        for(let i=0; i<world.floors.length; ++i) {
             world.floors[i].on("up_button_pressed down_button_pressed", handleButtonRepressing);
         };
 
         var elapsedSinceSpawn = 1.001/options.spawnRate;
-        var elapsedSinceStatsUpdate = 0.0;
+        var _elapsedSinceStatsUpdate = 0.0;
 
         // Main update function
         world.update = function(dt) {
             world.elapsedTime += dt;
             elapsedSinceSpawn += dt;
-            elapsedSinceStatsUpdate += dt;
+            _elapsedSinceStatsUpdate += dt;
             while(elapsedSinceSpawn > 1.0/options.spawnRate) {
                 elapsedSinceSpawn -= 1.0/options.spawnRate;
                 registerUser(creator.spawnUserRandomly(options.floorCount, world.floorHeight, world.floors));
             }
 
             // Use regular for loops for performance and memory friendlyness
-            for(var i=0, len=world.elevators.length; i < len; ++i) {
+            for(let i=0, len=world.elevators.length; i < len; ++i) {
                 var e = world.elevators[i];
                 e.update(dt);
                 e.updateElevatorMovement(dt);
             }
-            for(var users=world.users, i=0, len=users.length; i < len; ++i) {
-                var u = users[i];
+            for(let users=world.users, i=0, len=users.length; i < len; ++i) {
+                let u = users[i];
                 u.update(dt);
                 world.maxWaitTime = Math.max(world.maxWaitTime, world.elapsedTime - u.spawnTimestamp);
             };
 
-            for(var users=world.users, i=world.users.length-1; i>=0; i--) {
-                var u = users[i];
+            for(let users=world.users, i=world.users.length-1; i>=0; i--) {
+                let u = users[i];
                 if(u.removeMe) {
                     users.splice(i, 1);
                 }
@@ -193,10 +193,10 @@ var defaultOptions = { floorHeight: 50, floorCount: 4, elevatorCount: 2, spawnRa
         };
 
         world.updateDisplayPositions = function() {
-            for(var i=0, len=world.elevators.length; i < len; ++i) {
+            for(let i=0, len=world.elevators.length; i < len; ++i) {
                 world.elevators[i].updateDisplayPosition();
             }
-            for(var users=world.users, i=0, len=users.length; i < len; ++i) {
+            for(let users=world.users, i=0, len=users.length; i < len; ++i) {
                 users[i].updateDisplayPosition();
             }
         };

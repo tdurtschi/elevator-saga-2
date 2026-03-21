@@ -266,7 +266,7 @@ describe("Elevator interface", function() {
             someHandler: function() { },
             someOtherHandler: function() { }
         };
-        $.each(handlers, function(key, value) {
+        $.each(handlers, function(key, _value) {
             spyOn(handlers, key).and.callThrough();
         });
     });
@@ -369,7 +369,7 @@ describe("Elevator interface", function() {
         e.setFloorPosition(2);
         elevInterface.goToFloor(0);
         var passingFloorEventCount = 0;
-        elevInterface.on("passing_floor", function(floorNum, direction) {
+        elevInterface.on("passing_floor", function(floorNum, _direction) {
             passingFloorEventCount++;
             // We only expect to be passing floor 1, but it is possible and ok that several
             // such events are raised, due to possible overshoot.

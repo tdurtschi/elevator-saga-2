@@ -234,7 +234,7 @@ describe("Movable", function() {
 
         it("should use provided interpolator function", function() {
             // Custom interpolator that always returns halfway value
-            var customInterpolator = function(a, b, f) {
+            var customInterpolator = function(a, b, _f) {
                 return a + ((b - a) / 2);
             };
 

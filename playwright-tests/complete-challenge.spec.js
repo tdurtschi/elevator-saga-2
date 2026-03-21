@@ -136,8 +136,8 @@ test.describe('in-page challenge switching (hash change, no reload)', () => {
         // but the last write wins, so the number will still be correct — we detect
         // accumulation by counting how many timescale_changed callbacks fire)
         const callCount = await page.evaluate(() => {
-            let count = 0;
-            const orig = window.__timescaleCallCount = 0;
+            let _count = 0;
+            const _orig = window.__timescaleCallCount = 0;
             // Patch: count renders by observing challenge bar replacements
             const bar = document.querySelector('.challenge');
             const observer = new MutationObserver(() => { window.__timescaleCallCount++; });

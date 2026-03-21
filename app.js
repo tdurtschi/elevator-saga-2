@@ -5,7 +5,7 @@ import _ from "lodash-es";
 import { getTimeScale } from "./persistence.js";
 import { clearLog, log } from "./terminal-logger.js";
 import { createEditorAsync } from "./editor.js";
-import { parseParams, startRouter } from "./router.js";
+import { startRouter } from "./router.js";
 import { createChallengeController } from "./challenge-controller.js";
 import { initThemeToggle } from "./theme.js";
 

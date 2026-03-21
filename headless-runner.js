@@ -34,7 +34,7 @@ export function runChallenge(challengeIndex, solutionCode) {
     worldController.start(world, codeObj, ticker, true);
     ticker.run();
 
-    const { evaluate, description, ...conditionData } = challenge.condition;
+    const { evaluate: _evaluate, description: _description, ...conditionData } = challenge.condition;
     return {
         passed: challenge.condition.evaluate(world) === true,
         condition: conditionData,
