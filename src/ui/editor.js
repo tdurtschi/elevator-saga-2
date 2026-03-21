@@ -91,6 +91,8 @@ export const createEditorAsync = () => new Promise((resolve) => {
         editor.focus();
     });
 
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, saveCode);
+
     var editorService = observable({});
     var autoSaver = _.debounce(saveCode, 1000);
     editor.onDidChangeModelContent = autoSaver;
