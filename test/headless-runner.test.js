@@ -43,5 +43,9 @@ describe("headless runner", function () {
         it("records a non-zero max wait time", function () {
             expect(result.maxWaitTime).toBeGreaterThan(0);
         });
+
+        it("includes structured condition info", function () {
+            expect(result.condition).toEqual({ type: "withinTime", userCount: 15, timeLimit: 60 });
+        });
     });
 });

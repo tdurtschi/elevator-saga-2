@@ -1,6 +1,9 @@
 
 export var requireUserCountWithinTime = function(userCount, timeLimit) {
     return {
+        type: "withinTime",
+        userCount: userCount,
+        timeLimit: timeLimit,
         description: "Transport <span class='emphasis-color'>" + userCount + "</span> people in <span class='emphasis-color'>" + timeLimit.toFixed(0) + "</span> seconds or less",
         evaluate: function(world) {
             if(world.elapsedTime >= timeLimit || world.transportedCounter >= userCount) {
@@ -14,6 +17,9 @@ export var requireUserCountWithinTime = function(userCount, timeLimit) {
 
 export var requireUserCountWithMaxWaitTime = function(userCount, maxWaitTime) {
     return {
+        type: "maxWaitTime",
+        userCount: userCount,
+        maxWaitTime: maxWaitTime,
         description: "Transport <span class='emphasis-color'>" + userCount + "</span> people and let no one wait more than <span class='emphasis-color'>" + maxWaitTime.toFixed(1) + "</span> seconds",
         evaluate: function(world) {
             if(world.maxWaitTime >= maxWaitTime || world.transportedCounter >= userCount) {
@@ -27,6 +33,10 @@ export var requireUserCountWithMaxWaitTime = function(userCount, maxWaitTime) {
 
 export var requireUserCountWithinTimeWithMaxWaitTime = function(userCount, timeLimit, maxWaitTime) {
     return {
+       type: "withinTimeAndMaxWaitTime",
+       userCount: userCount,
+       timeLimit: timeLimit,
+       maxWaitTime: maxWaitTime,
        description: "Transport <span class='emphasis-color'>" + userCount + "</span> people in <span class='emphasis-color'>" + timeLimit.toFixed(0) + "</span> seconds or less and let no one wait more than <span class='emphasis-color'>" + maxWaitTime.toFixed(1) + "</span> seconds",
        evaluate: function(world) {
             if(world.elapsedTime >= timeLimit || world.maxWaitTime >= maxWaitTime || world.transportedCounter >= userCount) {
@@ -40,6 +50,9 @@ export var requireUserCountWithinTimeWithMaxWaitTime = function(userCount, timeL
 
 export var requireUserCountWithinMoves = function(userCount, moveLimit) {
     return {
+        type: "withinMoves",
+        userCount: userCount,
+        moveLimit: moveLimit,
         description: "Transport <span class='emphasis-color'>" + userCount + "</span> people using <span class='emphasis-color'>" + moveLimit + "</span> elevator moves or less",
         evaluate: function(world) {
             if(world.moveCount >= moveLimit || world.transportedCounter >= userCount) {
@@ -53,6 +66,7 @@ export var requireUserCountWithinMoves = function(userCount, moveLimit) {
 
 export var requireDemo = function() {
     return {
+        type: "demo",
         description: "Perpetual demo",
         evaluate: function() { return null; }
     };

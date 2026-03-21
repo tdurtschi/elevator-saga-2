@@ -34,8 +34,10 @@ export function runChallenge(challengeIndex, solutionCode) {
     worldController.start(world, codeObj, ticker, true);
     ticker.run();
 
+    const { evaluate, description, ...conditionData } = challenge.condition;
     return {
         passed: challenge.condition.evaluate(world) === true,
+        condition: conditionData,
         transported: world.transportedCounter,
         elapsed: world.elapsedTime,
         maxWaitTime: world.maxWaitTime,
@@ -48,6 +50,7 @@ function formatResult(challengeIndex, result) {
     return JSON.stringify({
         challenge: challengeIndex + 1,
         passed: result.passed,
+        condition: result.condition,
         transported: result.transported,
         elapsed: Math.round(result.elapsed),
         maxWaitTime: parseFloat(result.maxWaitTime.toFixed(1)),
