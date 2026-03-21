@@ -7,6 +7,7 @@
     "test": "test"
   },
   "scripts": {
+    "ci": "npm run lint && npm run test",
     "prebuild": "rm -rf dist",
     "build": "vite build",
     "postbuild": "cp -r font-awesome-4.1-1.0/fonts dist/ && cp -r libs dist/ && cp *.css dist/ && cp *.md dist/",
