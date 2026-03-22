@@ -57,7 +57,7 @@ export function asElevatorInterface(obj, elevator, floorCount, errorHandler) {
     elevatorInterface.stop = function() {
         elevatorInterface.destinationQueue = [];
         if(!elevator.isBusy()) {
-            elevator.goToFloor(elevator.getExactFutureFloorIfStopped());
+            elevator.goToFloor(Math.round(elevator.getExactFutureFloorIfStopped()));
         }
     };
 

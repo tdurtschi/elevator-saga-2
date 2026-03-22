@@ -379,4 +379,28 @@ describe("Elevator interface", function() {
         timeForwarder(3.0, 0.01401, function(dt) {e.update(dt); e.updateElevatorMovement(dt);});
         expect(passingFloorEventCount).toBeGreaterThan(0);
     });
+
+    it("stops on a floor when stop() is called from passing_floor handler", function() {
+        e.setFloorPosition(2);
+        elevInterface.goToFloor(0);
+        elevInterface.on("passing_floor", function(_floorNum, _direction) {
+            elevInterface.stop();
+        });
+        timeForwarder(3.0, 0.01401, function(dt) {e.update(dt); e.updateElevatorMovement(dt);});
+        expect(e.isOnAFloor()).toBe(true);
+    });
+
+    it("triggers entrance_available when stop() is called from passing_floor handler", function() {
+        e.setFloorPosition(2);
+        elevInterface.goToFloor(0);
+        var entranceAvailableCount = 0;
+        e.on("entrance_available", function() {
+            entranceAvailableCount++;
+        });
+        elevInterface.on("passing_floor", function(_floorNum, _direction) {
+            elevInterface.stop();
+        });
+        timeForwarder(3.0, 0.01401, function(dt) {e.update(dt); e.updateElevatorMovement(dt);});
+        expect(entranceAvailableCount).toBeGreaterThan(0);
+    });
 });
