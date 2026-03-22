@@ -52,6 +52,10 @@ class Floor {
         return this.yPosition + 30;
     }
 
+    isButtonActivated(direction) {
+        return this.buttonStates[direction] === "activated";
+    }
+
     floorNum() {
         return this.level;
     }
