@@ -1,0 +1,70 @@
+FROM node:22
+
+ARG TZ
+ENV TZ="$TZ"
+
+ARG CLAUDE_CODE_VERSION=latest
+
+# Install basic development tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  less \
+  git \
+  procps \
+  sudo \
+  fzf \
+  zsh \
+  man-db \
+  unzip \
+  gnupg2 \
+  gh \
+  jq \
+  nano \
+  vim \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Playwright system dependencies for Chromium (must run as root)
+RUN npx -y playwright install-deps chromium \
+  && rm -rf /root/.cache/ms-playwright
+
+# Ensure default node user has access to /usr/local/share
+RUN mkdir -p /usr/local/share/npm-global && \
+  chown -R node:node /usr/local/share
+
+ARG USERNAME=node
+
+# Persist bash history
+RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
+  && mkdir /commandhistory \
+  && touch /commandhistory/.bash_history \
+  && chown -R $USERNAME /commandhistory
+
+ENV DEVCONTAINER=true
+
+# Create workspace directory
+RUN mkdir -p /workspace && chown -R node:node /workspace
+
+WORKDIR /workspace
+
+# Set up non-root user
+USER node
+
+# Install global packages
+ENV NPM_CONFIG_PREFIX=/usr/local/share/npm-global
+ENV PATH=$PATH:/usr/local/share/npm-global/bin
+
+ENV SHELL=/bin/zsh
+ENV EDITOR=nano
+ENV VISUAL=nano
+
+# Install zsh with a nice theme
+ARG ZSH_IN_DOCKER_VERSION=1.2.0
+RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v${ZSH_IN_DOCKER_VERSION}/zsh-in-docker.sh)" -- \
+  -p git \
+  -p fzf \
+  -a "source /usr/share/doc/fzf/examples/key-bindings.zsh" \
+  -a "source /usr/share/doc/fzf/examples/completion.zsh" \
+  -a "export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
+  -x
+
+# Install Claude Code
+RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
