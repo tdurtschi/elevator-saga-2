@@ -145,7 +145,6 @@ var defaultOptions = { floorHeight: 50, floorCount: 4, elevatorCount: 2, spawnRa
                         // Potentially suitable to get into
                         // Use the interface queue functionality to queue up this action
                         world.elevatorInterfaces[elevIndex].goToFloor(floor.level, true);
-                        return;
                     }
                 }
             }
