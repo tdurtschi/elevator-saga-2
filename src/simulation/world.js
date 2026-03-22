@@ -128,8 +128,14 @@ var defaultOptions = { floorHeight: 50, floorCount: 4, elevatorCount: 2, spawnRa
         };
 
         // Bind them all together
-        for(var i=0; i < world.elevators.length; ++i) {
-            world.elevators[i].on("entrance_available", handleElevAvailability);
+        for(let i=0; i < world.elevators.length; ++i) {
+            const elevator = world.elevators[i];
+            elevator.on("entrance_available", handleElevAvailability);
+            elevator.on("indicatorstate_change", function() {
+                if(elevator.isOnAFloor() && !elevator.isMoving) {
+                    handleElevAvailability(elevator);
+                }
+            });
         }
 
         var handleButtonRepressing = function(eventName, floor) {
