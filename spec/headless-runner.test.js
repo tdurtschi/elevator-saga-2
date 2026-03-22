@@ -48,4 +48,25 @@ describe("headless runner", function () {
             expect(result.condition).toEqual({ type: "withinTime", userCount: 15, timeLimit: 60 });
         });
     });
+
+    describe("seeded (frozen) mode", function () {
+        it("produces identical results for the same seed", function () {
+            const result1 = runChallenge(0, SOLUTION, { seed: 42 });
+            const result2 = runChallenge(0, SOLUTION, { seed: 42 });
+            expect(result1.transported).toEqual(result2.transported);
+            expect(result1.elapsed).toEqual(result2.elapsed);
+            expect(result1.maxWaitTime).toEqual(result2.maxWaitTime);
+            expect(result1.moveCount).toEqual(result2.moveCount);
+        });
+
+        it("marks the result as frozen", function () {
+            const result = runChallenge(0, SOLUTION, { seed: 42 });
+            expect(result.frozen).toBe(true);
+        });
+
+        it("does not mark unseeded results as frozen", function () {
+            const result = runChallenge(0, SOLUTION);
+            expect(result.frozen).toBeUndefined();
+        });
+    });
 });
