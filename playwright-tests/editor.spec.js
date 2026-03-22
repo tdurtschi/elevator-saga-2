@@ -39,6 +39,19 @@ test.describe('editor behavior', () => {
         expect(savedCode).toBe(customCode);
     });
 
+    test('Ctrl+S saves code without opening browser dialog', async ({ page }) => {
+        await waitForApp(page);
+
+        // Clear the save message so we can detect a fresh save
+        await page.evaluate(() => document.getElementById('save_message').textContent = '');
+
+        await page.locator('#editor .monaco-editor').click();
+        await page.keyboard.press('Control+s');
+
+        // Should save immediately (not via the 1s autosave debounce)
+        await expect(page.locator('#save_message')).toContainText('Code saved', { timeout: 300 });
+    });
+
     test('reset button restores the default implementation', async ({ page }) => {
         await waitForApp(page);
 
