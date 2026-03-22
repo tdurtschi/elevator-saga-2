@@ -365,6 +365,27 @@ describe("Elevator interface", function() {
         expect(load >= 0 && load <= 1).toBeTruthy();
     });
 
+    it("fires idle event after stop() is called while moving", function() {
+        e.setFloorPosition(2);
+        elevInterface.goToFloor(0);
+
+        var idleFired = false;
+        elevInterface.on("idle", function() {
+            idleFired = true;
+        });
+
+        // Let the elevator start moving
+        timeForwarder(0.2, 0.015, function(dt) { e.update(dt); e.updateElevatorMovement(dt); });
+
+        // Stop while moving
+        elevInterface.stop();
+
+        // Let the elevator come to rest
+        timeForwarder(10, 0.015, function(dt) { e.update(dt); e.updateElevatorMovement(dt); });
+
+        expect(idleFired).toBe(true);
+    });
+
     it("doesnt raise unexpected events when told to stop when passing floor", function() {
         e.setFloorPosition(2);
         elevInterface.goToFloor(0);

@@ -84,6 +84,9 @@ export function asElevatorInterface(obj, elevator, floorCount, errorHandler) {
             } else {
                 elevatorInterface.checkDestinationQueue();
             }
+        } else if(!elevatorInterface.destinationQueue.length) {
+            // Queue is empty (e.g. after stop() was called) - trigger idle
+            elevatorInterface.checkDestinationQueue();
         }
     });
 
