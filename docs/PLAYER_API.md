@@ -54,6 +54,9 @@ elevator.on('stopped_at_floor', function(floorNum) { ... })
 ```js
 floor.floorNum()  // returns the floor's index (0 = ground floor)
 
+floor.isButtonActivated('up')    // true if the up call button is currently lit
+floor.isButtonActivated('down')  // true if the down call button is currently lit
+
 floor.on('up_button_pressed', function() { ... })
 floor.on('down_button_pressed', function() { ... })
 ```
