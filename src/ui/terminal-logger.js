@@ -1,10 +1,6 @@
 const hasDom = typeof document !== 'undefined';
 
-export const log = (message, level) => {
-    if (!hasDom) {
-        console.log(message);
-        return;
-    }
+function domSink(level, message) {
     const date = new Date();
     const timestamp = `[${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}] `;
 
@@ -15,6 +11,29 @@ export const log = (message, level) => {
     const container = document.getElementById('terminal-output');
     container.appendChild(div);
     div.scrollIntoView({ block: 'nearest' });
+}
+
+function stdoutSink(level, message) {
+    process.stdout.write(`[${level}] ${message}\n`);
+}
+
+export function createLogger(sink) {
+    return {
+        debug:   (msg) => sink('debug', msg),
+        info:    (msg) => sink('info', msg),
+        warning: (msg) => sink('warning', msg),
+        error:   (msg) => sink('error', msg),
+    };
+}
+
+const defaultLogger = createLogger(hasDom ? domSink : stdoutSink);
+
+export const log = (message, level) => {
+    if (level === 'error') {
+        defaultLogger.error(message);
+    } else {
+        defaultLogger.info(message);
+    }
 };
 
 export const clearLog = () => {
@@ -30,7 +49,7 @@ function copyToClipboard() {
     const text = Array.from(document.querySelectorAll('#terminal-output > div'))
         .map(el => el.textContent)
         .join('\n');
-    navigator.clipboard.writeText(text).catch(e => log(e));
+    navigator.clipboard.writeText(text).catch(e => defaultLogger.error(e));
 }
 
 if (hasDom) {
