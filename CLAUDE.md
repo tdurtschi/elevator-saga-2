@@ -18,6 +18,14 @@ Tests also serve as regression guards during refactors — write characterizatio
 ### Committing
 Commit after each logical unit of work (e.g. one template refactored + its test). Keep commits small and focused.
 
+### GitHub PR workflow
+Always work on a feature branch — never commit directly to `master`. Before starting any work:
+1. Create a branch: `git checkout -b fix/<issue-number>-short-description` or `feat/<issue-number>-short-description`
+2. Do the work and commit on that branch
+3. Push the branch and open a PR targeting `master`, linking the relevant issue
+
+When creating a PR, confirm with the user before pushing if working interactively — only push and open the PR autonomously when the user has explicitly asked for end-to-end delivery (e.g. "ship it", "submit a PR").
+
 ### Headless runner
 `headless-runner.js` runs challenges without a browser. Two modes:
 - `node headless-runner.js --challenge 1 example-solution.js` — run a single challenge, outputs one line of JSON
