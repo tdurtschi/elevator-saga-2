@@ -8,7 +8,8 @@ Write tests before writing code. The pattern:
 2. Run it to confirm it fails (red)
 3. Write the minimum code to make it pass (green)
 4. Consider and apply refactors while the suite stays green
-5. Commit
+5. Run `npm run ci` — lint and full test suite must pass before committing
+6. Commit
 
 **For UI/rendering changes:** use Playwright specs asserting on DOM structure/behavior.
 **For logic/pure function changes:** use Jasmine unit tests.
@@ -18,13 +19,35 @@ Tests also serve as regression guards during refactors — write characterizatio
 ### Committing
 Commit after each logical unit of work (e.g. one template refactored + its test). Keep commits small and focused.
 
+### Interactive workflow
+Use this workflow by default, or whenever the user asks to pair or code together.
+**Exploration phase** (Navigator/Driver):
+- Claude navigates — pointing to files, explaining what it sees, suggesting where to look next.
+- The human drives — running commands, reading code, asking questions.                                                                                                                                                                
+- Exit when you've agreed on the next behavior to build.
+                                                                                                                                                                                                                                    
+**TDD phase** (follow the TDD pattern above, with human sign-off at each step):
+- Agree on the test before Claude writes it.
+- Agree on the implementation approach before Claude writes it.
+- Nothing moves forward without the human's sign-off.
+                                                
+**Refactor phase**:
+- Either party can propose refactors.
+- Claude writes the changes.
+- The human approves before committing.
+
+**Why:** Core principle is "Claude writes everything, the human owns every decision."
+**How to apply:** Use this style whenever pairing on implementation work, unless the human says otherwise.
+
 ### GitHub PR workflow
+Use this workflow whenever the user asks you to use PRs or work unsupervised.
 Always work on a feature branch — never commit directly to `master`. Before starting any work:
 1. Create a branch: `git checkout -b fix/<issue-number>-short-description` or `feat/<issue-number>-short-description`
 2. Do the work and commit on that branch
-3. Push the branch and open a PR targeting `master`, linking the relevant issue
+3. Run `npm run ci` — lint and full test suite must pass before opening a PR
+4. Push the branch and open a PR targeting `master`, linking the relevant issue
 
-When creating a PR, confirm with the user before pushing if working interactively — only push and open the PR autonomously when the user has explicitly asked for end-to-end delivery (e.g. "ship it", "submit a PR").
+Note: When running this workflow, take care to avoid getting stuck. It is preferable to provide an update or ask a quesion directly in the github issue and exit.
 
 ### Headless runner
 `headless-runner.js` runs challenges without a browser. Two modes:
