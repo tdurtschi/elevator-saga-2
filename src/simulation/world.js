@@ -23,9 +23,9 @@ export function createWorldCreator() {
         var elevators = _.map(_.range(elevatorCount), function(e, i) {
             var elevator = new Elevator(2.6, floorCount, floorHeight, elevatorCapacities[i%elevatorCapacities.length]);
 
-            // Move to right x position
-            elevator.moveTo(currentX, null);
+            // Set floor position before x so handleNewState sees correct y when new_state fires
             elevator.setFloorPosition(0);
+            elevator.moveTo(currentX, null);
             elevator.updateDisplayPosition();
             currentX += (20 + elevator.width);
             return elevator;

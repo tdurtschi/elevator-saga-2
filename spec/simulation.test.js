@@ -1,4 +1,5 @@
 import Simulation from "../src/simulation/Simulation.js";
+import { requireUserCountWithinTime } from "../src/challenges/challenges.js";
 
 describe("Simulation", () => {
   it("counts a user as transported when they reach their destination floor", () => {
@@ -36,5 +37,59 @@ describe("Simulation", () => {
     sim.runFor(60);
 
     expect(sim.transportedCount()).toBe(0);
+  });
+
+  it("passes the within-time condition when enough users are transported before the limit", () => {
+    const sim = new Simulation({
+      floors: 3, elevators: 1, spawnRate: 0,
+      condition: requireUserCountWithinTime(1, 60)
+    });
+
+    sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+
+    sim.applyCode({
+      init(elevators) {
+        elevators[0].goToFloor(0);
+        elevators[0].goToFloor(2);
+      },
+      update() {}
+    });
+
+    sim.runUntilComplete();
+
+    expect(sim.passed()).toBe(true);
+  });
+
+  it("fails the within-time condition when not enough users are transported before the limit", () => {
+    const sim = new Simulation({
+      floors: 3, elevators: 1, spawnRate: 0,
+      condition: requireUserCountWithinTime(1, 60)
+    });
+
+    sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+
+    sim.applyCode({
+      init() {}, // elevator does nothing
+      update() {}
+    });
+
+    sim.runUntilComplete();
+
+    expect(sim.passed()).toBe(false);
+  });
+
+  it("costs 0 moves when goToFloor is called on the current floor", () => {
+    const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+
+    sim.applyCode({
+      init(elevators) {
+        elevators[0].goToFloor(0); // already here
+      },
+      update() {}
+    });
+
+    sim.runFor(10);
+
+    expect(sim.moveCount()).toBe(0);
   });
 });
