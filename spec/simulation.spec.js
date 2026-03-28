@@ -1,5 +1,5 @@
 import Simulation from "../src/simulation/Simulation.js";
-import { requireUserCountWithinTime } from "../src/challenges/challenges.js";
+import { requireUserCountWithinTime, requireUserCountWithinMoves, requireUserCountWithMaxWaitTime, requireUserCountWithinTimeWithMaxWaitTime } from "../src/challenges/challenges.js";
 
 describe("Simulation", () => {
   it("counts a user as transported when they reach their destination floor", () => {
@@ -112,5 +112,154 @@ describe("Simulation", () => {
         expect(sim.passed()).toBe(false);
       });
     });
+
+    describe("requireUserCountWithinMoves", () => {
+      it("passes when enough users are transported within the move limit", () => {
+        const sim = new Simulation({
+          floors: 3, elevators: 1, spawnRate: 0,
+          condition: requireUserCountWithinMoves(1, 2)
+        });
+
+        sim.applyCode({
+          init(elevators) {
+            elevators[0].goToFloor(0);
+            elevators[0].goToFloor(2);
+          },
+          update() {}
+        });
+
+        sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+
+        sim.runUntilComplete();
+
+        expect(sim.passed()).toBe(true);
+      });
+
+      it("fails when the move limit is exceeded before enough users are transported", () => {
+        const sim = new Simulation({
+          floors: 3, elevators: 1, spawnRate: 0,
+          condition: requireUserCountWithinMoves(1, 1)
+        });
+
+        sim.applyCode({
+          init(elevators, floors) {
+            floors[2].on("down_button_pressed", () => {
+              // wastes a move going to floor 1 before picking up the user on floor 2
+              elevators[0].goToFloor(1);
+              elevators[0].goToFloor(2);
+              elevators[0].goToFloor(0);
+            });
+          },
+          update() {}
+        });
+
+        sim.spawnUser({ fromFloor: 2, toFloor: 0 });
+
+        sim.runUntilComplete();
+
+        expect(sim.passed()).toBe(false);
+      });
+    });
+
+    describe("requireUserCountWithMaxWaitTime", () => {
+      it("passes when enough users are transported within the max wait time", () => {
+        const sim = new Simulation({
+          floors: 3, elevators: 1, spawnRate: 0,
+          condition: requireUserCountWithMaxWaitTime(1, 60)
+        });
+
+        sim.applyCode({
+          init(elevators) {
+            elevators[0].goToFloor(0);
+            elevators[0].goToFloor(2);
+          },
+          update() {}
+        });
+
+        sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+
+        sim.runUntilComplete();
+
+        expect(sim.passed()).toBe(true);
+      });
+
+      it("fails when a user waits longer than the max wait time", () => {
+        const sim = new Simulation({
+          floors: 3, elevators: 1, spawnRate: 0,
+          condition: requireUserCountWithMaxWaitTime(1, 1)
+        });
+
+        sim.applyCode({
+          init() {}, // elevator does nothing
+          update() {}
+        });
+
+        sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+
+        sim.runUntilComplete();
+
+        expect(sim.passed()).toBe(false);
+      });
+    });
+
+    describe("requireUserCountWithinTimeWithMaxWaitTime", () => {
+      it("passes when enough users are transported within time and max wait time", () => {
+        const sim = new Simulation({
+          floors: 3, elevators: 1, spawnRate: 0,
+          condition: requireUserCountWithinTimeWithMaxWaitTime(1, 60, 60)
+        });
+
+        sim.applyCode({
+          init(elevators) {
+            elevators[0].goToFloor(0);
+            elevators[0].goToFloor(2);
+          },
+          update() {}
+        });
+
+        sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+
+        sim.runUntilComplete();
+
+        expect(sim.passed()).toBe(true);
+      });
+
+      it("fails when not enough users are transported before the time limit", () => {
+        const sim = new Simulation({
+          floors: 3, elevators: 1, spawnRate: 0,
+          condition: requireUserCountWithinTimeWithMaxWaitTime(1, 60, 60)
+        });
+
+        sim.applyCode({
+          init() {}, // elevator does nothing
+          update() {}
+        });
+
+        sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+
+        sim.runUntilComplete();
+
+        expect(sim.passed()).toBe(false);
+      });
+
+      it("fails when a user waits longer than the max wait time", () => {
+        const sim = new Simulation({
+          floors: 3, elevators: 1, spawnRate: 0,
+          condition: requireUserCountWithinTimeWithMaxWaitTime(1, 60, 1)
+        });
+
+        sim.applyCode({
+          init() {}, // elevator does nothing
+          update() {}
+        });
+
+        sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+
+        sim.runUntilComplete();
+
+        expect(sim.passed()).toBe(false);
+      });
+    });
   });
 });
+
