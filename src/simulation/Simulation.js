@@ -1,5 +1,4 @@
 import { createWorldCreator } from "./world.js";
-import User from "./user.js";
 
 const DT = 0.02; // seconds per tick
 
