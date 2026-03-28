@@ -27,14 +27,12 @@ There are two legs to the loop:
 
 Before writing anything new, ask the AI to narrate the current test suite: what's covered, what's implicit, any gaps or inconsistencies. A standup grounded in verifiable behavior rather than memory.
 
-## Component tests vs. system dynamics
+## What is spec debt?
 
-Component-scoped tests specify what each piece does in isolation. But the end-to-end story — how a simulation actually runs from start to finish — is not captured unless you write integration tests that span the whole flow.
+A test suite can cover all the vocabulary of a system — what each component does in isolation — without capturing the grammar: how components interact in sequence over time.
 
-This codebase has a specific version of this flaw. The component tests specify *state* well — what a queue looks like after certain calls, what a button state is after an event. But the simulation is fundamentally about *time and flow*: things happening in sequence, triggering other things, converging toward a challenge outcome.
+Spec debt is the gap between what the tests specify and what the system actually has to do. Unlike technical debt, it's invisible — everything is green, but the most important behaviors are unverified.
 
-That dynamic is load-bearing. It's what the player's algorithm actually has to work with. But it's not pinned down anywhere as a spec.
+This codebase has a concrete instance: the component tests specify state well, but the simulation is fundamentally about time and flow. A user spawns, presses a button, an elevator responds, moves, the user boards, the challenge evaluates. That sequence is load-bearing — it's what the player's algorithm actually has to work with. But it's not pinned down anywhere as a spec.
 
-The consequence: you can have all component tests green and still have a broken simulation, because the integration of components *in time* was never specified.
-
-The fix is integration tests that describe the simulation as a sequence of events: a user spawns, presses a button, the elevator responds, moves, the user boards, the challenge evaluates. Until those exist, the most important behavior of the system is unspecified.
+The fix is integration tests that describe the simulation as a sequence of events. Until those exist, the green suite is incomplete evidence.
