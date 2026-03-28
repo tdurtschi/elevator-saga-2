@@ -322,6 +322,119 @@ describe("Simulation", () => {
     });
   });
 
+  describe("display accessors", () => {
+    it("floors returns the floor objects", () => {
+      const sim = new Simulation({ floors: 4, elevators: 1, spawnRate: 0 });
+      expect(sim.floors).toBeDefined();
+      expect(sim.floors.length).toBe(4);
+    });
+
+    it("elevators returns the elevator objects", () => {
+      const sim = new Simulation({ floors: 3, elevators: 2, spawnRate: 0 });
+      expect(sim.elevators).toBeDefined();
+      expect(sim.elevators.length).toBe(2);
+    });
+
+    it("floorHeight returns a positive number", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      expect(sim.floorHeight).toBeGreaterThan(0);
+    });
+
+    it("challengeEnded is false before a condition is met", () => {
+      const sim = new Simulation({
+        floors: 3, elevators: 1, spawnRate: 0,
+        condition: requireUserCountWithinTime(1, 60)
+      });
+      sim.applyCode({ init() {}, update() {} });
+      expect(sim.challengeEnded).toBe(false);
+    });
+
+    it("challengeEnded is true after the condition resolves", () => {
+      const sim = new Simulation({
+        floors: 3, elevators: 1, spawnRate: 0,
+        condition: requireUserCountWithinTime(1, 60)
+      });
+      sim.applyCode({
+        init(elevators) {
+          elevators[0].goToFloor(0);
+          elevators[0].goToFloor(2);
+        },
+        update() {}
+      });
+      sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+      sim.runUntilComplete();
+      expect(sim.challengeEnded).toBe(true);
+    });
+
+    it("emits new_user when a user appears", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      sim.applyCode({ init() {}, update() {} });
+      const users = [];
+      sim.on("new_user", (user) => users.push(user));
+      sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+      expect(users.length).toBe(1);
+    });
+
+    it("elevatorCapacities is applied to the created elevators", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0, elevatorCapacities: [3] });
+      expect(sim.elevators[0].maxUsers).toBe(3);
+    });
+  });
+
+  describe("challenge_ended event", () => {
+    it("fires with true when the challenge is passed", () => {
+      const sim = new Simulation({
+        floors: 3, elevators: 1, spawnRate: 0,
+        condition: requireUserCountWithinTime(1, 60)
+      });
+      const results = [];
+      sim.on("challenge_ended", (result) => results.push(result));
+
+      sim.applyCode({
+        init(elevators) {
+          elevators[0].goToFloor(0);
+          elevators[0].goToFloor(2);
+        },
+        update() {}
+      });
+      sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+      sim.runFor(60);
+
+      expect(results).toEqual([true]);
+    });
+
+    it("fires with false when the challenge is failed", () => {
+      const sim = new Simulation({
+        floors: 3, elevators: 1, spawnRate: 0,
+        condition: requireUserCountWithinTime(1, 60)
+      });
+      const results = [];
+      sim.on("challenge_ended", (result) => results.push(result));
+
+      sim.applyCode({ init() {}, update() {} });
+      sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+      sim.runFor(61);
+
+      expect(results).toEqual([false]);
+    });
+
+    it("fires only once even if tick is called again after ended", () => {
+      const sim = new Simulation({
+        floors: 3, elevators: 1, spawnRate: 0,
+        condition: requireUserCountWithinTime(1, 60)
+      });
+      const results = [];
+      sim.on("challenge_ended", (result) => results.push(result));
+
+      sim.applyCode({ init() {}, update() {} });
+      sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+      sim.runFor(61); // ends the challenge
+      sim.runFor(10); // no-op
+
+      expect(results.length).toBe(1);
+    });
+  });
+
   describe("no shared state between instances", () => {
     it("creating a new Simulation does not interfere with a previous one", () => {
       const simA = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });

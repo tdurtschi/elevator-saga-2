@@ -4,19 +4,28 @@ import { observable } from "../libs/unobservable.js";
 const DT = 0.02; // seconds per tick
 
 export default class Simulation {
-    constructor({ floors, elevators, spawnRate = 0.5, condition = null }) {
+    constructor({ floors, elevators, spawnRate = 0.5, condition = null, elevatorCapacities = undefined }) {
         this._creator = createWorldCreator();
         this._world = this._creator.createWorld({
             floorCount: floors,
             elevatorCount: elevators,
-            spawnRate
+            spawnRate,
+            elevatorCapacities
         });
         this._condition = condition;
         this._result = null;
         observable(this);
 
         this._world.on("stats_changed", () => this.trigger("stats_changed"));
+        this._world.on("new_user", (user) => this.trigger("new_user", user));
     }
+
+    get floors() { return this._world.floors; }
+    get elevators() { return this._world.elevators; }
+    get floorHeight() { return this._world.floorHeight; }
+    get challengeEnded() { return this._result !== null; }
+
+    updateDisplayPositions() { this._world.updateDisplayPositions(); }
 
     spawnUser({ fromFloor, toFloor }) {
         const user = this._creator.createRandomUser();
@@ -51,6 +60,14 @@ export default class Simulation {
             }
             this._world.update(step);
             remaining -= step;
+            if (this._condition && this._result === null) {
+                const result = this._condition.evaluate(this._world);
+                if (result !== null) {
+                    this._result = result;
+                    this.trigger("challenge_ended", result);
+                    return;
+                }
+            }
         }
     }
 
