@@ -4,7 +4,6 @@ import { requireUserCountWithinTime } from "../src/challenges/challenges.js";
 describe("Simulation", () => {
   it("counts a user as transported when they reach their destination floor", () => {
     const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
-    sim.spawnUser({ fromFloor: 0, toFloor: 2 });
 
     sim.applyCode({
       init(elevators) {
@@ -14,6 +13,8 @@ describe("Simulation", () => {
       update() {}
     });
 
+    sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+
     sim.runFor(60);
 
     expect(sim.transportedCount()).toBe(1);
@@ -21,7 +22,6 @@ describe("Simulation", () => {
 
   it("does not count a user as transported if the elevator never reaches their destination", () => {
     const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
-    sim.spawnUser({ fromFloor: 0, toFloor: 2 });
 
     sim.applyCode({
       init(elevators) {
@@ -34,6 +34,8 @@ describe("Simulation", () => {
       update() {}
     });
 
+    sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+
     sim.runFor(60);
 
     expect(sim.transportedCount()).toBe(0);
@@ -45,8 +47,6 @@ describe("Simulation", () => {
       condition: requireUserCountWithinTime(1, 60)
     });
 
-    sim.spawnUser({ fromFloor: 0, toFloor: 2 });
-
     sim.applyCode({
       init(elevators) {
         elevators[0].goToFloor(0);
@@ -54,6 +54,8 @@ describe("Simulation", () => {
       },
       update() {}
     });
+
+    sim.spawnUser({ fromFloor: 0, toFloor: 2 });
 
     sim.runUntilComplete();
 
@@ -66,12 +68,12 @@ describe("Simulation", () => {
       condition: requireUserCountWithinTime(1, 60)
     });
 
-    sim.spawnUser({ fromFloor: 0, toFloor: 2 });
-
     sim.applyCode({
       init() {}, // elevator does nothing
       update() {}
     });
+
+    sim.spawnUser({ fromFloor: 0, toFloor: 2 });
 
     sim.runUntilComplete();
 
