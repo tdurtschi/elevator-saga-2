@@ -95,7 +95,7 @@ var defaultOptions = { floorHeight: 50, floorCount: 4, elevatorCount: 2, spawnRa
             world.trigger("stats_changed");
         };
 
-        var registerUser = function(user) {
+        world.registerUser = function(user) {
             world.users.push(user);
             user.updateDisplayPosition(true);
             user.spawnTimestamp = world.elapsedTime;
@@ -172,7 +172,7 @@ var defaultOptions = { floorHeight: 50, floorCount: 4, elevatorCount: 2, spawnRa
             _elapsedSinceStatsUpdate += dt;
             while(elapsedSinceSpawn > 1.0/options.spawnRate) {
                 elapsedSinceSpawn -= 1.0/options.spawnRate;
-                registerUser(creator.spawnUserRandomly(options.floorCount, world.floorHeight, world.floors));
+                world.registerUser(creator.spawnUserRandomly(options.floorCount, world.floorHeight, world.floors));
             }
 
             // Use regular for loops for performance and memory friendlyness

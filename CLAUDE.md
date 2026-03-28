@@ -23,14 +23,14 @@ Commit after each logical unit of work (e.g. one template refactored + its test)
 Use this workflow by default, or whenever the user asks to pair or code together.
 **Exploration phase** (Navigator/Driver):
 - Claude navigates — pointing to files, explaining what it sees, suggesting where to look next.
-- The human drives — running commands, reading code, asking questions.                                                                                                                                                                
+- The human drives — running commands, reading code, asking questions.
 - Exit when you've agreed on the next behavior to build.
-                                                                                                                                                                                                                                    
+
 **TDD phase** (follow the TDD pattern above, with human sign-off at each step):
 - Agree on the test before Claude writes it.
 - Agree on the implementation approach before Claude writes it.
 - Nothing moves forward without the human's sign-off.
-                                                
+
 **Refactor phase**:
 - Either party can propose refactors.
 - Claude writes the changes.
@@ -47,7 +47,7 @@ Always work on a feature branch — never commit directly to `master`. Before st
 3. Run `npm run ci` — lint and full test suite must pass before opening a PR
 4. Push the branch and open a PR targeting `master`, linking the relevant issue
 
-Note: When running this workflow, take care to avoid getting stuck. It is preferable to provide an update or ask a quesion directly in the github issue and exit.
+Note: When running this workflow, take care to avoid getting stuck. It is preferable to provide an update or ask a question directly in the github issue and exit.
 
 ### Headless runner
 `headless-runner.js` runs challenges without a browser. Two modes:
@@ -56,7 +56,24 @@ Note: When running this workflow, take care to avoid getting stuck. It is prefer
 
 Useful for quickly validating elevator solutions or testing simulation changes.
 
+## Running tests
+
+```
+npm run test
+```
+
+Runs both Jasmine unit tests and Playwright e2e tests. Playwright uses the `list` reporter so results print to stdout.
+
 ## Architecture direction
+
+### Completed work
+- **Riot.js fully removed:** `riot.render()` and `<script type="text/template">` replaced with vanilla JS template literals in `presenters.js`; `riot.observable()` replaced with `window.unobservable.observable()`; `riot.route()` replaced with a native `hashchange` handler; `libs/riot.js` deleted
+- **Monaco CDN removed:** `monaco-editor` npm package installed; `editor.js` extracted from `app.js`; Vite worker config added; CDN script tag removed from `index.html`
+- **Playwright tests added** covering floor, elevator, challenge, feedback, and user templates; hash routing; and editor behavior (error display, persistence, reset)
+
+### In progress
+- **Editor abstraction:** `editor.js` is extracted but still tightly coupled (jQuery, persistence, AI all imported directly) — next step is cleaning up those dependencies
+- **Split `app.js`** god class
 
 ### General
 - Prefer vanilla JS / direct DOM over jQuery where possible when writing new code
