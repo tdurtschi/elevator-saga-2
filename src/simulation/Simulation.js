@@ -62,4 +62,8 @@ export default class Simulation {
     transportedCount() {
         return this._world.transportedCounter;
     }
+
+    floorButtonActivated(floorNum, direction) {
+        return this._world.floors[floorNum].isButtonActivated(direction);
+    }
 }
