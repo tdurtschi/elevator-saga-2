@@ -82,3 +82,7 @@ Runs both Jasmine unit tests and Playwright e2e tests. Playwright uses the `list
 ## Game mechanics reference
 
 See `docs/PLAYER_API.md` for a full description of the elevator/floor API and how the simulation works (boarding logic, direction indicators, floor button firing behaviour). Useful context when working on anything that touches the game's user-facing behaviour.
+
+## AI pairing
+
+See `docs/AI_PAIRING.md` for lessons on how to collaborate effectively using TDD and specs.
