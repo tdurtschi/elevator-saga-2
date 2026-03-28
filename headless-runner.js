@@ -14,35 +14,37 @@
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { challenges } from './src/challenges/challenges.js';
-import { createWorldCreator, createWorldController } from './src/simulation/world.js';
+import { createWorldController } from './src/simulation/world.js';
+import Simulation from './src/simulation/Simulation.js';
 import { getCodeObjFromCode } from './src/libs/util.js';
 import { createSyncTicker } from './src/ticker.js';
 
 export function runChallenge(challengeIndex, solutionCode) {
     const challenge = challenges[challengeIndex];
+    const opts = challenge.options;
     const codeObj = getCodeObjFromCode(solutionCode);
-    const world = createWorldCreator().createWorld(challenge.options);
+    const sim = new Simulation({
+        floors: opts.floorCount,
+        elevators: opts.elevatorCount,
+        spawnRate: opts.spawnRate,
+        elevatorCapacities: opts.elevatorCapacities,
+        condition: challenge.condition,
+    });
     const worldController = createWorldController(1 / 60);
 
-    world.on('stats_changed', function () {
-        if (challenge.condition.evaluate(world) !== null) {
-            world.challengeEnded = true;
-        }
-    });
-
     const ticker = createSyncTicker();
-    worldController.start(world, codeObj, ticker, true);
+    worldController.start(sim, codeObj, ticker, true);
     ticker.run();
 
     const { evaluate: _evaluate, description: _description, ...conditionData } = challenge.condition;
     return {
-        passed: challenge.condition.evaluate(world) === true,
+        passed: sim.passed(),
         condition: conditionData,
-        transported: world.transportedCounter,
-        elapsed: world.elapsedTime,
-        maxWaitTime: world.maxWaitTime,
-        moveCount: world.moveCount,
-        challengeEnded: world.challengeEnded,
+        transported: sim.transportedCount(),
+        elapsed: sim.elapsedTime(),
+        maxWaitTime: sim.maxWaitTime(),
+        moveCount: sim.moveCount(),
+        challengeEnded: sim.isEnded(),
     };
 }
 

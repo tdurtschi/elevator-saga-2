@@ -30,18 +30,18 @@ function presentStats($parent, world) {
         elem_movecount = $parent.find(".movecount").get(0);
 
     world.on("stats_display_changed", function updateStats() {
-        elem_transportedcounter.textContent = world.transportedCounter;
-        elem_elapsedtime.textContent = world.elapsedTime.toFixed(0) + "s";
-        elem_transportedpersec.textContent = world.transportedPerSec.toPrecision(3);
-        elem_avgwaittime.textContent = world.avgWaitTime.toFixed(1) + "s";
-        elem_maxwaittime.textContent = world.maxWaitTime.toFixed(1) + "s";
-        elem_movecount.textContent = world.moveCount;
+        elem_transportedcounter.textContent = world.transportedCount();
+        elem_elapsedtime.textContent = world.elapsedTime().toFixed(0) + "s";
+        elem_transportedpersec.textContent = world.transportedPerSec().toPrecision(3);
+        elem_avgwaittime.textContent = world.avgWaitTime().toFixed(1) + "s";
+        elem_maxwaittime.textContent = world.maxWaitTime().toFixed(1) + "s";
+        elem_movecount.textContent = world.moveCount();
     });
     world.trigger("stats_display_changed");
 }
 
 function presentChallenge($parent, challenge, app, world, worldController, challengeNum) {
-    var startButtonText = world.challengeEnded ? "<i class='fa fa-repeat'></i> Restart" : (worldController.isPaused ? "Start" : "Pause");
+    var startButtonText = world.isEnded() ? "<i class='fa fa-repeat'></i> Restart" : (worldController.isPaused ? "Start" : "Pause");
     var $challenge = $(`<div class="left">
             <h3>Challenge #${challengeNum}: ${challenge.condition.description}</h3>
         </div>

@@ -10,11 +10,12 @@ import {
 import { setTimeScale } from "../ui/persistence.js";
 import { log } from "../ui/terminal-logger.js";
 import { createParamsUrl, parseParams } from "../ui/router.js";
+import Simulation from "../simulation/Simulation.js";
 
-export function createChallengeController({ editorService, worldController, worldCreator, $world, $stats, $feedback, $challenge }) {
+export function createChallengeController({ editorService, worldController, $world, $stats, $feedback, $challenge }) {
     var controller = {};
     controller.currentChallengeIndex = 0;
-    controller.world = undefined;
+    controller.sim = undefined;
 
     controller.startChallenge = function (challengeIndex, autoStart) {
         if (challengeIndex < 0 || challengeIndex >= challenges.length) {
@@ -22,47 +23,54 @@ export function createChallengeController({ editorService, worldController, worl
             challengeIndex = 0;
         }
         log("Starting challenge", challengeIndex);
-        if (typeof controller.world !== "undefined") {
-            controller.world.unWind();
-            // TODO: Investigate if memory leaks happen here
-        }
         controller.currentChallengeIndex = challengeIndex;
-        controller.world = worldCreator.createWorld(challenges[challengeIndex].options);
+
+        var challenge = challenges[challengeIndex];
+        var opts = challenge.options;
+        controller.sim = new Simulation({
+            floors: opts.floorCount,
+            elevators: opts.elevatorCount,
+            spawnRate: opts.spawnRate,
+            elevatorCapacities: opts.elevatorCapacities,
+            condition: challenge.condition,
+        });
 
         // Reset paused state before rendering so the button shows "Start"
         worldController.isPaused = true;
 
         clearAll([$world, $feedback]);
-        presentStats($stats, controller.world);
-        presentChallenge($challenge, challenges[challengeIndex], controller, controller.world, worldController, challengeIndex + 1);
-        presentWorld($world, controller.world);
+        presentStats($stats, controller.sim);
+        presentChallenge($challenge, challenge, controller, controller.sim, worldController, challengeIndex + 1);
+        presentWorld($world, controller.sim);
 
         // Remove any previous timescale listener before adding a fresh one
         worldController.off("timescale_changed");
         worldController.on("timescale_changed", function () {
             setTimeScale(worldController.timeScale);
-            presentChallenge($challenge, challenges[challengeIndex], controller, controller.world, worldController, challengeIndex + 1);
+            presentChallenge($challenge, challenge, controller, controller.sim, worldController, challengeIndex + 1);
         });
 
-        controller.world.on("stats_changed", function () {
-            var challengeStatus = challenges[challengeIndex].condition.evaluate(controller.world);
-            if (challengeStatus !== null) {
-                controller.world.challengeEnded = true;
-                worldController.setPaused(true);
-                if (challengeStatus) {
-                    presentFeedback($feedback, controller.world, "Success!", "Challenge completed", createParamsUrl(parseParams(window.location.hash), { challenge: challengeIndex + 2 }));
-                } else {
-                    presentFeedback($feedback, controller.world, "Challenge failed", "Maybe your program needs an improvement?", "");
-                }
+        controller.sim.on("challenge_ended", function (result) {
+            worldController.setPaused(true);
+            if (result) {
+                presentFeedback($feedback, controller.sim, "Success!", "Challenge completed", createParamsUrl(parseParams(window.location.hash), { challenge: challengeIndex + 2 }));
+            } else {
+                presentFeedback($feedback, controller.sim, "Challenge failed", "Maybe your program needs an improvement?", "");
             }
         });
 
+        controller.sim.on("usercode_error", function (e) {
+            worldController.setPaused(true);
+            log("Usercode error:", "error");
+            log(e, "error");
+        });
+
         var codeObj = editorService.getCodeObj();
-        worldController.start(controller.world, codeObj, rafTicker, autoStart);
+        worldController.start(controller.sim, codeObj, rafTicker, autoStart);
     };
 
     controller.startStopOrRestart = function () {
-        if (controller.world.challengeEnded) {
+        if (controller.sim.isEnded()) {
             controller.startChallenge(controller.currentChallengeIndex);
         } else {
             worldController.setPaused(!worldController.isPaused);

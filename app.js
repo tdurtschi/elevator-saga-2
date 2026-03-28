@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { makeDemoFullscreen } from "./src/ui/presenters.js";
-import { createWorldCreator, createWorldController } from "./src/simulation/world.js";
+import { createWorldController } from "./src/simulation/world.js";
 import _ from "lodash-es";
 import { getTimeScale } from "./src/ui/persistence.js";
 import { clearLog, log } from "./src/ui/terminal-logger.js";
@@ -20,13 +20,11 @@ $(function () {
     var $challenge = $(".challenge");
 
     var worldController = createWorldController(1.0 / 60.0);
-    var worldCreator = createWorldCreator();
 
     createEditorAsync().then(function (editorService) {
         var challengeController = createChallengeController({
             editorService,
             worldController,
-            worldCreator,
             $world,
             $stats,
             $feedback,

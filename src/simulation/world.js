@@ -234,38 +234,28 @@ export function createWorldController(dtMax) {
     var controller = observable({});
     controller.timeScale = 1.0;
     controller.isPaused = true;
-    controller.start = function(world, codeObj, animationFrameRequester, autoStart) {
+    controller.start = function(sim, codeObj, animationFrameRequester, autoStart) {
         controller.isPaused = true;
         var lastT = null;
         var firstUpdate = true;
-        world.on("usercode_error", controller.handleUserCodeError);
+        sim.on("usercode_error", controller.handleUserCodeError);
         var updater = function(t) {
-            if(!controller.isPaused && !world.challengeEnded && lastT !== null) {
+            if(!controller.isPaused && !sim.challengeEnded && lastT !== null) {
                 if(firstUpdate) {
                     firstUpdate = false;
-                    // This logic prevents infite loops in usercode from breaking the page permanently - don't evaluate user code until game is unpaused.
-                    try {
-                        codeObj.init(world.elevatorInterfaces, world.floors);
-                        world.init();
-                    } catch(e) { controller.handleUserCodeError(e); }
+                    // This logic prevents infinite loops in usercode from breaking the page permanently - don't evaluate user code until game is unpaused.
+                    sim.applyCode(codeObj);
                 }
 
                 var dt = (t - lastT);
                 var scaledDt = dt * 0.001 * controller.timeScale;
                 scaledDt = Math.min(scaledDt, dtMax * 3 * controller.timeScale); // Limit to prevent unhealthy substepping
-                try {
-                    codeObj.update(scaledDt, world.elevatorInterfaces, world.floors);
-                } catch(e) { controller.handleUserCodeError(e); }
-                while(scaledDt > 0.0 && !world.challengeEnded) {
-                    var thisDt = Math.min(dtMax, scaledDt);
-                    world.update(thisDt);
-                    scaledDt -= dtMax;
-                }
-                world.updateDisplayPositions();
-                world.trigger("stats_display_changed"); // TODO: Trigger less often for performance reasons etc
+                sim.tick(scaledDt);
+                sim.updateDisplayPositions();
+                sim.trigger("stats_display_changed"); // TODO: Trigger less often for performance reasons etc
             }
             lastT = t;
-            if(!world.challengeEnded) {
+            if(!sim.challengeEnded) {
                 animationFrameRequester(updater);
             }
         };
