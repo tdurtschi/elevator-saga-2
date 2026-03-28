@@ -92,4 +92,20 @@ describe("Simulation", () => {
 
     expect(sim.moveCount()).toBe(0);
   });
+
+  it("costs 1 move when the elevator travels from floor 0 to floor 2", () => {
+    const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+
+    sim.applyCode({
+      init(elevators) {
+        elevators[0].goToFloor(2);
+      },
+      update() {}
+    });
+
+    sim.runFor(60);
+
+    expect(sim.moveCount()).toBe(1);
+  });
+
 });

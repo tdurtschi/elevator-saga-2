@@ -152,8 +152,12 @@ class Elevator extends Movable {
 
     goToFloor(floor) {
         this.makeSureNotBusy();
+        const destinationY = this.getYPosOfFloor(floor);
+        if(floor !== this.currentFloor && destinationY !== this.destinationY) {
+            this.moveCount++;
+        }
         this.isMoving = true;
-        this.destinationY = this.getYPosOfFloor(floor);
+        this.destinationY = destinationY;
     }
 
     getFirstPressedFloor() {
@@ -233,7 +237,6 @@ class Elevator extends Movable {
         // Recalculate the floor number etc
         var currentFloor = this.getRoundedCurrentFloor();
         if(currentFloor !== this.currentFloor) {
-            this.moveCount++;
             this.currentFloor = currentFloor;
             this.trigger("new_current_floor", this.currentFloor);
         }
