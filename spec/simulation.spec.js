@@ -85,6 +85,266 @@ describe("Simulation", () => {
     expect(sim.moveCount()).toBe(1);
   });
 
+  describe("elapsedTime", () => {
+    it("starts at 0", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      expect(sim.elapsedTime()).toBe(0);
+    });
+
+    it("increases by approximately the amount passed to runFor", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      sim.applyCode({ init() {}, update() {} });
+      sim.runFor(10);
+      expect(sim.elapsedTime()).toBeCloseTo(10, 1);
+    });
+  });
+
+  describe("maxWaitTime", () => {
+    it("is 0 before any user is transported", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      expect(sim.maxWaitTime()).toBe(0);
+    });
+
+    it("reflects the wait time of a transported user", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+
+      sim.applyCode({
+        init(elevators) {
+          elevators[0].goToFloor(0);
+          elevators[0].goToFloor(2);
+        },
+        update() {}
+      });
+
+      sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+      sim.runFor(60);
+
+      expect(sim.maxWaitTime()).toBeGreaterThan(0);
+    });
+  });
+
+  describe("avgWaitTime and transportedPerSec", () => {
+    it("avgWaitTime reflects the average wait time across transported users", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+
+      sim.applyCode({
+        init(elevators) {
+          elevators[0].goToFloor(0);
+          elevators[0].goToFloor(2);
+        },
+        update() {}
+      });
+
+      sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+      sim.runFor(60);
+
+      expect(sim.avgWaitTime()).toBeGreaterThan(0);
+    });
+
+    it("transportedPerSec reflects transported users divided by elapsed time", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+
+      sim.applyCode({
+        init(elevators) {
+          elevators[0].goToFloor(0);
+          elevators[0].goToFloor(2);
+        },
+        update() {}
+      });
+
+      sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+      sim.runFor(60);
+
+      expect(sim.transportedPerSec()).toBeGreaterThan(0);
+    });
+  });
+
+  describe("isEnded", () => {
+    it("returns false before a condition is met", () => {
+      const sim = new Simulation({
+        floors: 3, elevators: 1, spawnRate: 0,
+        condition: requireUserCountWithinTime(1, 60)
+      });
+
+      sim.applyCode({ init() {}, update() {} });
+
+      expect(sim.isEnded()).toBe(false);
+    });
+
+    it("returns true after runUntilComplete finishes", () => {
+      const sim = new Simulation({
+        floors: 3, elevators: 1, spawnRate: 0,
+        condition: requireUserCountWithinTime(1, 60)
+      });
+
+      sim.applyCode({
+        init(elevators) {
+          elevators[0].goToFloor(0);
+          elevators[0].goToFloor(2);
+        },
+        update() {}
+      });
+
+      sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+      sim.runUntilComplete();
+
+      expect(sim.isEnded()).toBe(true);
+    });
+
+    it("tick(dt) after ended does not advance state", () => {
+      const sim = new Simulation({
+        floors: 3, elevators: 1, spawnRate: 0,
+        condition: requireUserCountWithinTime(1, 60)
+      });
+
+      sim.applyCode({
+        init(elevators) {
+          elevators[0].goToFloor(0);
+          elevators[0].goToFloor(2);
+        },
+        update() {}
+      });
+
+      sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+      sim.runUntilComplete();
+
+      const timeAfterEnd = sim.elapsedTime();
+      sim.tick(1);
+      expect(sim.elapsedTime()).toBe(timeAfterEnd);
+    });
+  });
+
+  describe("automatic user spawning via spawnRate", () => {
+    it("users appear in the world over time without manual spawnUser calls", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 2 });
+
+      sim.applyCode({
+        init(elevators) {
+          elevators[0].on("idle", () => {
+            elevators[0].goToFloor(0);
+            elevators[0].goToFloor(1);
+            elevators[0].goToFloor(2);
+          });
+        },
+        update() {}
+      });
+
+      sim.runFor(30);
+
+      expect(sim.transportedCount()).toBeGreaterThan(0);
+    });
+  });
+
+  describe("tick(dt)", () => {
+    it("advances the simulation by dt seconds", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      sim.applyCode({ init() {}, update() {} });
+
+      sim.tick(5);
+
+      expect(sim.elapsedTime()).toBeCloseTo(5, 1);
+    });
+
+    it("calling tick repeatedly is equivalent to runFor", () => {
+      const simA = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      simA.applyCode({ init() {}, update() {} });
+      simA.runFor(10);
+
+      const simB = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      simB.applyCode({ init() {}, update() {} });
+      for (let i = 0; i < 10; i++) simB.tick(1);
+
+      expect(simB.elapsedTime()).toBeCloseTo(simA.elapsedTime(), 1);
+    });
+  });
+
+  describe("usercode_error event", () => {
+    it("emits usercode_error when user code throws in init", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      const errors = [];
+      sim.on("usercode_error", (e) => errors.push(e));
+
+      sim.applyCode({
+        init() { throw new Error("init exploded"); },
+        update() {}
+      });
+
+      expect(errors.length).toBe(1);
+      expect(errors[0].message).toBe("init exploded");
+    });
+
+    it("emits usercode_error when user code throws in update", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      const errors = [];
+      sim.on("usercode_error", (e) => errors.push(e));
+
+      sim.applyCode({ init() {}, update() { throw new Error("update exploded"); } });
+      sim.runFor(0.1);
+
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors[0].message).toBe("update exploded");
+    });
+  });
+
+  describe("stats_changed event", () => {
+    it("fires after a user is transported", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      let statsFired = false;
+      sim.on("stats_changed", () => { statsFired = true; });
+
+      sim.applyCode({
+        init(elevators) {
+          elevators[0].goToFloor(0);
+          elevators[0].goToFloor(2);
+        },
+        update() {}
+      });
+
+      sim.spawnUser({ fromFloor: 0, toFloor: 2 });
+      sim.runFor(60);
+
+      expect(statsFired).toBe(true);
+    });
+
+    it("fires after move count changes", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      let statsFired = false;
+      sim.on("stats_changed", () => { statsFired = true; });
+
+      sim.applyCode({
+        init(elevators) { elevators[0].goToFloor(2); },
+        update() {}
+      });
+
+      sim.runFor(60);
+
+      expect(statsFired).toBe(true);
+    });
+  });
+
+  describe("no shared state between instances", () => {
+    it("creating a new Simulation does not interfere with a previous one", () => {
+      const simA = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      simA.applyCode({
+        init(elevators) {
+          elevators[0].goToFloor(0);
+          elevators[0].goToFloor(2);
+        },
+        update() {}
+      });
+      simA.spawnUser({ fromFloor: 0, toFloor: 2 });
+      simA.runFor(60);
+      const countA = simA.transportedCount();
+
+      const simB = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      simB.applyCode({ init() {}, update() {} });
+      simB.runFor(10);
+
+      expect(simA.transportedCount()).toBe(countA);
+      expect(simB.transportedCount()).toBe(0);
+    });
+  });
+
   describe("challenge conditions", () => {
     describe("requireUserCountWithinTime", () => {
       it("passes when enough users are transported before the time limit", () => {
