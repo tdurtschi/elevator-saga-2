@@ -41,6 +41,20 @@ describe("Simulation", () => {
     expect(sim.transportedCount()).toBe(0);
   });
 
+  it("calls update on every tick", () => {
+    const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+    let updateCount = 0;
+
+    sim.applyCode({
+      init() {},
+      update() { updateCount++; }
+    });
+
+    sim.runFor(1);
+
+    expect(updateCount).toBeGreaterThan(1);
+  });
+
   it("costs 0 moves when goToFloor is called on the current floor", () => {
     const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
 
@@ -183,15 +197,25 @@ describe("Simulation", () => {
         expect(sim.passed()).toBe(true);
       });
 
-      it("fails when a user waits longer than the max wait time", () => {
+      it("fails when a user waits longer than the max wait time even if eventually transported", () => {
         const sim = new Simulation({
           floors: 3, elevators: 1, spawnRate: 0,
           condition: requireUserCountWithMaxWaitTime(1, 1)
         });
 
+        let elapsed = 0;
+        let responded = false;
+
         sim.applyCode({
-          init() {}, // elevator does nothing
-          update() {}
+          init() {},
+          update(dt, elevators) {
+            elapsed += dt;
+            if (elapsed > 5 && !responded) {
+              responded = true;
+              elevators[0].goToFloor(0);
+              elevators[0].goToFloor(2);
+            }
+          }
         });
 
         sim.spawnUser({ fromFloor: 0, toFloor: 2 });
@@ -242,15 +266,25 @@ describe("Simulation", () => {
         expect(sim.passed()).toBe(false);
       });
 
-      it("fails when a user waits longer than the max wait time", () => {
+      it("fails when a user waits longer than the max wait time even if eventually transported", () => {
         const sim = new Simulation({
           floors: 3, elevators: 1, spawnRate: 0,
           condition: requireUserCountWithinTimeWithMaxWaitTime(1, 60, 1)
         });
 
+        let elapsed = 0;
+        let responded = false;
+
         sim.applyCode({
-          init() {}, // elevator does nothing
-          update() {}
+          init() {},
+          update(dt, elevators) {
+            elapsed += dt;
+            if (elapsed > 5 && !responded) {
+              responded = true;
+              elevators[0].goToFloor(0);
+              elevators[0].goToFloor(2);
+            }
+          }
         });
 
         sim.spawnUser({ fromFloor: 0, toFloor: 2 });
