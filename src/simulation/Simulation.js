@@ -14,6 +14,8 @@ export default class Simulation {
         });
         this._condition = condition;
         this._result = null;
+        this.isPaused = true;
+        this.timeScale = 1.0;
         observable(this);
 
         this._world.on("stats_changed", () => this.trigger("stats_changed"));
@@ -126,5 +128,25 @@ export default class Simulation {
 
     floorButtonActivated(floorNum, direction) {
         return this._world.floors[floorNum].isButtonActivated(direction);
+    }
+
+    start(codeObj, ticker, autoStart = false) {
+        this.isPaused = !autoStart;
+        let lastT = null;
+        let initialized = false;
+
+        const updater = (t) => {
+            if (!this.isPaused && lastT !== null) {
+                if (!initialized) {
+                    initialized = true;
+                    this.applyCode(codeObj);
+                }
+                this.tick((t - lastT) * 0.001);
+            }
+            lastT = t;
+            ticker(updater);
+        };
+
+        ticker(updater);
     }
 }

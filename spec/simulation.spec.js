@@ -1,4 +1,5 @@
 import Simulation from "../src/simulation/Simulation.js";
+import { createSyncTicker } from "../src/ticker.js";
 import { requireUserCountWithinTime, requireUserCountWithinMoves, requireUserCountWithMaxWaitTime, requireUserCountWithinTimeWithMaxWaitTime } from "../src/challenges/challenges.js";
 
 describe("Simulation", () => {
@@ -432,6 +433,18 @@ describe("Simulation", () => {
       sim.runFor(10); // no-op
 
       expect(results.length).toBe(1);
+    });
+  });
+
+  describe("start(codeObj, ticker, autoStart)", () => {
+    it("advances the simulation when started with a sync ticker", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      const ticker = createSyncTicker(1000 / 60, 10);
+
+      sim.start({ init() {}, update() {} }, ticker, true);
+      ticker.run();
+
+      expect(sim.elapsedTime()).toBeCloseTo(10 / 60, 1);
     });
   });
 
