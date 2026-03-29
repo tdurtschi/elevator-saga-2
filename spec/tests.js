@@ -1,10 +1,9 @@
 import $ from "jquery";
-import { observable } from "../src/libs/unobservable.js";
-import {createFrameRequester, getCodeObjFromCode} from "../src/libs/util.js";
+import {getCodeObjFromCode} from "../src/libs/util.js";
 import Movable from "../src/simulation/movable.js";
 import Elevator from "../src/simulation/elevator.js";
 import User from "../src/simulation/user.js";
-import { createWorldController, createWorldCreator } from "../src/simulation/world.js";
+import { createWorldCreator } from "../src/simulation/world.js";
 import _ from "lodash-es";
 import {timeForwarder} from "./helpers/timeForwarder.js";
 
@@ -97,47 +96,6 @@ describe("Elevator Saga", function() {
 			expect(m.x).toBe(2.0);
 			expect(m.y).toBe(3.0);
 			expect(handlers.someHandler).toHaveBeenCalled();
-		});
-	});
-
-	describe("World controller", function() {
-		var controller = null;
-		var fakeSim = null;
-		var fakeCodeObj = null;
-		var frameRequester = null;
-		var DT_MAX = 1000.0 / 59;
-		beforeEach(function() {
-			controller = createWorldController(DT_MAX);
-			fakeSim = { applyCode: function() {}, tick: function(_dt) {}, isEnded: function() { return false; }, updateDisplayPositions: function() {}, trigger: function() {} };
-			fakeSim = observable(fakeSim);
-			fakeCodeObj = { init: function() {}, update: function() {} };
-			frameRequester = createFrameRequester(10.0);
-			spyOn(fakeSim, "tick").and.callThrough();
-		});
-		it("does not tick sim on first animation frame", function() {
-			controller.start(fakeSim, fakeCodeObj, frameRequester.register, true);
-			frameRequester.trigger();
-			expect(fakeSim.tick).not.toHaveBeenCalled();
-		});
-		it("ticks sim with correct delta t", function() {
-			controller.start(fakeSim, fakeCodeObj, frameRequester.register, true);
-			frameRequester.trigger();
-			frameRequester.trigger();
-			expect(fakeSim.tick).toHaveBeenCalledWith(0.01);
-		});
-		it("ticks sim with scaled delta t", function() {
-			controller.timeScale = 2.0;
-			controller.start(fakeSim, fakeCodeObj, frameRequester.register, true);
-			frameRequester.trigger();
-			frameRequester.trigger();
-			expect(fakeSim.tick).toHaveBeenCalledWith(0.02);
-		});
-		it("does not tick sim when paused", function() {
-			controller.start(fakeSim, fakeCodeObj, frameRequester.register, true);
-			controller.isPaused = true;
-			frameRequester.trigger();
-			frameRequester.trigger();
-			expect(fakeSim.tick).not.toHaveBeenCalled();
 		});
 	});
 

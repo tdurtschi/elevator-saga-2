@@ -14,10 +14,8 @@
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { challenges } from './src/challenges/challenges.js';
-import { createWorldController } from './src/simulation/world.js';
 import Simulation from './src/simulation/Simulation.js';
 import { getCodeObjFromCode } from './src/libs/util.js';
-import { createSyncTicker } from './src/ticker.js';
 
 export function runChallenge(challengeIndex, solutionCode) {
     const challenge = challenges[challengeIndex];
@@ -30,11 +28,9 @@ export function runChallenge(challengeIndex, solutionCode) {
         elevatorCapacities: opts.elevatorCapacities,
         condition: challenge.condition,
     });
-    const worldController = createWorldController(1 / 60);
 
-    const ticker = createSyncTicker();
-    worldController.start(sim, codeObj, ticker, true);
-    ticker.run();
+    sim.applyCode(codeObj);
+    sim.runUntilComplete();
 
     const { evaluate: _evaluate, description: _description, ...conditionData } = challenge.condition;
     return {

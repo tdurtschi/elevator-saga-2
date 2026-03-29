@@ -17,17 +17,6 @@ const mockPresenters = () => ({
     presentWorld() {},
 });
 
-const mockWorldController = () => ({
-    isPaused: true,
-    timeScale: 1.0,
-    start() {},
-    setPaused() {},
-    setTimeScale() {},
-    on() {},
-    off() {},
-    trigger() {},
-});
-
 const domStubs = () => ({
     $world: $("<div>"),
     $stats: $("<div>"),
@@ -41,7 +30,7 @@ describe("ChallengeController", () => {
         const controller = createChallengeController({
             ticker,
             editorService: mockEditorService(),
-            worldController: mockWorldController(),
+
             presenters: mockPresenters(),
             log: noopLog,
             ...domStubs(),
@@ -141,7 +130,7 @@ describe("ChallengeController", () => {
         const controllerA = createChallengeController({
             ticker: tickerA,
             editorService: mockEditorService(),
-            worldController: mockWorldController(),
+
             presenters: mockPresenters(),
             log: noopLog,
             ...domStubs(),
@@ -153,7 +142,7 @@ describe("ChallengeController", () => {
         const controllerB = createChallengeController({
             ticker: tickerB,
             editorService: mockEditorService(),
-            worldController: mockWorldController(),
+
             presenters: mockPresenters(),
             log: noopLog,
             ...domStubs(),
@@ -170,7 +159,7 @@ describe("ChallengeController", () => {
         const controller = createChallengeController({
             ticker,
             editorService: mockEditorService(),
-            worldController: mockWorldController(),
+
             presenters: mockPresenters(),
             log: noopLog,
             ...domStubs(),

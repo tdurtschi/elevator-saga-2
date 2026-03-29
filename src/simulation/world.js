@@ -4,7 +4,6 @@ import asFloor from "./floor.js";
 import { asElevatorInterface } from "../interfaces.js";
 import User from "./user.js";
 import _ from "lodash-es";
-import {log} from "../ui/terminal-logger.js";
 
 export function createWorldCreator() {
     var creator = {};
@@ -227,58 +226,4 @@ var defaultOptions = { floorHeight: 50, floorCount: 4, elevatorCount: 2, spawnRa
     };
 
     return creator;
-};
-
-
-export function createWorldController(dtMax) {
-    var controller = observable({});
-    controller.timeScale = 1.0;
-    controller.isPaused = true;
-    controller.start = function(sim, codeObj, animationFrameRequester, autoStart) {
-        controller.isPaused = true;
-        var lastT = null;
-        var firstUpdate = true;
-        sim.on("usercode_error", controller.handleUserCodeError);
-        var updater = function(t) {
-            if(!controller.isPaused && !sim.challengeEnded && lastT !== null) {
-                if(firstUpdate) {
-                    firstUpdate = false;
-                    // This logic prevents infinite loops in usercode from breaking the page permanently - don't evaluate user code until game is unpaused.
-                    sim.applyCode(codeObj);
-                }
-
-                var dt = (t - lastT);
-                var scaledDt = dt * 0.001 * controller.timeScale;
-                scaledDt = Math.min(scaledDt, dtMax * 3 * controller.timeScale); // Limit to prevent unhealthy substepping
-                sim.tick(scaledDt);
-                sim.updateDisplayPositions();
-                sim.trigger("stats_display_changed"); // TODO: Trigger less often for performance reasons etc
-            }
-            lastT = t;
-            if(!sim.challengeEnded) {
-                animationFrameRequester(updater);
-            }
-        };
-        if(autoStart) {
-            controller.setPaused(false);
-        }
-        animationFrameRequester(updater);
-    };
-
-    controller.handleUserCodeError = function(e) {
-        controller.setPaused(true);
-        log("Usercode error on update:", "error");
-        log(e, "error");
-    };
-
-    controller.setPaused = function(paused) {
-        controller.isPaused = paused;
-        controller.trigger("timescale_changed");
-    };
-    controller.setTimeScale = function(timeScale) {
-        controller.timeScale = timeScale;
-        controller.trigger("timescale_changed");
-    };
-
-    return controller;
 };

@@ -1,11 +1,11 @@
 /**
- * Ticker implementations for the world controller's animation loop.
+ * Ticker implementations for the animation loop.
  *
  * A ticker is a function with the signature: (callback: (timestamp: number) => void) => void
- * The world controller calls ticker(updater) to schedule the next frame.
+ * ChallengeController calls ticker(updater) to schedule the next frame.
  *
  * rafTicker    — production: delegates to window.requestAnimationFrame
- * createSyncTicker — headless/test: runs the loop synchronously (no browser needed)
+ * createSyncTicker — test: runs the loop synchronously (no browser needed)
  */
 
 export const rafTicker = (callback) => window.requestAnimationFrame(callback);
@@ -16,9 +16,9 @@ export const rafTicker = (callback) => window.requestAnimationFrame(callback);
  * @param {number} dtMs       - Simulated milliseconds per step (default: 1000/60 ≈ 16.7ms)
  * @param {number} maxSteps   - Safety limit to prevent infinite loops (default: 360000 = ~100 min at 60fps)
  *
- * Usage:
+ * Usage (in challenge-controller.spec.js):
  *   const ticker = createSyncTicker();
- *   worldController.start(world, codeObj, ticker, true);
+ *   // pass as ticker param to createChallengeController
  *   ticker.run();
  */
 export function createSyncTicker(dtMs = 1000 / 60, maxSteps = 360000) {
