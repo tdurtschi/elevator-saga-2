@@ -1,12 +1,11 @@
-import { createWorldCreator } from "./world.js";
+import { createWorldCreator, createRandomUser } from "./world.js";
 import { observable } from "../libs/unobservable.js";
 
 const DT = 0.02; // seconds per tick
 
 export default class Simulation {
     constructor({ floors, elevators, spawnRate = 0.5, condition = null, elevatorCapacities = undefined }) {
-        this._creator = createWorldCreator();
-        this._world = this._creator.createWorld({
+        this._world = createWorldCreator().createWorld({
             floorCount: floors,
             elevatorCount: elevators,
             spawnRate,
@@ -28,7 +27,7 @@ export default class Simulation {
     updateDisplayPositions() { this._world.updateDisplayPositions(); }
 
     spawnUser({ fromFloor, toFloor }) {
-        const user = this._creator.createRandomUser();
+        const user = createRandomUser();
         user.moveTo(105, 0);
         user.appearOnFloor(this._world.floors[fromFloor], toFloor);
         this._world.registerUser(user);
@@ -61,7 +60,7 @@ export default class Simulation {
             this._world.update(step);
             remaining -= step;
             if (this._condition && this._result === null) {
-                const result = this._condition.evaluate(this._world);
+                const result = this._condition.evaluate(this);
                 if (result !== null) {
                     this._result = result;
                     this.trigger("challenge_ended", result);
@@ -88,7 +87,7 @@ export default class Simulation {
                 }
             }
             this._world.update(dt);
-            this._result = this._condition.evaluate(this._world);
+            this._result = this._condition.evaluate(this);
         }
     }
 

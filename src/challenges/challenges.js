@@ -6,8 +6,8 @@ export var requireUserCountWithinTime = function(userCount, timeLimit) {
         timeLimit: timeLimit,
         description: "Transport <span class='emphasis-color'>" + userCount + "</span> people in <span class='emphasis-color'>" + timeLimit.toFixed(0) + "</span> seconds or less",
         evaluate: function(sim) {
-            if(sim.elapsedTime >= timeLimit || sim.transportedCounter >= userCount) {
-                return sim.elapsedTime <= timeLimit && sim.transportedCounter >= userCount;
+            if(sim.elapsedTime() >= timeLimit || sim.transportedCount() >= userCount) {
+                return sim.elapsedTime() <= timeLimit && sim.transportedCount() >= userCount;
             } else {
                 return null;
             }
@@ -22,8 +22,8 @@ export var requireUserCountWithMaxWaitTime = function(userCount, maxWaitTime) {
         maxWaitTime: maxWaitTime,
         description: "Transport <span class='emphasis-color'>" + userCount + "</span> people and let no one wait more than <span class='emphasis-color'>" + maxWaitTime.toFixed(1) + "</span> seconds",
         evaluate: function(sim) {
-            if(sim.maxWaitTime >= maxWaitTime || sim.transportedCounter >= userCount) {
-                return sim.maxWaitTime <= maxWaitTime && sim.transportedCounter >= userCount;
+            if(sim.maxWaitTime() >= maxWaitTime || sim.transportedCount() >= userCount) {
+                return sim.maxWaitTime() <= maxWaitTime && sim.transportedCount() >= userCount;
             } else {
                 return null;
             }
@@ -39,8 +39,8 @@ export var requireUserCountWithinTimeWithMaxWaitTime = function(userCount, timeL
        maxWaitTime: maxWaitTime,
        description: "Transport <span class='emphasis-color'>" + userCount + "</span> people in <span class='emphasis-color'>" + timeLimit.toFixed(0) + "</span> seconds or less and let no one wait more than <span class='emphasis-color'>" + maxWaitTime.toFixed(1) + "</span> seconds",
        evaluate: function(sim) {
-            if(sim.elapsedTime >= timeLimit || sim.maxWaitTime >= maxWaitTime || sim.transportedCounter >= userCount) {
-                return sim.elapsedTime <= timeLimit && sim.maxWaitTime <= maxWaitTime && sim.transportedCounter >= userCount;
+            if(sim.elapsedTime() >= timeLimit || sim.maxWaitTime() >= maxWaitTime || sim.transportedCount() >= userCount) {
+                return sim.elapsedTime() <= timeLimit && sim.maxWaitTime() <= maxWaitTime && sim.transportedCount() >= userCount;
             } else {
                 return null;
             }
@@ -55,8 +55,8 @@ export var requireUserCountWithinMoves = function(userCount, moveLimit) {
         moveLimit: moveLimit,
         description: "Transport <span class='emphasis-color'>" + userCount + "</span> people using <span class='emphasis-color'>" + moveLimit + "</span> elevator moves or less",
         evaluate: function(sim) {
-            if(sim.moveCount >= moveLimit || sim.transportedCounter >= userCount) {
-                return sim.moveCount <= moveLimit && sim.transportedCounter >= userCount;
+            if(sim.moveCount() >= moveLimit || sim.transportedCount() >= userCount) {
+                return sim.moveCount() <= moveLimit && sim.transportedCount() >= userCount;
             } else {
                 return null;
             }

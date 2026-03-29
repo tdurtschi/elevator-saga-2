@@ -5,65 +5,71 @@ import { asElevatorInterface } from "../interfaces.js";
 import User from "./user.js";
 import _ from "lodash-es";
 
+export function createFloors(floorCount, floorHeight, errorHandler) {
+    var floors = _.map(_.range(floorCount), function(e, i) {
+        var yPos = (floorCount - 1 - i) * floorHeight;
+        var floor = asFloor({}, i, yPos, errorHandler);
+        return floor;
+    });
+    return floors;
+}
+
+export function createElevators(elevatorCount, floorCount, floorHeight, elevatorCapacities) {
+    elevatorCapacities = elevatorCapacities || [4];
+    var currentX = 200.0;
+    var elevators = _.map(_.range(elevatorCount), function(e, i) {
+        var elevator = new Elevator(2.6, floorCount, floorHeight, elevatorCapacities[i%elevatorCapacities.length]);
+
+        // Set floor position before x so handleNewState sees correct y when new_state fires
+        elevator.setFloorPosition(0);
+        elevator.moveTo(currentX, null);
+        elevator.updateDisplayPosition();
+        currentX += (20 + elevator.width);
+        return elevator;
+    });
+    return elevators;
+}
+
+export function createRandomUser() {
+    var weight = _.random(55, 100);
+    var user = new User(weight);
+    if(_.random(40) === 0) {
+        user.displayType = "child";
+    } else if(_.random(1) === 0) {
+        user.displayType = "female";
+    } else {
+        user.displayType = "male";
+    }
+    return user;
+}
+
+export function spawnUserRandomly(floorCount, floorHeight, floors) {
+    var user = createRandomUser();
+    user.moveTo(105+_.random(40), 0);
+    var currentFloor = _.random(1) === 0 ? 0 : _.random(floorCount - 1);
+    var destinationFloor;
+    if(currentFloor === 0) {
+        // Definitely going up
+        destinationFloor = _.random(1, floorCount - 1);
+    } else {
+        // Usually going down, but sometimes not
+        if(_.random(10) === 0) {
+            destinationFloor = (currentFloor + _.random(1, floorCount - 1)) % floorCount;
+        } else {
+            destinationFloor = 0;
+        }
+    }
+    user.appearOnFloor(floors[currentFloor], destinationFloor);
+    return user;
+}
+
 export function createWorldCreator() {
     var creator = {};
 
-    creator.createFloors = function(floorCount, floorHeight, errorHandler) {
-        var floors = _.map(_.range(floorCount), function(e, i) {
-            var yPos = (floorCount - 1 - i) * floorHeight;
-            var floor = asFloor({}, i, yPos, errorHandler);
-            return floor;
-        });
-        return floors;
-    };
-    creator.createElevators = function(elevatorCount, floorCount, floorHeight, elevatorCapacities) {
-        elevatorCapacities = elevatorCapacities || [4];
-        var currentX = 200.0;
-        var elevators = _.map(_.range(elevatorCount), function(e, i) {
-            var elevator = new Elevator(2.6, floorCount, floorHeight, elevatorCapacities[i%elevatorCapacities.length]);
-
-            // Set floor position before x so handleNewState sees correct y when new_state fires
-            elevator.setFloorPosition(0);
-            elevator.moveTo(currentX, null);
-            elevator.updateDisplayPosition();
-            currentX += (20 + elevator.width);
-            return elevator;
-        });
-        return elevators;
-    };
-
-    creator.createRandomUser = function() {
-        var weight = _.random(55, 100);
-        var user = new User(weight);
-        if(_.random(40) === 0) {
-            user.displayType = "child";
-        } else if(_.random(1) === 0) {
-            user.displayType = "female";
-        } else {
-            user.displayType = "male";
-        }
-        return user;
-    };
-
-    creator.spawnUserRandomly = function(floorCount, floorHeight, floors) {
-        var user = creator.createRandomUser();
-        user.moveTo(105+_.random(40), 0);
-        var currentFloor = _.random(1) === 0 ? 0 : _.random(floorCount - 1);
-        var destinationFloor;
-        if(currentFloor === 0) {
-            // Definitely going up
-            destinationFloor = _.random(1, floorCount - 1);
-        } else {
-            // Usually going down, but sometimes not
-            if(_.random(10) === 0) {
-                destinationFloor = (currentFloor + _.random(1, floorCount - 1)) % floorCount;
-            } else {
-                destinationFloor = 0;
-            }
-        }
-        user.appearOnFloor(floors[currentFloor], destinationFloor);
-        return user;
-    };
+    creator.createFloors = createFloors;
+    creator.createElevators = createElevators;
+    creator.createRandomUser = createRandomUser;
+    creator.spawnUserRandomly = spawnUserRandomly;
 
     creator.createWorld = function(options) {
 var defaultOptions = { floorHeight: 50, floorCount: 4, elevatorCount: 2, spawnRate: 0.5 };
@@ -171,7 +177,7 @@ var defaultOptions = { floorHeight: 50, floorCount: 4, elevatorCount: 2, spawnRa
             _elapsedSinceStatsUpdate += dt;
             while(elapsedSinceSpawn > 1.0/options.spawnRate) {
                 elapsedSinceSpawn -= 1.0/options.spawnRate;
-                world.registerUser(creator.spawnUserRandomly(options.floorCount, world.floorHeight, world.floors));
+                world.registerUser(spawnUserRandomly(options.floorCount, world.floorHeight, world.floors));
             }
 
             // Use regular for loops for performance and memory friendlyness
