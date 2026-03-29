@@ -1,9 +1,9 @@
 import $ from "jquery";
 import { makeDemoFullscreen } from "./src/ui/presenters.js";
-import { createWorldController } from "./src/simulation/world.js";
 import _ from "lodash-es";
 import { getTimeScale } from "./src/ui/persistence.js";
 import { clearLog, log } from "./src/ui/terminal-logger.js";
+
 import { createEditorAsync } from "./src/ui/editor.js";
 import { startRouter } from "./src/ui/router.js";
 import { createChallengeController } from "./src/challenges/challenge-controller.js";
@@ -19,16 +19,14 @@ $(function () {
     var $feedback = $(".feedbackcontainer");
     var $challenge = $(".challenge");
 
-    var worldController = createWorldController(1.0 / 60.0);
-
     createEditorAsync().then(function (editorService) {
         var challengeController = createChallengeController({
             editorService,
-            worldController,
             $world,
             $stats,
             $feedback,
             $challenge,
+            log,
         });
 
         editorService.on("apply_code", function () {
@@ -68,7 +66,7 @@ $(function () {
                 }
             });
 
-            worldController.setTimeScale(timeScale);
+            challengeController.setTimeScale(timeScale);
             challengeController.startChallenge(requestedChallenge, autoStart);
         });
     });

@@ -40,15 +40,15 @@ function presentStats($parent, world) {
     world.trigger("stats_display_changed");
 }
 
-function presentChallenge($parent, challenge, app, world, worldController, challengeNum) {
-    var startButtonText = world.isEnded() ? "<i class='fa fa-repeat'></i> Restart" : (worldController.isPaused ? "Start" : "Pause");
+function presentChallenge($parent, challenge, app, challengeNum) {
+    var startButtonText = app.sim.isEnded() ? "<i class='fa fa-repeat'></i> Restart" : (app.isPaused ? "Start" : "Pause");
     var $challenge = $(`<div class="left">
             <h3>Challenge #${challengeNum}: ${challenge.condition.description}</h3>
         </div>
         <button class="right startstop unselectable" style="width: 140px">${startButtonText}</button>
         <h3 class="right">
             <i class="fa fa-minus-square timescale_decrease unselectable"></i>
-            <span class="emphasis-color" style="display: inline-block; width: 22px; text-align: center">${worldController.timeScale.toFixed(0)}x</span>
+            <span class="emphasis-color" style="display: inline-block; width: 22px; text-align: center">${app.timeScale.toFixed(0)}x</span>
             <i class="fa fa-plus-square timescale_increase unselectable"></i>
         </h3>`);
     $parent.html($challenge);
@@ -58,15 +58,15 @@ function presentChallenge($parent, challenge, app, world, worldController, chall
     });
     $parent.find(".timescale_increase").on("click", function(e) {
         e.preventDefault();
-        if(worldController.timeScale < 40) {
-            var timeScale = Math.round(worldController.timeScale * 1.618);
-            worldController.setTimeScale(timeScale);
+        if(app.timeScale < 40) {
+            var timeScale = Math.round(app.timeScale * 1.618);
+            app.setTimeScale(timeScale);
         }
     });
     $parent.find(".timescale_decrease").on("click", function(e) {
         e.preventDefault();
-        var timeScale = Math.round(worldController.timeScale / 1.618);
-        worldController.setTimeScale(timeScale);
+        var timeScale = Math.round(app.timeScale / 1.618);
+        app.setTimeScale(timeScale);
     });
 }
 
