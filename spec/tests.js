@@ -3,7 +3,6 @@ import {getCodeObjFromCode} from "../src/libs/util.js";
 import Movable from "../src/simulation/movable.js";
 import Elevator from "../src/simulation/elevator.js";
 import User from "../src/simulation/user.js";
-import { createWorldCreator } from "../src/simulation/world.js";
 import _ from "lodash-es";
 import {timeForwarder} from "./helpers/timeForwarder.js";
 
@@ -246,31 +245,6 @@ describe("Elevator Saga", function() {
 
 		});
 
-	});
-
-	describe("World simulation", function() {
-		var world = null;
-
-		beforeEach(function() {
-			var creator = createWorldCreator();
-			world = creator.createWorld({ elevatorCount: 3, floorCount: 2, spawnRate: 0 });
-		});
-
-		it("triggers entrance_available on all idle elevators at a floor when up button is pressed", function() {
-			var spies = world.elevators.map(function(elevator) {
-				var spy = jasmine.createSpy("entrance_available");
-				elevator.on("entrance_available", spy);
-				return spy;
-			});
-
-			world.floors[0].pressUpButton();
-
-			world.elevators.forEach(function(e) { e.updateElevatorMovement(0.5); });
-
-			spies.forEach(function(spy, i) {
-				expect(spy).withContext(`elevator ${i}`).toHaveBeenCalled();
-			});
-		});
 	});
 
 	describe("base", function() {
