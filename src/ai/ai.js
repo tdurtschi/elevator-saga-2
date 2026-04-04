@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 import {CreateMLCEngine} from "@mlc-ai/web-llm";
 import {allModels} from "./models.js";
 import {getAiSettings, patchAiSettings} from "../ui/persistence.js";
-import {log} from "../ui/terminal-logger.js";
+import { createDomLogger } from "../ui/dom-logger.js";
 
 // Alternate list of 'recommended' otherModels:
 var recommendedModels = [
@@ -72,8 +72,9 @@ export const updateSettings = async () => {
 }
 
 const createClient = async (settings) => {
+    const logger = createDomLogger(document.getElementById("terminal-output"));
     const initProgressCallback = (progress) => {
-        log(progress.text + "...");
+        logger.info(progress.text + "...");
         console.log("Model loading progress:", progress);
     };
     const engine = await CreateMLCEngine(settings.modelName, {initProgressCallback});

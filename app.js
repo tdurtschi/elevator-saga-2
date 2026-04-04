@@ -2,7 +2,8 @@ import $ from "jquery";
 import { makeDemoFullscreen } from "./src/ui/presenters.js";
 import _ from "lodash-es";
 import { getTimeScale } from "./src/ui/persistence.js";
-import { clearLog, log } from "./src/ui/terminal-logger.js";
+import { clearLog, init as initTerminal } from "./src/ui/terminal.js";
+import { createDomLogger } from "./src/ui/dom-logger.js";
 
 import { createEditorAsync } from "./src/ui/editor.js";
 import { startRouter } from "./src/ui/router.js";
@@ -20,13 +21,15 @@ $(function () {
     var $challenge = $(".challenge");
 
     createEditorAsync().then(function (editorService) {
+        var logger = createDomLogger(document.getElementById("terminal-output"));
+        initTerminal(logger);
         var challengeController = createChallengeController({
             editorService,
             $world,
             $stats,
             $feedback,
             $challenge,
-            log,
+            logger,
         });
 
         editorService.on("apply_code", function () {
@@ -38,7 +41,7 @@ $(function () {
                 errorMessage = error.stack;
                 errorMessage = errorMessage.replace(/\n/g, "<br>");
             }
-            log(errorMessage, "error");
+            logger.error(errorMessage);
         });
         editorService.on("change", function () {
             $("#fitness_message").addClass("faded");

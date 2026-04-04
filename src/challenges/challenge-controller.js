@@ -10,7 +10,7 @@ import {
 import { createParamsUrl, parseParams } from "../ui/router.js";
 import Simulation from "../simulation/Simulation.js";
 
-export function createChallengeController({ editorService, $world, $stats, $feedback, $challenge, log, presenters = {}, ticker = rafTicker }) {
+export function createChallengeController({ editorService, $world, $stats, $feedback, $challenge, logger, presenters = {}, ticker = rafTicker }) {
     const {
         clearAll = defaultClearAll,
         presentStats = defaultPresentStats,
@@ -39,7 +39,7 @@ export function createChallengeController({ editorService, $world, $stats, $feed
             console.log("Invalid challenge index", challengeIndex, "— defaulting to 0");
             challengeIndex = 0;
         }
-        log("Starting challenge", challengeIndex);
+        logger.info("Starting challenge " + (challengeIndex + 1));
         controller.currentChallengeIndex = challengeIndex;
 
         var challenge = challenges[challengeIndex];
@@ -71,8 +71,7 @@ export function createChallengeController({ editorService, $world, $stats, $feed
 
         controller.sim.on("usercode_error", function (e) {
             controller.setPaused(true);
-            log("Usercode error:", "error");
-            log(e, "error");
+            logger.error("Usercode error: " + e);
         });
 
         var codeObj = editorService.getCodeObj();

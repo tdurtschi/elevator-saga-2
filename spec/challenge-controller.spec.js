@@ -7,7 +7,7 @@ const mockEditorService = () => ({
     on() {},
 });
 
-const noopLog = () => {};
+const noopLogger = { debug() {}, info() {}, warning() {}, error() {} };
 
 const mockPresenters = () => ({
     clearAll() {},
@@ -32,7 +32,7 @@ describe("ChallengeController", () => {
             editorService: mockEditorService(),
 
             presenters: mockPresenters(),
-            log: noopLog,
+            logger: noopLogger,
             ...domStubs(),
         });
 
@@ -54,7 +54,7 @@ describe("ChallengeController", () => {
             ticker,
             editorService: mockEditorService(),
             presenters: countingPresenters,
-            log: noopLog,
+            logger: noopLogger,
             ...domStubs(),
         });
 
@@ -72,7 +72,7 @@ describe("ChallengeController", () => {
             ticker,
             editorService: mockEditorService(),
             presenters: mockPresenters(),
-            log: noopLog,
+            logger: noopLogger,
             ...domStubs(),
         });
 
@@ -90,7 +90,7 @@ describe("ChallengeController", () => {
             ticker,
             editorService: mockEditorService(),
             presenters: mockPresenters(),
-            log: noopLog,
+            logger: noopLogger,
             ...domStubs(),
         });
 
@@ -113,7 +113,7 @@ describe("ChallengeController", () => {
             ticker,
             editorService: mockEditorService(),
             presenters: countingPresenters,
-            log: noopLog,
+            logger: noopLogger,
             ...domStubs(),
         });
 
@@ -132,7 +132,7 @@ describe("ChallengeController", () => {
             editorService: mockEditorService(),
 
             presenters: mockPresenters(),
-            log: noopLog,
+            logger: noopLogger,
             ...domStubs(),
         });
         controllerA.startChallenge(0, true);
@@ -144,7 +144,7 @@ describe("ChallengeController", () => {
             editorService: mockEditorService(),
 
             presenters: mockPresenters(),
-            log: noopLog,
+            logger: noopLogger,
             ...domStubs(),
         });
         controllerB.setTimeScale(2.0);
@@ -161,7 +161,7 @@ describe("ChallengeController", () => {
             editorService: mockEditorService(),
 
             presenters: mockPresenters(),
-            log: noopLog,
+            logger: noopLogger,
             ...domStubs(),
         });
 
