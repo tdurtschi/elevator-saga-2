@@ -122,6 +122,22 @@ test.describe('in-page challenge switching (hash change, no reload)', () => {
         await expect(page.locator('.startstop')).toHaveText('Start');
     });
 
+    test('timescale persists when switching challenges', async ({ page }) => {
+        await waitForApp(page);
+
+        // Increase speed twice, note the displayed value
+        await page.locator('.timescale_increase').click();
+        await page.locator('.timescale_increase').click();
+        const timescaleDisplay = page.locator('.challenge .emphasis-color').filter({ hasText: /^\d+x$/ });
+        const speedBefore = await timescaleDisplay.textContent();
+
+        await switchToChallenge(page, 2);
+        await expect(page.locator('.challenge h3').first()).toContainText('Challenge #2');
+
+        const speedAfter = await timescaleDisplay.textContent();
+        expect(speedAfter).toBe(speedBefore);
+    });
+
     test('timescale listener does not accumulate across challenge switches', async ({ page }) => {
         await waitForApp(page);
 

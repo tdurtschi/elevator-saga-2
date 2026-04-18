@@ -1,5 +1,6 @@
 import { challenges } from "./challenges.js";
 import { rafTicker } from "../ticker.js";
+import { setTimeScale } from "../ui/persistence.js";
 import {
     clearAll as defaultClearAll,
     presentStats as defaultPresentStats,
@@ -31,6 +32,7 @@ export function createChallengeController({ editorService, $world, $stats, $feed
 
     controller.setTimeScale = function (timeScale) {
         controller.timeScale = timeScale;
+        setTimeScale(timeScale);
         if (controller._rerenderChallenge) controller._rerenderChallenge();
     };
 
