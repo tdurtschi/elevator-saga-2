@@ -35,6 +35,7 @@ export const createEditorAsync = () => new Promise((resolve) => {
             wordWrap: "on",
             language: "javascript",
             model: codeModel,
+            acceptSuggestionOnEnter: 'off',
         });
     }
 
