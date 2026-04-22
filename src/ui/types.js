@@ -1,8 +1,16 @@
 // Created by Josef Wittmann: https://gist.github.com/Josef37/e075b6a005a47d146c7e7ab9ed7ae893
 export const typeDeclarations = `
+interface Init {
+    (elevators: Elevator[], floors: Floor[]): void;
+}
+
+interface Update {
+    (dt: number, elevators: Elevator[], floors: Floor[]): void;
+}
+
 interface Solution {
-    init: (elevators: Elevator[], floors: Floor[]) => void;
-    update: (dt: number, elevators: Elevator[], floors: Floor[]) => void;
+    init: Init;
+    update: Update;
 }
 
 interface Elevator {

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Monaco JS Editor Prototype</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { display: flex; flex-direction: column; height: 100vh; font-family: monospace; background: #1e1e1e; color: #d4d4d4; }
+    #toolbar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #252526; border-bottom: 1px solid #3c3c3c; }
+    #toolbar h1 { font-size: 14px; color: #cccccc; flex: 1; }
+    #apply-btn { padding: 6px 16px; background: #0e639c; color: white; border: none; cursor: pointer; font-size: 13px; border-radius: 2px; }
+    #apply-btn:hover { background: #1177bb; }
+    #editor-container { flex: 1; }
+    #output { height: 160px; background: #1e1e1e; border-top: 1px solid #3c3c3c; padding: 8px 12px; overflow-y: auto; font-size: 13px; }
+    #output .entry { margin-bottom: 2px; white-space: pre-wrap; }
+    #output .log { color: #d4d4d4; }
+    #output .error { color: #f48771; }
+    #output .result { color: #4ec9b0; }
+    #output-label { font-size: 11px; color: #858585; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  </style>
+</head>
+<body>
+
+<div id="toolbar">
+  <h1>Monaco JS Editor</h1>
+  <button id="apply-btn">Apply (Ctrl+Enter)</button>
+</div>
+<div id="editor-container"></div>
+<div id="output">
+  <div id="output-label">Output</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.55.1/min/vs/loader.js"></script>
+<script>
+  require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.55.1/min/vs' } });
+
+  window.MonacoEnvironment = {
+    getWorkerUrl(_, label) {
+      if (label === 'typescript' || label === 'javascript')
+        return 'https://cdn.jsdelivr.net/npm/monaco-editor@0.55.1/min/vs/language/typescript/ts.worker.js';
+      return 'https://cdn.jsdelivr.net/npm/monaco-editor@0.55.1/min/vs/editor.worker.js';
+    }
+  };
+
+  require(['vs/editor/editor.main'], async function () {
+    const { typeDeclarations } = await import('./src/ui/types.js');
+    monaco.languages.typescript.javascriptDefaults.addExtraLib(typeDeclarations);
+
+    const defaultCode = `export const init = function(elevators, floors) {
+  console.log('elevators:', JSON.stringify(elevators));
+  console.log('floors:', JSON.stringify(floors));
+};
+
+export const update = function(dt, elevators, floors) {
+};`;
+
+    const model = monaco.editor.createModel(
+      defaultCode,
+      'javascript',
+      monaco.Uri.parse('inmemory://model/code')
+    );
+
+    const editor = monaco.editor.create(document.getElementById('editor-container'), {
+      model,
+      theme: 'vs-dark',
+      acceptSuggestionOnEnter: 'off',
+      minimap: { enabled: false },
+      fontSize: 14,
+      lineNumbers: 'on',
+      scrollBeyondLastLine: false,
+      automaticLayout: true,
+    });
+
+    const output = document.getElementById('output');
+
+    function clearOutput() {
+      output.innerHTML = '<div id="output-label">Output</div>';
+    }
+
+    function appendOutput(text, cls) {
+      const div = document.createElement('div');
+      div.className = `entry ${cls}`;
+      div.textContent = text;
+      output.appendChild(div);
+      output.scrollTop = output.scrollHeight;
+    }
+
+    async function runCode() {
+      clearOutput();
+
+      const origLog = console.log;
+      const origWarn = console.warn;
+      const origError = console.error;
+
+      console.log = (...args) => { appendOutput(args.map(String).join(' '), 'log'); origLog(...args); };
+      console.warn = (...args) => { appendOutput('⚠ ' + args.map(String).join(' '), 'log'); origWarn(...args); };
+      console.error = (...args) => { appendOutput(args.map(String).join(' '), 'error'); origError(...args); };
+
+      try {
+        const code = editor.getValue();
+        let solution;
+
+        if (/\bexport\b/.test(code)) {
+          const blob = new Blob([code], { type: 'application/javascript' });
+          const url = URL.createObjectURL(blob);
+          try {
+            solution = await import(url);
+          } finally {
+            URL.revokeObjectURL(url);
+          }
+        } else {
+          solution = new Function(code)();
+        }
+
+        if (typeof solution?.init === 'function') {
+          solution.init([], []);
+        } else {
+          appendOutput('No init function found', 'error');
+        }
+      } catch (err) {
+        appendOutput(err.toString(), 'error');
+      } finally {
+        console.log = origLog;
+        console.warn = origWarn;
+        console.error = origError;
+      }
+    }
+
+    document.getElementById('apply-btn').addEventListener('click', runCode);
+
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, runCode);
+  });
+</script>
+</body>
+</html>
