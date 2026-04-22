@@ -96,7 +96,7 @@ export const createEditorAsync = () => new Promise((resolve) => {
 
     var editorService = observable({});
     var autoSaver = _.debounce(saveCode, 1000);
-    editor.onDidChangeModelContent = autoSaver;
+    editor.onDidChangeModelContent(autoSaver);
 
     editorService.getCodeObj = function () {
         console.log("Getting code...");

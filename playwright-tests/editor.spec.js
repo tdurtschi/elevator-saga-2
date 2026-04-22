@@ -84,6 +84,26 @@ test.describe('editor behavior', () => {
         expect(code).not.toContain('elevator.checkDestinationQueue');
     });
 
+    test('suggest widget filters as user types', async ({ page }) => {
+        await waitForApp(page);
+
+        await page.evaluate(() => {
+            const editor = window.monaco.editor.getEditors()[0];
+            editor.setModel(monaco.editor.getModels().find(m => m.getLanguageId() === 'javascript'));
+            editor.setValue('');
+            editor.setPosition({ lineNumber: 1, column: 1 });
+            editor.focus();
+        });
+
+        await page.keyboard.type('con', { delay: 50 });
+        await expect(page.locator('.monaco-editor .suggest-widget')).toBeVisible({ timeout: 3000 });
+
+        await page.keyboard.type('st', { delay: 50 });
+
+        const rows = page.locator('.monaco-editor .suggest-widget .monaco-list-row');
+        await expect(rows.first()).toContainText('const', { timeout: 2000 });
+    });
+
     test('reset button restores the default implementation', async ({ page }) => {
         await waitForApp(page);
 
