@@ -26,6 +26,8 @@ export default [
                 alert: "readonly",
                 navigator: "readonly",
                 MutationObserver: "readonly",
+                URL: "readonly",
+                Blob: "readonly",
                 // Node
                 process: "readonly",
                 __dirname: "readonly",

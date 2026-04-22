@@ -17,10 +17,10 @@ import { challenges } from './src/challenges/challenges.js';
 import Simulation from './src/simulation/Simulation.js';
 import { getCodeObjFromCode } from './src/libs/util.js';
 
-export function runChallenge(challengeIndex, solutionCode) {
+export async function runChallenge(challengeIndex, solutionCode) {
     const challenge = challenges[challengeIndex];
     const opts = challenge.options;
-    const codeObj = getCodeObjFromCode(solutionCode);
+    const codeObj = await getCodeObjFromCode(solutionCode);
     const sim = new Simulation({
         floors: opts.floorCount,
         elevators: opts.elevatorCount,
@@ -84,11 +84,11 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const code = readFileSync(solutionPath, 'utf8');
 
     if (hasChallengeFlag) {
-        const result = runChallenge(challengeIndex, code);
+        const result = await runChallenge(challengeIndex, code);
         console.log(formatResult(challengeIndex, result));
     } else {
         for (let i = 0; i < challenges.length; i++) {
-            const result = runChallenge(i, code);
+            const result = await runChallenge(i, code);
             console.log(formatResult(i, result));
             if (!result.passed) break;
         }

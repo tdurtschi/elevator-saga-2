@@ -1,23 +1,23 @@
 import { runChallenge } from "../headless-runner.js";
 
-const SOLUTION = `({
-    init: function(elevators, floors) {
-        var elevator = elevators[0];
-        elevator.on("idle", function() {
-            elevator.goToFloor(0);
-            elevator.goToFloor(1);
-            elevator.goToFloor(2);
-        });
-    },
-    update: function(dt, elevators, floors) {}
-})`;
+const SOLUTION = `
+export const init = function(elevators, floors) {
+    var elevator = elevators[0];
+    elevator.on("idle", function() {
+        elevator.goToFloor(0);
+        elevator.goToFloor(1);
+        elevator.goToFloor(2);
+    });
+};
+export const update = function(dt, elevators, floors) {};
+`;
 
 describe("headless runner", function () {
     describe("challenge 1 (transport 15 people in 60s)", function () {
         var result;
 
-        beforeEach(function () {
-            result = runChallenge(0, SOLUTION);
+        beforeEach(async function () {
+            result = await runChallenge(0, SOLUTION);
         });
 
         it("passes the challenge", function () {

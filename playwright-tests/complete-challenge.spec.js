@@ -1,26 +1,26 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
-const PROGRAM = `({
-    init: function(elevators, floors) {
-        var rotator = 0;
-        _.each(floors, function(floor) {
-            floor.on("up_button_pressed down_button_pressed", function() {
-                var elevator = elevators[(rotator++) % elevators.length];
-                elevator.goToFloor(floor.level);
-            });
+const PROGRAM = `
+export const init = function(elevators, floors) {
+    var rotator = 0;
+    _.each(floors, function(floor) {
+        floor.on("up_button_pressed down_button_pressed", function() {
+            var elevator = elevators[(rotator++) % elevators.length];
+            elevator.goToFloor(floor.level);
         });
-        _.each(elevators, function(elevator) {
-            elevator.on("floor_button_pressed", function(floorNum) {
-                elevator.goToFloor(floorNum);
-            });
-            elevator.on("idle", function() {
-                elevator.goToFloor(0);
-            });
+    });
+    _.each(elevators, function(elevator) {
+        elevator.on("floor_button_pressed", function(floorNum) {
+            elevator.goToFloor(floorNum);
         });
-    },
-    update: function(dt, elevators, floors) {}
-})`;
+        elevator.on("idle", function() {
+            elevator.goToFloor(0);
+        });
+    });
+};
+export const update = function(dt, elevators, floors) {};
+`;
 
 const waitForApp = async (page) => {
     await page.goto('http://localhost:3000/', { waitUntil: 'domcontentloaded' });

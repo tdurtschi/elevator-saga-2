@@ -32,8 +32,8 @@ $(function () {
             logger,
         });
 
-        editorService.on("apply_code", function () {
-            challengeController.startChallenge(challengeController.currentChallengeIndex, true);
+        editorService.on("apply_code", async function () {
+            await challengeController.startChallenge(challengeController.currentChallengeIndex, true);
         });
         editorService.on("usercode_error", function (error) {
             var errorMessage = error;
@@ -48,7 +48,7 @@ $(function () {
         });
         editorService.trigger("change");
 
-        startRouter(function (routeParams) {
+        startRouter(async function (routeParams) {
             clearLog();
 
             var requestedChallenge = 0;
@@ -70,7 +70,7 @@ $(function () {
             });
 
             challengeController.setTimeScale(timeScale);
-            challengeController.startChallenge(requestedChallenge, autoStart);
+            await challengeController.startChallenge(requestedChallenge, autoStart);
         });
     });
 });

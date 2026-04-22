@@ -27,7 +27,7 @@ test.describe('editor behavior', () => {
     test('code persists across page reload', async ({ page }) => {
         await waitForApp(page);
 
-        const customCode = '({ init: function() { /* custom */ }, update: function() {} })';
+        const customCode = 'export const init = function() { /* custom */ };\nexport const update = function() {};\n';
         await setEditorCode(page, customCode);
 
         // Wait for autosave debounce (1s) then reload

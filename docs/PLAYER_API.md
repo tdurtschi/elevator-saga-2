@@ -2,18 +2,17 @@
 
 ## Your code structure
 
-You export an object with two functions:
+You export two functions:
 
 ```js
-({
-    init: function(elevators, floors) {
-        // Set up event listeners. Runs once at challenge start.
-    },
-    update: function(dt, elevators, floors) {
-        // Called every simulation tick. dt = elapsed seconds since last tick.
-        // Fine for polling, but event-driven code in init is usually enough.
-    }
-})
+export const init = function(elevators, floors) {
+    // Set up event listeners. Runs once at challenge start.
+};
+
+export const update = function(dt, elevators, floors) {
+    // Called every simulation tick. dt = elapsed seconds since last tick.
+    // Fine for polling, but event-driven code in init is usually enough.
+};
 ```
 
 ---

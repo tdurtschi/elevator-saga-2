@@ -98,12 +98,12 @@ export const createEditorAsync = () => new Promise((resolve) => {
     var autoSaver = _.debounce(saveCode, 1000);
     editor.onDidChangeModelContent(autoSaver);
 
-    editorService.getCodeObj = function () {
+    editorService.getCodeObj = async function () {
         console.log("Getting code...");
         var code = editor.getValue();
         var obj;
         try {
-            obj = getCodeObjFromCode(code);
+            obj = await getCodeObjFromCode(code);
             editorService.trigger("code_success");
         } catch (e) {
             editorService.trigger("usercode_error", e);

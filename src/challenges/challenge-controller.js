@@ -34,7 +34,7 @@ export function createChallengeController({ editorService, $world, $stats, $feed
         if (controller._rerenderChallenge) controller._rerenderChallenge();
     };
 
-    controller.startChallenge = function (challengeIndex, autoStart) {
+    controller.startChallenge = async function (challengeIndex, autoStart) {
         if (challengeIndex < 0 || challengeIndex >= challenges.length) {
             console.log("Invalid challenge index", challengeIndex, "— defaulting to 0");
             challengeIndex = 0;
@@ -74,7 +74,7 @@ export function createChallengeController({ editorService, $world, $stats, $feed
             logger.error("Usercode error: " + e);
         });
 
-        var codeObj = editorService.getCodeObj();
+        var codeObj = await editorService.getCodeObj();
         controller.sim.applyCode(codeObj);
         var lastT = null;
         var updater = function (t) {

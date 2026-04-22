@@ -32,18 +32,26 @@ export const createFrameRequester = function(timeStep) {
     return requester;
 };
 
-export const getCodeObjFromCode = function(code) {
-    if (code.trim().substr(0,1) == "{" && code.trim().substr(-1,1) == "}") {
-        code = "(" + code + ")";
+export const getCodeObjFromCode = async function(code) {
+    let obj;
+    if (/\bexport\b/.test(code)) {
+        const isBrowser = typeof window !== 'undefined' && typeof window.URL !== 'undefined' && typeof window.URL.createObjectURL === 'function';
+        const url = isBrowser
+            ? URL.createObjectURL(new Blob([code], { type: 'application/javascript' }))
+            : `data:text/javascript,${encodeURIComponent(code)}`;
+        try {
+            obj = await import(url);
+        } finally {
+            if (isBrowser) URL.revokeObjectURL(url);
+        }
+    } else {
+        let evalCode = code;
+        if (evalCode.trim().startsWith('{') && evalCode.trim().endsWith('}')) {
+            evalCode = '(' + evalCode + ')';
+        }
+        obj = eval(evalCode);
     }
-    /* jslint evil:true */
-    var obj = eval(code);
-    /* jshint evil:false */
-    if(typeof obj.init !== "function") {
-        throw "Code must contain an init function";
-    }
-    if(typeof obj.update !== "function") {
-        throw "Code must contain an update function";
-    }
+    if (typeof obj.init !== 'function') throw 'Code must contain an init function';
+    if (typeof obj.update !== 'function') throw 'Code must contain an update function';
     return obj;
-}
+};
