@@ -154,6 +154,23 @@ describe("ChallengeController", () => {
         expect(controllerB.sim.elapsedTime()).toBeGreaterThan(controllerA.sim.elapsedTime());
     });
 
+    it("ends the previous simulation when startChallenge is called again", async () => {
+        const ticker = createSyncTicker(1000 / 60, 10);
+        const controller = createChallengeController({
+            ticker,
+            editorService: mockEditorService(),
+            presenters: mockPresenters(),
+            logger: noopLogger,
+            ...domStubs(),
+        });
+
+        await controller.startChallenge(0, true);
+        const firstSim = controller.sim;
+        await controller.startChallenge(0, true);
+
+        expect(firstSim.isEnded()).toBe(true);
+    });
+
     it("advances the simulation when a challenge is started", async () => {
         const ticker = createSyncTicker(1000 / 60, 10);
         const controller = createChallengeController({

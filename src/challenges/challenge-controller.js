@@ -46,6 +46,7 @@ export function createChallengeController({ editorService, $world, $stats, $feed
 
         var challenge = challenges[challengeIndex];
         var opts = challenge.options;
+        if (controller.sim) controller.sim.end();
         controller.sim = new Simulation({
             floors: opts.floorCount,
             elevators: opts.elevatorCount,
@@ -79,14 +80,15 @@ export function createChallengeController({ editorService, $world, $stats, $feed
         var codeObj = await editorService.getCodeObj();
         controller.sim.applyCode(codeObj);
         var lastT = null;
+        const sim = controller.sim;
         var updater = function (t) {
             if (!controller.isPaused && lastT !== null) {
-                controller.sim.tick((t - lastT) * 0.001 * controller.timeScale);
-                controller.sim.updateDisplayPositions();
-                controller.sim.trigger("stats_display_changed");
+                sim.tick((t - lastT) * 0.001 * controller.timeScale);
+                sim.updateDisplayPositions();
+                sim.trigger("stats_display_changed");
             }
             lastT = t;
-            if (!controller.sim.isEnded()) {
+            if (!sim.isEnded()) {
                 ticker(updater);
             }
         };

@@ -191,6 +191,16 @@ describe("Simulation", () => {
       expect(sim.isEnded()).toBe(true);
     });
 
+    it("returns true after end() is called", () => {
+      const sim = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
+      sim.applyCode({ init() {}, update() {} });
+
+      sim.end();
+
+      expect(sim.isEnded()).toBe(true);
+      expect(sim.passed()).toBe(false);
+    });
+
     it("tick(dt) after ended does not advance state", () => {
       const sim = new Simulation({
         floors: 3, elevators: 1, spawnRate: 0,

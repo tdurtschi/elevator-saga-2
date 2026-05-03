@@ -274,6 +274,10 @@ export default class Simulation {
         return this._result !== null;
     }
 
+    end() {
+        this._result = "cancelled";
+    }
+
     elapsedTime() {
         return this._elapsedTime;
     }
