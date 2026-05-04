@@ -92,6 +92,15 @@ export const createEditorAsync = () => new Promise((resolve) => {
     });
 
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, saveCode);
+    editor.addAction({
+        id: 'apply-code',
+        label: 'Apply Code',
+        keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
+        run: function () {
+            saveCode();
+            editorService.trigger("apply_code");
+        }
+    });
 
     var editorService = observable({});
     var autoSaver = _.debounce(saveCode, 1000);

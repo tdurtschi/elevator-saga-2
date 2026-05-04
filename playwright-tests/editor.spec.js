@@ -104,6 +104,19 @@ test.describe('editor behavior', () => {
         await expect(rows.first()).toContainText('const', { timeout: 2000 });
     });
 
+    test('Cmd+Enter applies code and restarts the simulation', async ({ page }) => {
+        await waitForApp(page);
+
+        await page.evaluate(() => document.getElementById('save_message').textContent = '');
+
+        await page.locator('#editor .monaco-editor').click();
+        await page.keyboard.press('Control+Enter');
+
+        await expect(page.locator('#save_message')).toContainText('Code saved', { timeout: 300 });
+        // Simulation restarts — world re-renders floors
+        await expect(page.locator('.innerworld .floor').first()).toBeVisible();
+    });
+
     test('reset button restores the default implementation', async ({ page }) => {
         await waitForApp(page);
 
