@@ -77,6 +77,10 @@ html, body {
     padding: 0;
 }
 
+body:has(#editor-panel.is-open) {
+    overflow: hidden;
+}
+
 body {
     font-family: monospace;
 }
@@ -104,9 +108,9 @@ a {
 }
 
 .container {
-    width: 1220px;
-    margin: 0 auto;
-    padding: 20px 0 40px 0;
+    width: 100%;
+    padding: 20px 20px 40px 20px;
+    box-sizing: border-box;
 }
 
 .unselectable {
@@ -191,10 +195,15 @@ button.right {
     height: 60px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 2px solid var(--accent);
+    position: relative;
+    z-index: 200;
+    background: var(--bg-page);
 }
 
 .header h1 {
-    line-height: 50px;
     margin: 0;
     padding: 0;
 }
@@ -203,8 +212,16 @@ button.right {
     display: inline-block;
     margin-left: 15px;
     font-size: 20px;
-    line-height: 50px;
     padding: 0 4px;
+}
+
+#editor-toggle {
+    margin-left: 15px;
+    text-shadow: none;
+}
+
+#editor-toggle.active {
+    background-color: var(--accent);
 }
 
 .timescale_decrease, .timescale_increase {
@@ -225,17 +242,57 @@ button.right {
     font: 14px Consolas, Monaco, monospace;
 }
 
+#editor-panel {
+    position: fixed;
+    top: 62px; /* header height (60px) + border (2px) */
+    left: 0;
+    right: 0;
+    height: calc(100vh - 62px);
+    overflow-y: auto;
+    transform: translateY(-100%);
+    transition: transform 280ms ease;
+    visibility: hidden;
+    z-index: 50;
+    background: var(--bg-surface);
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+#editor-panel.is-open {
+    transform: translateY(0);
+    visibility: visible;
+}
+
+#editor-panel-links {
+    width: 100%;
+    margin: 8px 0 0;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+button.link-style {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    color: var(--accent-light);
+    text-decoration: underline;
+}
+
 #editor {
     border: solid 1px darkgray;
     overflow: hidden;
-    width: 1220px;
+    width: 100%;
     height: 575px;
-    margin: 10px auto;
+    margin: 10px 0;
 }
 
 .world {
     position: relative;
-    width: 1220px;
+    width: 100%;
     background-color: var(--bg-surface);
     padding: 0;
     overflow: hidden;
@@ -244,10 +301,12 @@ button.right {
 .innerworld {
     position: relative;
     height: 100%;
-    width: 938px;
+    width: calc(100% - 282px);
     border-right: 1px solid var(--border-color);
     border-left: 1px solid var(--border-color);
     font-family: Arial, Helvetica, sans-serif;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .statscontainer {
@@ -444,8 +503,8 @@ button.right {
 #terminal-output {
     font-family: monospace;
     padding: 4px;
-    min-height: 38px;
-    max-height: 38px;
+    min-height: 114px;
+    max-height: 114px;
     overflow-y: scroll;
     scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }

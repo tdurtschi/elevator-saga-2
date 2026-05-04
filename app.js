@@ -20,6 +20,12 @@ $(function () {
     var $feedback = $(".feedbackcontainer");
     var $challenge = $(".challenge");
 
+    const editorToggle = document.getElementById('editor-toggle');
+    editorToggle.addEventListener('click', function () {
+        document.getElementById('editor-panel').classList.toggle('is-open');
+        editorToggle.classList.toggle('active');
+    });
+
     createEditorAsync().then(function (editorService) {
         var logger = createDomLogger(document.getElementById("terminal-output"));
         initTerminal(logger);

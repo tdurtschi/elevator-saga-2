@@ -35,6 +35,12 @@ npm run test
 
 Runs both Jasmine unit tests and Playwright e2e tests. Playwright uses the `list` reporter so results print to stdout.
 
+## Spec structure
+
+Specs live in `spec/`. The primary behavioral spec suite is `spec/simulation.spec.js`, which covers game logic end-to-end using the `Simulation` test API (`src/simulation/Simulation.js`). Other specs cover individual modules (floors, elevators, challenges, logging, etc.).
+
+Source code lives in `src/`, organized into `simulation/`, `challenges/`, and `ui/` subdirectories.
+
 ## Architecture direction
 
 ### Completed work

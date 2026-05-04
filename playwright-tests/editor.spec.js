@@ -4,9 +4,11 @@ import { test, expect } from '@playwright/test';
 // Wait for Monaco and the app to be fully initialized
 const waitForApp = async (page) => {
     await page.goto('http://localhost:3000/', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#editor .monaco-editor').first()).toBeVisible();
     await expect(page.locator('.innerworld .floor').first()).toBeVisible();
 };
+
+const openEditorPanel = async (page) =>
+    page.locator('#editor-toggle').click();
 
 const setEditorCode = (page, code) =>
     page.evaluate((c) => monaco.editor.getModels()[0].setValue(c), code);
@@ -14,9 +16,23 @@ const setEditorCode = (page, code) =>
 const getEditorCode = (page) =>
     page.evaluate(() => monaco.editor.getModels()[0].getValue());
 
+test.describe('editor panel', () => {
+    test('editor panel is hidden by default', async ({ page }) => {
+        await waitForApp(page);
+        await expect(page.locator('#editor-panel')).not.toBeVisible();
+    });
+
+    test('clicking the editor toggle shows the editor', async ({ page }) => {
+        await waitForApp(page);
+        await page.locator('#editor-toggle').click();
+        await expect(page.locator('#editor-panel')).toBeVisible();
+    });
+});
+
 test.describe('editor behavior', () => {
     test('applying invalid JS shows an error in the terminal', async ({ page }) => {
         await waitForApp(page);
+        await openEditorPanel(page);
 
         await setEditorCode(page, 'this is not valid javascript {{{');
         await page.locator('#button_apply').click();
@@ -26,6 +42,7 @@ test.describe('editor behavior', () => {
 
     test('code persists across page reload', async ({ page }) => {
         await waitForApp(page);
+        await openEditorPanel(page);
 
         const customCode = 'export const init = function() { /* custom */ };\nexport const update = function() {};\n';
         await setEditorCode(page, customCode);
@@ -33,7 +50,7 @@ test.describe('editor behavior', () => {
         // Wait for autosave debounce (1s) then reload
         await page.waitForTimeout(1500);
         await page.reload({ waitUntil: 'domcontentloaded' });
-        await expect(page.locator('#editor .monaco-editor').first()).toBeVisible();
+        await expect(page.locator('.innerworld .floor').first()).toBeVisible();
 
         const savedCode = await getEditorCode(page);
         expect(savedCode).toBe(customCode);
@@ -41,6 +58,7 @@ test.describe('editor behavior', () => {
 
     test('Ctrl+S saves code without opening browser dialog', async ({ page }) => {
         await waitForApp(page);
+        await openEditorPanel(page);
 
         // Clear the save message so we can detect a fresh save
         await page.evaluate(() => document.getElementById('save_message').textContent = '');
@@ -54,6 +72,7 @@ test.describe('editor behavior', () => {
 
     test('pressing Enter after typing does not apply autocomplete suggestion', async ({ page }) => {
         await waitForApp(page);
+        await openEditorPanel(page);
 
         const initialCode = `({
   init: function(elevators, floors) {
@@ -86,6 +105,7 @@ test.describe('editor behavior', () => {
 
     test('suggest widget filters as user types', async ({ page }) => {
         await waitForApp(page);
+        await openEditorPanel(page);
 
         await page.evaluate(() => {
             const editor = window.monaco.editor.getEditors()[0];
@@ -106,6 +126,7 @@ test.describe('editor behavior', () => {
 
     test('Cmd+Enter applies code and restarts the simulation', async ({ page }) => {
         await waitForApp(page);
+        await openEditorPanel(page);
 
         await page.evaluate(() => document.getElementById('save_message').textContent = '');
 
@@ -119,6 +140,7 @@ test.describe('editor behavior', () => {
 
     test('reset button restores the default implementation', async ({ page }) => {
         await waitForApp(page);
+        await openEditorPanel(page);
 
         await setEditorCode(page, '({ init: function() {}, update: function() {} })');
 
