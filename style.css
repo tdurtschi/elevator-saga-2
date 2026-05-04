@@ -106,7 +106,7 @@ a {
 .container {
     width: 1220px;
     margin: 0 auto;
-    padding: 20px 0 40px 0;
+    padding: 0 0 40px 0;
 }
 
 .unselectable {
@@ -191,10 +191,15 @@ button.right {
     height: 60px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 2px solid var(--accent);
+    position: relative;
+    z-index: 200;
+    background: var(--bg-page);
 }
 
 .header h1 {
-    line-height: 50px;
     margin: 0;
     padding: 0;
 }
@@ -203,8 +208,16 @@ button.right {
     display: inline-block;
     margin-left: 15px;
     font-size: 20px;
-    line-height: 50px;
     padding: 0 4px;
+}
+
+#editor-toggle {
+    margin-left: 15px;
+    text-shadow: none;
+}
+
+#editor-toggle.active {
+    background-color: var(--accent);
 }
 
 .timescale_decrease, .timescale_increase {
@@ -223,6 +236,50 @@ button.right {
 
 .code {
     font: 14px Consolas, Monaco, monospace;
+}
+
+#editor-panel {
+    position: fixed;
+    top: 62px; /* header height (60px) + border (2px) */
+    left: 0;
+    right: 0;
+    height: calc(100vh - 62px);
+    overflow-y: auto;
+    transform: translateY(-100%);
+    transition: transform 280ms ease;
+    visibility: hidden;
+    z-index: 50;
+    background: var(--bg-surface);
+}
+
+#editor-panel.is-open {
+    transform: translateY(0);
+    visibility: visible;
+}
+
+#editor-panel-links {
+    margin: 8px 10px 0;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+button.link-style {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    color: var(--accent-light);
+    text-decoration: underline;
+}
+
+#editor-panel-links {
+    width: 1220px;
+    margin: 8px auto 0;
+    display: flex;
+    gap: 16px;
 }
 
 #editor {
