@@ -102,6 +102,8 @@ export const createEditorAsync = () => new Promise((resolve) => {
         }
     });
 
+    new ResizeObserver(() => editor.layout()).observe(document.getElementById("editor"));
+
     var editorService = observable({});
     var autoSaver = _.debounce(saveCode, 1000);
     editor.onDidChangeModelContent(autoSaver);
