@@ -287,7 +287,7 @@ button.link-style {
     overflow: hidden;
     width: 100%;
     height: 575px;
-    margin: 10px 0;
+    margin: 1px auto 10px auto;
 }
 
 .world {
@@ -520,4 +520,45 @@ button.link-style {
     position: relative;
     top: 2px;
     cursor: pointer;
+}
+
+/* Editor tab buttons */
+.aiprompt {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+#tabs-form input[type="radio"] {
+    display: none;
+}
+
+#tabs-form label {
+    font-family: monospace;
+    font-size: 14px;
+    padding: 0 20px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+}
+
+#tabs-form label:first-child {
+    border-radius: 5px 0 0 5px;
+}
+
+#tabs-form label:last-child {
+    border-radius: 0 5px 5px 0;
+}
+
+#tabs-form label:hover {
+    background-color: var(--accent-muted);
+}
+
+/* Active tab highlight */
+#tabs-form input:checked + label {
+    background-color: var(--accent-dark);
+    color: var(--button-text);
+    text-shadow: 0 0 2px var(--button-text-shadow);
 }
