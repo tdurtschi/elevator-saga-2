@@ -40,6 +40,8 @@ $(function () {
 
         editorService.on("apply_code", async function () {
             await challengeController.startChallenge(challengeController.currentChallengeIndex, true);
+            document.getElementById('editor-panel').classList.remove('is-open');
+            editorToggle.classList.remove('active');
         });
         editorService.on("usercode_error", function (error) {
             var errorMessage = error;

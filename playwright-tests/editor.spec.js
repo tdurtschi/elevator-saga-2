@@ -27,6 +27,16 @@ test.describe('editor panel', () => {
         await page.locator('#editor-toggle').click();
         await expect(page.locator('#editor-panel')).toBeVisible();
     });
+
+    test('applying code collapses the editor panel', async ({ page }) => {
+        await waitForApp(page);
+        await openEditorPanel(page);
+        await expect(page.locator('#editor-panel')).toBeVisible();
+
+        await page.locator('#button_apply').click();
+
+        await expect(page.locator('#editor-panel')).not.toBeVisible();
+    });
 });
 
 test.describe('editor behavior', () => {
