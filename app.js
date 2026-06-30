@@ -21,9 +21,20 @@ $(function () {
     var $challenge = $(".challenge");
 
     const editorToggle = document.getElementById('editor-toggle');
-    editorToggle.addEventListener('click', function () {
-        document.getElementById('editor-panel').classList.toggle('is-open');
+    const editorPanel = document.getElementById('editor-panel');
+
+    function toggleEditorPanel() {
+        editorPanel.classList.toggle('is-open');
         editorToggle.classList.toggle('active');
+    }
+
+    editorToggle.addEventListener('click', toggleEditorPanel);
+
+    document.addEventListener('keydown', function (e) {
+        if (e.ctrlKey && e.key === '`') {
+            e.preventDefault();
+            toggleEditorPanel();
+        }
     });
 
     createEditorAsync().then(function (editorService) {
@@ -40,7 +51,7 @@ $(function () {
 
         editorService.on("apply_code", async function () {
             await challengeController.startChallenge(challengeController.currentChallengeIndex, true);
-            document.getElementById('editor-panel').classList.remove('is-open');
+            editorPanel.classList.remove('is-open');
             editorToggle.classList.remove('active');
         });
         editorService.on("usercode_error", function (error) {

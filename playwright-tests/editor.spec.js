@@ -28,6 +28,19 @@ test.describe('editor panel', () => {
         await expect(page.locator('#editor-panel')).toBeVisible();
     });
 
+    test('ctrl+backtick opens the editor panel', async ({ page }) => {
+        await waitForApp(page);
+        await page.keyboard.press('Control+`');
+        await expect(page.locator('#editor-panel')).toBeVisible();
+    });
+
+    test('ctrl+backtick closes the editor panel when open', async ({ page }) => {
+        await waitForApp(page);
+        await openEditorPanel(page);
+        await page.keyboard.press('Control+`');
+        await expect(page.locator('#editor-panel')).not.toBeVisible();
+    });
+
     test('applying code collapses the editor panel', async ({ page }) => {
         await waitForApp(page);
         await openEditorPanel(page);
