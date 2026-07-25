@@ -40,7 +40,7 @@ describe("ChallengeController", () => {
         controller.setPaused(true);
         ticker.run();
 
-        expect(controller.sim.elapsedTime()).toBe(0);
+        expect(controller.simulation.elapsedTime()).toBe(0);
     });
 
     it("re-renders the challenge UI when paused state changes", async () => {
@@ -78,7 +78,7 @@ describe("ChallengeController", () => {
 
         let count = 0;
         await controller.startChallenge(0, true);
-        controller.sim.updateDisplayPositions = () => count++;
+        controller.simulation.updateDisplayPositions = () => count++;
         ticker.run();
 
         expect(count).toBeGreaterThan(0);
@@ -96,7 +96,7 @@ describe("ChallengeController", () => {
 
         let count = 0;
         await controller.startChallenge(0, true);
-        controller.sim.on("stats_display_changed", () => count++);
+        controller.simulation.on("stats_display_changed", () => count++);
         ticker.run();
 
         expect(count).toBeGreaterThan(0);
@@ -151,7 +151,7 @@ describe("ChallengeController", () => {
         await controllerB.startChallenge(0, true);
         tickerB.run();
 
-        expect(controllerB.sim.elapsedTime()).toBeGreaterThan(controllerA.sim.elapsedTime());
+        expect(controllerB.simulation.elapsedTime()).toBeGreaterThan(controllerA.simulation.elapsedTime());
     });
 
     it("ends the previous simulation when startChallenge is called again", async () => {
@@ -165,10 +165,10 @@ describe("ChallengeController", () => {
         });
 
         await controller.startChallenge(0, true);
-        const firstSim = controller.sim;
+        const firstSimulation = controller.simulation;
         await controller.startChallenge(0, true);
 
-        expect(firstSim.isEnded()).toBe(true);
+        expect(firstSimulation.isEnded()).toBe(true);
     });
 
     it("advances the simulation when a challenge is started", async () => {
@@ -185,6 +185,6 @@ describe("ChallengeController", () => {
         await controller.startChallenge(0, true);
         ticker.run();
 
-        expect(controller.sim.elapsedTime()).toBeGreaterThan(0);
+        expect(controller.simulation.elapsedTime()).toBeGreaterThan(0);
     });
 });

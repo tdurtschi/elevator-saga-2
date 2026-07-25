@@ -21,7 +21,7 @@ export function createChallengeController({ editorService, $world, $stats, $feed
     } = presenters;
     var controller = {};
     controller.currentChallengeIndex = 0;
-    controller.sim = undefined;
+    controller.simulation = undefined;
     controller.isPaused = false;
     controller.timeScale = 1.0;
 
@@ -46,8 +46,8 @@ export function createChallengeController({ editorService, $world, $stats, $feed
 
         var challenge = challenges[challengeIndex];
         var opts = challenge.options;
-        if (controller.sim) controller.sim.end();
-        controller.sim = new Simulation({
+        if (controller.simulation) controller.simulation.end();
+        controller.simulation = new Simulation({
             floors: opts.floorCount,
             elevators: opts.elevatorCount,
             spawnRate: opts.spawnRate,
@@ -58,37 +58,37 @@ export function createChallengeController({ editorService, $world, $stats, $feed
         controller.setPaused(!autoStart);
 
         clearAll([$world, $feedback]);
-        presentStats($stats, controller.sim);
+        presentStats($stats, controller.simulation);
         controller._rerenderChallenge = () => presentChallenge($challenge, challenge, controller, challengeIndex + 1);
         controller._rerenderChallenge();
-        presentWorld($world, controller.sim);
+        presentWorld($world, controller.simulation);
 
-        controller.sim.on("challenge_ended", function (result) {
+        controller.simulation.on("challenge_ended", function (result) {
             controller.setPaused(true);
             if (result) {
-                presentFeedback($feedback, controller.sim, "Success!", "Challenge completed", createParamsUrl(parseParams(window.location.hash), { challenge: challengeIndex + 2 }));
+                presentFeedback($feedback, controller.simulation, "Success!", "Challenge completed", createParamsUrl(parseParams(window.location.hash), { challenge: challengeIndex + 2 }));
             } else {
-                presentFeedback($feedback, controller.sim, "Challenge failed", "Maybe your program needs an improvement?", "");
+                presentFeedback($feedback, controller.simulation, "Challenge failed", "Maybe your program needs an improvement?", "");
             }
         });
 
-        controller.sim.on("usercode_error", function (e) {
+        controller.simulation.on("usercode_error", function (e) {
             controller.setPaused(true);
             logger.error("Usercode error: " + e);
         });
 
         var codeObj = await editorService.getCodeObj();
-        controller.sim.applyCode(codeObj);
+        controller.simulation.applyCode(codeObj);
         var lastT = null;
-        const sim = controller.sim;
+        const simulation = controller.simulation;
         var updater = function (t) {
             if (!controller.isPaused && lastT !== null) {
-                sim.tick((t - lastT) * 0.001 * controller.timeScale);
-                sim.updateDisplayPositions();
-                sim.trigger("stats_display_changed");
+                simulation.tick((t - lastT) * 0.001 * controller.timeScale);
+                simulation.updateDisplayPositions();
+                simulation.trigger("stats_display_changed");
             }
             lastT = t;
-            if (!sim.isEnded()) {
+            if (!simulation.isEnded()) {
                 ticker(updater);
             }
         };
@@ -96,7 +96,7 @@ export function createChallengeController({ editorService, $world, $stats, $feed
     };
 
     controller.startStopOrRestart = function () {
-        if (controller.sim.isEnded()) {
+        if (controller.simulation.isEnded()) {
             controller.startChallenge(controller.currentChallengeIndex);
         } else {
             controller.setPaused(!controller.isPaused);

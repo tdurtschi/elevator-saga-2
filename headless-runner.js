@@ -21,7 +21,7 @@ export async function runChallenge(challengeIndex, solutionCode) {
     const challenge = challenges[challengeIndex];
     const opts = challenge.options;
     const codeObj = await getCodeObjFromCode(solutionCode);
-    const sim = new Simulation({
+    const simulation = new Simulation({
         floors: opts.floorCount,
         elevators: opts.elevatorCount,
         spawnRate: opts.spawnRate,
@@ -29,18 +29,18 @@ export async function runChallenge(challengeIndex, solutionCode) {
         condition: challenge.condition,
     });
 
-    sim.applyCode(codeObj);
-    sim.runUntilComplete();
+    simulation.applyCode(codeObj);
+    simulation.runUntilComplete();
 
     const { evaluate: _evaluate, description: _description, ...conditionData } = challenge.condition;
     return {
-        passed: sim.passed(),
+        passed: simulation.passed(),
         condition: conditionData,
-        transported: sim.transportedCount(),
-        elapsed: sim.elapsedTime(),
-        maxWaitTime: sim.maxWaitTime(),
-        moveCount: sim.moveCount(),
-        challengeEnded: sim.isEnded(),
+        transported: simulation.transportedCount(),
+        elapsed: simulation.elapsedTime(),
+        maxWaitTime: simulation.maxWaitTime(),
+        moveCount: simulation.moveCount(),
+        challengeEnded: simulation.isEnded(),
     };
 }
 

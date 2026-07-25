@@ -20,7 +20,7 @@ function updateUserState($user, elem_user, user) {
 }
 
 
-function presentStats($parent, world) {
+function presentStats($parent, simulation) {
 
     var elem_transportedcounter = $parent.find(".transportedcounter").get(0),
         elem_elapsedtime = $parent.find(".elapsedtime").get(0),
@@ -29,19 +29,19 @@ function presentStats($parent, world) {
         elem_maxwaittime = $parent.find(".maxwaittime").get(0),
         elem_movecount = $parent.find(".movecount").get(0);
 
-    world.on("stats_display_changed", function updateStats() {
-        elem_transportedcounter.textContent = world.transportedCount();
-        elem_elapsedtime.textContent = world.elapsedTime().toFixed(0) + "s";
-        elem_transportedpersec.textContent = world.transportedPerSec().toPrecision(3);
-        elem_avgwaittime.textContent = world.avgWaitTime().toFixed(1) + "s";
-        elem_maxwaittime.textContent = world.maxWaitTime().toFixed(1) + "s";
-        elem_movecount.textContent = world.moveCount();
+    simulation.on("stats_display_changed", function updateStats() {
+        elem_transportedcounter.textContent = simulation.transportedCount();
+        elem_elapsedtime.textContent = simulation.elapsedTime().toFixed(0) + "s";
+        elem_transportedpersec.textContent = simulation.transportedPerSec().toPrecision(3);
+        elem_avgwaittime.textContent = simulation.avgWaitTime().toFixed(1) + "s";
+        elem_maxwaittime.textContent = simulation.maxWaitTime().toFixed(1) + "s";
+        elem_movecount.textContent = simulation.moveCount();
     });
-    world.trigger("stats_display_changed");
+    simulation.trigger("stats_display_changed");
 }
 
 function presentChallenge($parent, challenge, app, challengeNum) {
-    var startButtonText = app.sim.isEnded() ? "<i class='fa fa-repeat'></i> Restart" : (app.isPaused ? "Start" : "Pause");
+    var startButtonText = app.simulation.isEnded() ? "<i class='fa fa-repeat'></i> Restart" : (app.isPaused ? "Start" : "Pause");
     var $challenge = $(`<div class="left">
             <h3>Challenge #${challengeNum}: ${challenge.condition.description}</h3>
         </div>
@@ -70,7 +70,7 @@ function presentChallenge($parent, challenge, app, challengeNum) {
     });
 }
 
-function presentFeedback($parent, world, title, message, url) {
+function presentFeedback($parent, simulation, title, message, url) {
     $parent.html(`<div class="feedback">
         <h2 class="emphasis-color">${title}</h2>
         <p class="emphasis-color">${message}</p>
@@ -78,10 +78,10 @@ function presentFeedback($parent, world, title, message, url) {
     </div>`);
 }
 
-function presentWorld($world, world) {
-    $world.css("height", world.floorHeight * world.floors.length);
+function presentWorld($world, simulation) {
+    $world.css("height", simulation.floorHeight * simulation.floors.length);
 
-    $world.append(_.map(world.floors, function(f) {
+    $world.append(_.map(simulation.floors, function(f) {
         var $floor = $(`<div class="floor" style="top: ${f.yPosition}px">
             <span class="floornumber">${f.level}</span>
             <span class="buttonindicator">
@@ -147,11 +147,11 @@ function presentWorld($world, world) {
         return $elevator;
     }
 
-    $world.append(_.map(world.elevators, function(e) {
+    $world.append(_.map(simulation.elevators, function(e) {
         return setUpElevator(e);
     }));
 
-    world.on("new_user", function(user) {
+    simulation.on("new_user", function(user) {
         var $user = $(`<i class="movable fa user fa-${user.displayType} ${user.done ? "leaving" : ""}"></i>`);
         var elem_user = $user.get(0);
 
