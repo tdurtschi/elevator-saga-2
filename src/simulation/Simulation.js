@@ -3,6 +3,7 @@ import { observable } from "../libs/unobservable.js";
 import asFloor from "./floor.js";
 import { asElevatorInterface } from "../interfaces.js";
 import User from "./user.js";
+import Stats from "./stats.js";
 import _ from "lodash-es";
 
 function createFloors(floorCount, floorHeight, errorHandler) {
@@ -79,12 +80,8 @@ export default class Simulation {
         this._users = [];
 
         // Stats
-        this._transportedCounter = 0;
-        this._transportedPerSec = 0.0;
-        this._moveCount = 0;
         this._elapsedTime = 0.0;
-        this._maxWaitTime = 0.0;
-        this._avgWaitTime = 0.0;
+        this._stats = new Stats();
 
         // Spawn timing
         this._floorCount = floors;
@@ -143,8 +140,7 @@ export default class Simulation {
     get challengeEnded() { return this._result !== null; }
 
     _recalculateStats() {
-        this._transportedPerSec = this._transportedCounter / this._elapsedTime;
-        this._moveCount = _.reduce(this._elevators, (sum, elevator) => sum + elevator.moveCount, 0);
+        this._stats.recalculate(this._elapsedTime, this._elevators);
         this.trigger("stats_changed");
     }
 
@@ -154,9 +150,7 @@ export default class Simulation {
         user.spawnTimestamp = this._elapsedTime;
         this.trigger("new_user", user);
         user.on("exited_elevator", () => {
-            this._transportedCounter++;
-            this._maxWaitTime = Math.max(this._maxWaitTime, this._elapsedTime - user.spawnTimestamp);
-            this._avgWaitTime = (this._avgWaitTime * (this._transportedCounter - 1) + (this._elapsedTime - user.spawnTimestamp)) / this._transportedCounter;
+            this._stats.recordTransport(this._elapsedTime - user.spawnTimestamp);
             this._recalculateStats();
         });
         user.updateDisplayPosition(true);
@@ -178,7 +172,7 @@ export default class Simulation {
         for (let i = 0, len = this._users.length; i < len; ++i) {
             let u = this._users[i];
             u.update(dt);
-            this._maxWaitTime = Math.max(this._maxWaitTime, this._elapsedTime - u.spawnTimestamp);
+            this._stats.observeWait(this._elapsedTime - u.spawnTimestamp);
         }
 
         for (let i = this._users.length - 1; i >= 0; i--) {
@@ -283,23 +277,23 @@ export default class Simulation {
     }
 
     maxWaitTime() {
-        return this._maxWaitTime;
+        return this._stats.maxWaitTime;
     }
 
     avgWaitTime() {
-        return this._avgWaitTime;
+        return this._stats.avgWaitTime;
     }
 
     transportedPerSec() {
-        return this._transportedPerSec;
+        return this._stats.transportedPerSec;
     }
 
     moveCount() {
-        return this._moveCount;
+        return this._stats.moveCount;
     }
 
     transportedCount() {
-        return this._transportedCounter;
+        return this._stats.transportedCount;
     }
 
     floorButtonActivated(floorNum, direction) {
