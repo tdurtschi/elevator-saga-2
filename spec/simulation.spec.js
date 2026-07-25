@@ -1,8 +1,8 @@
 import Simulation from "../src/simulation/Simulation.js";
-import { requireUserCountWithinTime, requireUserCountWithinMoves, requireUserCountWithMaxWaitTime, requireUserCountWithinTimeWithMaxWaitTime } from "../src/challenges/challenges.js";
+import { requirePassengerCountWithinTime, requirePassengerCountWithinMoves, requirePassengerCountWithMaxWaitTime, requirePassengerCountWithinTimeWithMaxWaitTime } from "../src/challenges/challenges.js";
 
 describe("Simulation", () => {
-  it("counts a user as transported when they reach their destination floor", () => {
+  it("counts a passenger as transported when they reach their destination floor", () => {
     const simulation = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
 
     simulation.applyCode({
@@ -13,14 +13,14 @@ describe("Simulation", () => {
       update() {}
     });
 
-    simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+    simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
 
     simulation.runFor(60);
 
     expect(simulation.transportedCount()).toBe(1);
   });
 
-  it("does not count a user as transported if the elevator never reaches their destination", () => {
+  it("does not count a passenger as transported if the elevator never reaches their destination", () => {
     const simulation = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
 
     simulation.applyCode({
@@ -34,7 +34,7 @@ describe("Simulation", () => {
       update() {}
     });
 
-    simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+    simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
 
     simulation.runFor(60);
 
@@ -100,12 +100,12 @@ describe("Simulation", () => {
   });
 
   describe("maxWaitTime", () => {
-    it("is 0 before any user is transported", () => {
+    it("is 0 before any passenger is transported", () => {
       const simulation = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
       expect(simulation.maxWaitTime()).toBe(0);
     });
 
-    it("reflects the wait time of a transported user", () => {
+    it("reflects the wait time of a transported passenger", () => {
       const simulation = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
 
       simulation.applyCode({
@@ -116,7 +116,7 @@ describe("Simulation", () => {
         update() {}
       });
 
-      simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+      simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
       simulation.runFor(60);
 
       expect(simulation.maxWaitTime()).toBeGreaterThan(0);
@@ -124,7 +124,7 @@ describe("Simulation", () => {
   });
 
   describe("avgWaitTime and transportedPerSec", () => {
-    it("avgWaitTime reflects the average wait time across transported users", () => {
+    it("avgWaitTime reflects the average wait time across transported passengers", () => {
       const simulation = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
 
       simulation.applyCode({
@@ -135,13 +135,13 @@ describe("Simulation", () => {
         update() {}
       });
 
-      simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+      simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
       simulation.runFor(60);
 
       expect(simulation.avgWaitTime()).toBeGreaterThan(0);
     });
 
-    it("transportedPerSec reflects transported users divided by elapsed time", () => {
+    it("transportedPerSec reflects transported passengers divided by elapsed time", () => {
       const simulation = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
 
       simulation.applyCode({
@@ -152,7 +152,7 @@ describe("Simulation", () => {
         update() {}
       });
 
-      simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+      simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
       simulation.runFor(60);
 
       expect(simulation.transportedPerSec()).toBeGreaterThan(0);
@@ -163,7 +163,7 @@ describe("Simulation", () => {
     it("returns false before a condition is met", () => {
       const simulation = new Simulation({
         floors: 3, elevators: 1, spawnRate: 0,
-        condition: requireUserCountWithinTime(1, 60)
+        condition: requirePassengerCountWithinTime(1, 60)
       });
 
       simulation.applyCode({ init() {}, update() {} });
@@ -174,7 +174,7 @@ describe("Simulation", () => {
     it("returns true after runUntilComplete finishes", () => {
       const simulation = new Simulation({
         floors: 3, elevators: 1, spawnRate: 0,
-        condition: requireUserCountWithinTime(1, 60)
+        condition: requirePassengerCountWithinTime(1, 60)
       });
 
       simulation.applyCode({
@@ -185,7 +185,7 @@ describe("Simulation", () => {
         update() {}
       });
 
-      simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+      simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
       simulation.runUntilComplete();
 
       expect(simulation.isEnded()).toBe(true);
@@ -204,7 +204,7 @@ describe("Simulation", () => {
     it("tick(dt) after ended does not advance state", () => {
       const simulation = new Simulation({
         floors: 3, elevators: 1, spawnRate: 0,
-        condition: requireUserCountWithinTime(1, 60)
+        condition: requirePassengerCountWithinTime(1, 60)
       });
 
       simulation.applyCode({
@@ -215,7 +215,7 @@ describe("Simulation", () => {
         update() {}
       });
 
-      simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+      simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
       simulation.runUntilComplete();
 
       const timeAfterEnd = simulation.elapsedTime();
@@ -224,8 +224,8 @@ describe("Simulation", () => {
     });
   });
 
-  describe("automatic user spawning via spawnRate", () => {
-    it("users appear in the simulation over time without manual spawnUser calls", () => {
+  describe("automatic passenger spawning via spawnRate", () => {
+    it("passengers appear in the simulation over time without manual spawnPassenger calls", () => {
       const simulation = new Simulation({ floors: 3, elevators: 1, spawnRate: 2 });
 
       simulation.applyCode({
@@ -269,7 +269,7 @@ describe("Simulation", () => {
   });
 
   describe("usercode_error event", () => {
-    it("emits usercode_error when user code throws in init", () => {
+    it("emits usercode_error when passenger code throws in init", () => {
       const simulation = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
       const errors = [];
       simulation.on("usercode_error", (e) => errors.push(e));
@@ -283,7 +283,7 @@ describe("Simulation", () => {
       expect(errors[0].message).toBe("init exploded");
     });
 
-    it("emits usercode_error when user code throws in update", () => {
+    it("emits usercode_error when passenger code throws in update", () => {
       const simulation = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
       const errors = [];
       simulation.on("usercode_error", (e) => errors.push(e));
@@ -297,7 +297,7 @@ describe("Simulation", () => {
   });
 
   describe("stats_changed event", () => {
-    it("fires after a user is transported", () => {
+    it("fires after a passenger is transported", () => {
       const simulation = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
       let statsFired = false;
       simulation.on("stats_changed", () => { statsFired = true; });
@@ -310,7 +310,7 @@ describe("Simulation", () => {
         update() {}
       });
 
-      simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+      simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
       simulation.runFor(60);
 
       expect(statsFired).toBe(true);
@@ -353,7 +353,7 @@ describe("Simulation", () => {
     it("challengeEnded is false before a condition is met", () => {
       const simulation = new Simulation({
         floors: 3, elevators: 1, spawnRate: 0,
-        condition: requireUserCountWithinTime(1, 60)
+        condition: requirePassengerCountWithinTime(1, 60)
       });
       simulation.applyCode({ init() {}, update() {} });
       expect(simulation.challengeEnded).toBe(false);
@@ -362,7 +362,7 @@ describe("Simulation", () => {
     it("challengeEnded is true after the condition resolves", () => {
       const simulation = new Simulation({
         floors: 3, elevators: 1, spawnRate: 0,
-        condition: requireUserCountWithinTime(1, 60)
+        condition: requirePassengerCountWithinTime(1, 60)
       });
       simulation.applyCode({
         init(elevators) {
@@ -371,23 +371,23 @@ describe("Simulation", () => {
         },
         update() {}
       });
-      simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+      simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
       simulation.runUntilComplete();
       expect(simulation.challengeEnded).toBe(true);
     });
 
-    it("emits new_user when a user appears", () => {
+    it("emits new_passenger when a passenger appears", () => {
       const simulation = new Simulation({ floors: 3, elevators: 1, spawnRate: 0 });
       simulation.applyCode({ init() {}, update() {} });
-      const users = [];
-      simulation.on("new_user", (user) => users.push(user));
-      simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
-      expect(users.length).toBe(1);
+      const passengers = [];
+      simulation.on("new_passenger", (passenger) => passengers.push(passenger));
+      simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
+      expect(passengers.length).toBe(1);
     });
 
     it("elevatorCapacities is applied to the created elevators", () => {
       const simulation = new Simulation({ floors: 3, elevators: 1, spawnRate: 0, elevatorCapacities: [3] });
-      expect(simulation.elevators[0].maxUsers).toBe(3);
+      expect(simulation.elevators[0].maxPassengers).toBe(3);
     });
   });
 
@@ -395,7 +395,7 @@ describe("Simulation", () => {
     it("fires with true when the challenge is passed", () => {
       const simulation = new Simulation({
         floors: 3, elevators: 1, spawnRate: 0,
-        condition: requireUserCountWithinTime(1, 60)
+        condition: requirePassengerCountWithinTime(1, 60)
       });
       const results = [];
       simulation.on("challenge_ended", (result) => results.push(result));
@@ -407,7 +407,7 @@ describe("Simulation", () => {
         },
         update() {}
       });
-      simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+      simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
       simulation.runFor(60);
 
       expect(results).toEqual([true]);
@@ -416,13 +416,13 @@ describe("Simulation", () => {
     it("fires with false when the challenge is failed", () => {
       const simulation = new Simulation({
         floors: 3, elevators: 1, spawnRate: 0,
-        condition: requireUserCountWithinTime(1, 60)
+        condition: requirePassengerCountWithinTime(1, 60)
       });
       const results = [];
       simulation.on("challenge_ended", (result) => results.push(result));
 
       simulation.applyCode({ init() {}, update() {} });
-      simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+      simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
       simulation.runFor(61);
 
       expect(results).toEqual([false]);
@@ -431,13 +431,13 @@ describe("Simulation", () => {
     it("fires only once even if tick is called again after ended", () => {
       const simulation = new Simulation({
         floors: 3, elevators: 1, spawnRate: 0,
-        condition: requireUserCountWithinTime(1, 60)
+        condition: requirePassengerCountWithinTime(1, 60)
       });
       const results = [];
       simulation.on("challenge_ended", (result) => results.push(result));
 
       simulation.applyCode({ init() {}, update() {} });
-      simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+      simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
       simulation.runFor(61); // ends the challenge
       simulation.runFor(10); // no-op
 
@@ -455,7 +455,7 @@ describe("Simulation", () => {
         },
         update() {}
       });
-      simulationA.spawnUser({ fromFloor: 0, toFloor: 2 });
+      simulationA.spawnPassenger({ fromFloor: 0, toFloor: 2 });
       simulationA.runFor(60);
       const countA = simulationA.transportedCount();
 
@@ -487,7 +487,7 @@ describe("Simulation", () => {
       });
     });
 
-    it("users reconsider boarding when elevator indicator changes while stopped at their floor", () => {
+    it("passengers reconsider boarding when elevator indicator changes while stopped at their floor", () => {
       const simulation = new Simulation({ floors: 2, elevators: 1, spawnRate: 0 });
 
       simulation.applyCode({
@@ -510,7 +510,7 @@ describe("Simulation", () => {
         update() {}
       });
 
-      simulation.spawnUser({ fromFloor: 1, toFloor: 0 });
+      simulation.spawnPassenger({ fromFloor: 1, toFloor: 0 });
 
       simulation.runFor(10);
 
@@ -519,11 +519,11 @@ describe("Simulation", () => {
   });
 
   describe("challenge conditions", () => {
-    describe("requireUserCountWithinTime", () => {
-      it("passes when enough users are transported before the time limit", () => {
+    describe("requirePassengerCountWithinTime", () => {
+      it("passes when enough passengers are transported before the time limit", () => {
         const simulation = new Simulation({
           floors: 3, elevators: 1, spawnRate: 0,
-          condition: requireUserCountWithinTime(1, 60)
+          condition: requirePassengerCountWithinTime(1, 60)
         });
 
         simulation.applyCode({
@@ -534,17 +534,17 @@ describe("Simulation", () => {
           update() {}
         });
 
-        simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+        simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
 
         simulation.runUntilComplete();
 
         expect(simulation.passed()).toBe(true);
       });
 
-      it("fails when not enough users are transported before the time limit", () => {
+      it("fails when not enough passengers are transported before the time limit", () => {
         const simulation = new Simulation({
           floors: 3, elevators: 1, spawnRate: 0,
-          condition: requireUserCountWithinTime(1, 60)
+          condition: requirePassengerCountWithinTime(1, 60)
         });
 
         simulation.applyCode({
@@ -552,7 +552,7 @@ describe("Simulation", () => {
           update() {}
         });
 
-        simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+        simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
 
         simulation.runUntilComplete();
 
@@ -560,11 +560,11 @@ describe("Simulation", () => {
       });
     });
 
-    describe("requireUserCountWithinMoves", () => {
-      it("passes when enough users are transported within the move limit", () => {
+    describe("requirePassengerCountWithinMoves", () => {
+      it("passes when enough passengers are transported within the move limit", () => {
         const simulation = new Simulation({
           floors: 3, elevators: 1, spawnRate: 0,
-          condition: requireUserCountWithinMoves(1, 2)
+          condition: requirePassengerCountWithinMoves(1, 2)
         });
 
         simulation.applyCode({
@@ -575,23 +575,23 @@ describe("Simulation", () => {
           update() {}
         });
 
-        simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+        simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
 
         simulation.runUntilComplete();
 
         expect(simulation.passed()).toBe(true);
       });
 
-      it("fails when the move limit is exceeded before enough users are transported", () => {
+      it("fails when the move limit is exceeded before enough passengers are transported", () => {
         const simulation = new Simulation({
           floors: 3, elevators: 1, spawnRate: 0,
-          condition: requireUserCountWithinMoves(1, 1)
+          condition: requirePassengerCountWithinMoves(1, 1)
         });
 
         simulation.applyCode({
           init(elevators, floors) {
             floors[2].on("down_button_pressed", () => {
-              // wastes a move going to floor 1 before picking up the user on floor 2
+              // wastes a move going to floor 1 before picking up the passenger on floor 2
               elevators[0].goToFloor(1);
               elevators[0].goToFloor(2);
               elevators[0].goToFloor(0);
@@ -600,7 +600,7 @@ describe("Simulation", () => {
           update() {}
         });
 
-        simulation.spawnUser({ fromFloor: 2, toFloor: 0 });
+        simulation.spawnPassenger({ fromFloor: 2, toFloor: 0 });
 
         simulation.runUntilComplete();
 
@@ -608,11 +608,11 @@ describe("Simulation", () => {
       });
     });
 
-    describe("requireUserCountWithMaxWaitTime", () => {
-      it("passes when enough users are transported within the max wait time", () => {
+    describe("requirePassengerCountWithMaxWaitTime", () => {
+      it("passes when enough passengers are transported within the max wait time", () => {
         const simulation = new Simulation({
           floors: 3, elevators: 1, spawnRate: 0,
-          condition: requireUserCountWithMaxWaitTime(1, 60)
+          condition: requirePassengerCountWithMaxWaitTime(1, 60)
         });
 
         simulation.applyCode({
@@ -623,17 +623,17 @@ describe("Simulation", () => {
           update() {}
         });
 
-        simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+        simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
 
         simulation.runUntilComplete();
 
         expect(simulation.passed()).toBe(true);
       });
 
-      it("fails when a user waits longer than the max wait time even if eventually transported", () => {
+      it("fails when a passenger waits longer than the max wait time even if eventually transported", () => {
         const simulation = new Simulation({
           floors: 3, elevators: 1, spawnRate: 0,
-          condition: requireUserCountWithMaxWaitTime(1, 1)
+          condition: requirePassengerCountWithMaxWaitTime(1, 1)
         });
 
         let elapsed = 0;
@@ -651,7 +651,7 @@ describe("Simulation", () => {
           }
         });
 
-        simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+        simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
 
         simulation.runUntilComplete();
 
@@ -659,11 +659,11 @@ describe("Simulation", () => {
       });
     });
 
-    describe("requireUserCountWithinTimeWithMaxWaitTime", () => {
-      it("passes when enough users are transported within time and max wait time", () => {
+    describe("requirePassengerCountWithinTimeWithMaxWaitTime", () => {
+      it("passes when enough passengers are transported within time and max wait time", () => {
         const simulation = new Simulation({
           floors: 3, elevators: 1, spawnRate: 0,
-          condition: requireUserCountWithinTimeWithMaxWaitTime(1, 60, 60)
+          condition: requirePassengerCountWithinTimeWithMaxWaitTime(1, 60, 60)
         });
 
         simulation.applyCode({
@@ -674,17 +674,17 @@ describe("Simulation", () => {
           update() {}
         });
 
-        simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+        simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
 
         simulation.runUntilComplete();
 
         expect(simulation.passed()).toBe(true);
       });
 
-      it("fails when not enough users are transported before the time limit", () => {
+      it("fails when not enough passengers are transported before the time limit", () => {
         const simulation = new Simulation({
           floors: 3, elevators: 1, spawnRate: 0,
-          condition: requireUserCountWithinTimeWithMaxWaitTime(1, 60, 60)
+          condition: requirePassengerCountWithinTimeWithMaxWaitTime(1, 60, 60)
         });
 
         simulation.applyCode({
@@ -692,17 +692,17 @@ describe("Simulation", () => {
           update() {}
         });
 
-        simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+        simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
 
         simulation.runUntilComplete();
 
         expect(simulation.passed()).toBe(false);
       });
 
-      it("fails when a user waits longer than the max wait time even if eventually transported", () => {
+      it("fails when a passenger waits longer than the max wait time even if eventually transported", () => {
         const simulation = new Simulation({
           floors: 3, elevators: 1, spawnRate: 0,
-          condition: requireUserCountWithinTimeWithMaxWaitTime(1, 60, 1)
+          condition: requirePassengerCountWithinTimeWithMaxWaitTime(1, 60, 1)
         });
 
         let elapsed = 0;
@@ -720,7 +720,7 @@ describe("Simulation", () => {
           }
         });
 
-        simulation.spawnUser({ fromFloor: 0, toFloor: 2 });
+        simulation.spawnPassenger({ fromFloor: 0, toFloor: 2 });
 
         simulation.runUntilComplete();
 

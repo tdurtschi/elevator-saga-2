@@ -14,9 +14,9 @@ function setTransformPos(elem, x, y) {
     elem.style["-webkit-transform"] = style;
 }
 
-function updateUserState($user, elem_user, user) {
-    setTransformPos(elem_user, user.worldX, user.worldY);
-    if(user.done) { $user.addClass("leaving"); }
+function updatePassengerState($passenger, elem_passenger, passenger) {
+    setTransformPos(elem_passenger, passenger.worldX, passenger.worldY);
+    if(passenger.done) { $passenger.addClass("leaving"); }
 }
 
 
@@ -151,15 +151,15 @@ function presentWorld($world, simulation) {
         return setUpElevator(e);
     }));
 
-    simulation.on("new_user", function(user) {
-        var $user = $(`<i class="movable fa user fa-${user.displayType} ${user.done ? "leaving" : ""}"></i>`);
-        var elem_user = $user.get(0);
+    simulation.on("new_passenger", function(passenger) {
+        var $passenger = $(`<i class="movable fa passenger fa-${passenger.displayType} ${passenger.done ? "leaving" : ""}"></i>`);
+        var elem_passenger = $passenger.get(0);
 
-        user.on("new_display_state", function() { updateUserState($user, elem_user, user); })
-        user.on("removed", function() {
-            $user.remove();
+        passenger.on("new_display_state", function() { updatePassengerState($passenger, elem_passenger, passenger); })
+        passenger.on("removed", function() {
+            $passenger.remove();
         });
-        $world.append($user);
+        $world.append($passenger);
     });
 }
 

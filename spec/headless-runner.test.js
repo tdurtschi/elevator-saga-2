@@ -45,7 +45,7 @@ describe("headless runner", function () {
         });
 
         it("includes structured condition info", function () {
-            expect(result.condition).toEqual({ type: "withinTime", userCount: 15, timeLimit: 60 });
+            expect(result.condition).toEqual({ type: "withinTime", passengerCount: 15, timeLimit: 60 });
         });
     });
 });

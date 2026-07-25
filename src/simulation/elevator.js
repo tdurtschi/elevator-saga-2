@@ -3,7 +3,7 @@ import Movable from "./movable.js";
 import _ from "lodash-es";
 
 class Elevator extends Movable {
-    constructor(speedFloorsPerSec, floorCount, floorHeight, maxUsers) {
+    constructor(speedFloorsPerSec, floorCount, floorHeight, maxPassengers) {
         super();
         newGuard(this, Elevator);
 
@@ -12,7 +12,7 @@ class Elevator extends Movable {
         this.MAXSPEED = floorHeight * speedFloorsPerSec;
         this.floorCount = floorCount;
         this.floorHeight = floorHeight;
-        this.maxUsers = maxUsers || 4;
+        this.maxPassengers = maxPassengers || 4;
         this.destinationY = 0.0;
         this.velocityY = 0.0;
         // isMoving flag is needed when going to same floor again - need to re-raise events
@@ -26,10 +26,10 @@ class Elevator extends Movable {
         this.buttonStates = _.map(_.range(floorCount), function(_e, _i){ return false; });
         this.moveCount = 0;
         this.removed = false;
-        this.userSlots = _.map(_.range(this.maxUsers), function(user, i) {
-            return { pos: [2 + (i * 10), 30], user: null};
+        this.passengerSlots = _.map(_.range(this.maxPassengers), function(passenger, i) {
+            return { pos: [2 + (i * 10), 30], passenger: null};
         });
-        this.width = this.maxUsers * 10;
+        this.width = this.maxPassengers * 10;
         this.destinationY = this.getYPosOfFloor(this.currentFloor);
 
         this.on("new_state", this.handleNewState.bind(this));
@@ -50,12 +50,12 @@ class Elevator extends Movable {
         this.moveTo(null, destination);
     }
 
-    userEntering(user) {
-        var randomOffset = _.random(this.userSlots.length - 1);
-        for(var i=0; i<this.userSlots.length; i++) {
-            var slot = this.userSlots[(i + randomOffset) % this.userSlots.length];
-            if(slot.user === null) {
-                slot.user = user;
+    passengerEntering(passenger) {
+        var randomOffset = _.random(this.passengerSlots.length - 1);
+        for(var i=0; i<this.passengerSlots.length; i++) {
+            var slot = this.passengerSlots[(i + randomOffset) % this.passengerSlots.length];
+            if(slot.passenger === null) {
+                slot.passenger = passenger;
                 return slot.pos;
             }
         }
@@ -73,11 +73,11 @@ class Elevator extends Movable {
         }
     }
 
-    userExiting(user) {
-        for(var i=0; i<this.userSlots.length; i++) {
-            var slot = this.userSlots[i];
-            if(slot.user === user) {
-                slot.user = null;
+    passengerExiting(passenger) {
+        for(var i=0; i<this.passengerSlots.length; i++) {
+            var slot = this.passengerSlots[i];
+            if(slot.passenger === passenger) {
+                slot.passenger = null;
             }
         }
     }
@@ -143,7 +143,7 @@ class Elevator extends Movable {
             this.buttonStates[this.currentFloor] = false;
             this.trigger("floor_buttons_changed", this.buttonStates, this.currentFloor);
             this.trigger("stopped_at_floor", this.currentFloor);
-            // Need to allow users to get off first, so that new ones
+            // Need to allow passengers to get off first, so that new ones
             // can enter on the same floor
             this.trigger("exit_available", this.currentFloor, this);
             this.trigger("entrance_available", this);
@@ -219,17 +219,17 @@ class Elevator extends Movable {
     }
 
     getLoadFactor() {
-        var load = _.reduce(this.userSlots, function(sum, slot) { return sum + (slot.user ? slot.user.weight : 0); }, 0);
-        return load / (this.maxUsers * 100);
+        var load = _.reduce(this.passengerSlots, function(sum, slot) { return sum + (slot.passenger ? slot.passenger.weight : 0); }, 0);
+        return load / (this.maxPassengers * 100);
     }
 
     isFull() {
-        for(var i=0; i<this.userSlots.length; i++) { if(this.userSlots[i].user === null) { return false; } }
+        for(var i=0; i<this.passengerSlots.length; i++) { if(this.passengerSlots[i].passenger === null) { return false; } }
         return true;
     }
 
     isEmpty() {
-        for(var i=0; i<this.userSlots.length; i++) { if(this.userSlots[i].user !== null) { return false; } }
+        for(var i=0; i<this.passengerSlots.length; i++) { if(this.passengerSlots[i].passenger !== null) { return false; } }
         return true;
     }
 

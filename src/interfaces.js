@@ -64,7 +64,7 @@ export function asElevatorInterface(obj, elevator, floorCount, errorHandler) {
     elevatorInterface.getFirstPressedFloor = function() { return elevator.getFirstPressedFloor(); }; // Undocumented and deprecated, will be removed
     elevatorInterface.getPressedFloors = function() { return elevator.getPressedFloors(); };
     elevatorInterface.currentFloor = function() { return elevator.currentFloor; };
-    elevatorInterface.maxPassengerCount = function() { return elevator.maxUsers; };
+    elevatorInterface.maxPassengerCount = function() { return elevator.maxPassengers; };
     elevatorInterface.loadFactor = function() { return elevator.getLoadFactor(); };
     elevatorInterface.destinationDirection = function() {
       if(elevator.destinationY === elevator.y) { return "stopped"; }

@@ -2,7 +2,7 @@ import $ from "jquery";
 import {getCodeObjFromCode} from "../src/libs/util.js";
 import Movable from "../src/simulation/movable.js";
 import Elevator from "../src/simulation/elevator.js";
-import User from "../src/simulation/user.js";
+import Passenger from "../src/simulation/passenger.js";
 import _ from "lodash-es";
 import {timeForwarder} from "./helpers/timeForwarder.js";
 
@@ -19,11 +19,11 @@ describe("Elevator Saga", function() {
 		});
 	});
 
-	describe("User class", function() {
+	describe("Passenger class", function() {
 		var u = null;
 
 		beforeEach(function() {
-			u = new User();
+			u = new Passenger();
 		});
 		it("updates display position when told to", function() {
 			u.moveTo(1.0, 1.0);

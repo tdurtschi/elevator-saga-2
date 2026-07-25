@@ -1,10 +1,10 @@
 import {newGuard, linearInterpolate} from "../libs/util.js";
 import Movable from "./movable.js";
 
-class User extends Movable {
+class Passenger extends Movable {
     constructor(weight) {
         super();
-        newGuard(this, User);
+        newGuard(this, Passenger);
         this.weight = weight;
         this.currentFloor = 0;
         this.destinationFloor = 0;
@@ -31,7 +31,7 @@ class User extends Movable {
 
     handleExit(floorNum, elevator) {
         if(elevator.currentFloor === this.destinationFloor) {
-            elevator.userExiting(this);
+            elevator.passengerExiting(this);
             this.currentFloor = elevator.currentFloor;
             this.setParent(null);
             var destination = this.x + 100;
@@ -61,7 +61,7 @@ class User extends Movable {
             return;
         }
 
-        var pos = elevator.userEntering(this);
+        var pos = elevator.passengerEntering(this);
         if(pos) {
             // Success
             this.setParent(elevator);
@@ -78,4 +78,4 @@ class User extends Movable {
     }
 }
 
-export default User;
+export default Passenger;

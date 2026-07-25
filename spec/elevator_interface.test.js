@@ -357,10 +357,10 @@ describe("Elevator interface", function() {
     });
 
     it("normalizes load factor", function() {
-        var fnNewUser = function(){ return {weight:_.random(55, 100)}; },
-            fnEnterElevator = function(user){ e.userEntering(user); };
+        var fnNewPassenger = function(){ return {weight:_.random(55, 100)}; },
+            fnEnterElevator = function(passenger){ e.passengerEntering(passenger); };
 
-        _.chain(_.range(20)).map(fnNewUser).forEach(fnEnterElevator);
+        _.chain(_.range(20)).map(fnNewPassenger).forEach(fnEnterElevator);
         var load = elevInterface.loadFactor();
         expect(load >= 0 && load <= 1).toBeTruthy();
     });

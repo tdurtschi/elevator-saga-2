@@ -2,7 +2,7 @@ import Elevator from "./elevator.js";
 import { observable } from "../libs/unobservable.js";
 import asFloor from "./floor.js";
 import { asElevatorInterface } from "../interfaces.js";
-import User from "./user.js";
+import Passenger from "./passenger.js";
 import Stats from "./stats.js";
 import _ from "lodash-es";
 
@@ -27,22 +27,22 @@ function createElevators(elevatorCount, floorCount, floorHeight, elevatorCapacit
     });
 }
 
-function createRandomUser() {
+function createRandomPassenger() {
     var weight = _.random(55, 100);
-    var user = new User(weight);
+    var passenger = new Passenger(weight);
     if(_.random(40) === 0) {
-        user.displayType = "child";
+        passenger.displayType = "child";
     } else if(_.random(1) === 0) {
-        user.displayType = "female";
+        passenger.displayType = "female";
     } else {
-        user.displayType = "male";
+        passenger.displayType = "male";
     }
-    return user;
+    return passenger;
 }
 
-function spawnUserRandomly(floorCount, floorHeight, floors) {
-    var user = createRandomUser();
-    user.moveTo(105+_.random(40), 0);
+function spawnPassengerRandomly(floorCount, floorHeight, floors) {
+    var passenger = createRandomPassenger();
+    passenger.moveTo(105+_.random(40), 0);
     var currentFloor = _.random(1) === 0 ? 0 : _.random(floorCount - 1);
     var destinationFloor;
     if(currentFloor === 0) {
@@ -54,8 +54,8 @@ function spawnUserRandomly(floorCount, floorHeight, floors) {
             destinationFloor = 0;
         }
     }
-    user.appearOnFloor(floors[currentFloor], destinationFloor);
-    return user;
+    passenger.appearOnFloor(floors[currentFloor], destinationFloor);
+    return passenger;
 }
 
 const DT = 0.02; // seconds per tick
@@ -77,7 +77,7 @@ export default class Simulation {
         this._floors = createFloors(floors, this._floorHeight, handleUserCodeError);
         this._elevators = createElevators(elevators, floors, this._floorHeight, elevatorCapacities);
         this._elevatorInterfaces = _.map(this._elevators, (e) => asElevatorInterface({}, e, floors, handleUserCodeError));
-        this._users = [];
+        this._passengers = [];
 
         // Stats
         this._elapsedTime = 0.0;
@@ -90,16 +90,16 @@ export default class Simulation {
 
         // Elevator availability — when an elevator arrives or changes indicator
         var handleElevAvailability = (elevator) => {
-            // Notify floors first because overflowing users will press buttons again.
+            // Notify floors first because overflowing passengers will press buttons again.
             for (let i = 0, len = this._floors.length; i < len; ++i) {
                 if (elevator.currentFloor === i) {
                     this._floors[i].elevatorAvailable(elevator);
                 }
             }
-            for (let i = 0, len = this._users.length; i < len; ++i) {
-                var user = this._users[i];
-                if (user.currentFloor === elevator.currentFloor) {
-                    user.elevatorAvailable(elevator, this._floors[elevator.currentFloor]);
+            for (let i = 0, len = this._passengers.length; i < len; ++i) {
+                var passenger = this._passengers[i];
+                if (passenger.currentFloor === elevator.currentFloor) {
+                    passenger.elevatorAvailable(elevator, this._floors[elevator.currentFloor]);
                 }
             }
         };
@@ -144,16 +144,16 @@ export default class Simulation {
         this.trigger("stats_changed");
     }
 
-    _registerUser(user) {
-        this._users.push(user);
-        user.updateDisplayPosition(true);
-        user.spawnTimestamp = this._elapsedTime;
-        this.trigger("new_user", user);
-        user.on("exited_elevator", () => {
-            this._stats.recordTransport(this._elapsedTime - user.spawnTimestamp);
+    _registerPassenger(passenger) {
+        this._passengers.push(passenger);
+        passenger.updateDisplayPosition(true);
+        passenger.spawnTimestamp = this._elapsedTime;
+        this.trigger("new_passenger", passenger);
+        passenger.on("exited_elevator", () => {
+            this._stats.recordTransport(this._elapsedTime - passenger.spawnTimestamp);
             this._recalculateStats();
         });
-        user.updateDisplayPosition(true);
+        passenger.updateDisplayPosition(true);
     }
 
     _update(dt) {
@@ -161,7 +161,7 @@ export default class Simulation {
         this._elapsedSinceSpawn += dt;
         while (this._elapsedSinceSpawn > 1.0 / this._spawnRate) {
             this._elapsedSinceSpawn -= 1.0 / this._spawnRate;
-            this._registerUser(spawnUserRandomly(this._floorCount, this._floorHeight, this._floors));
+            this._registerPassenger(spawnPassengerRandomly(this._floorCount, this._floorHeight, this._floors));
         }
 
         for (let i = 0, len = this._elevators.length; i < len; ++i) {
@@ -169,15 +169,15 @@ export default class Simulation {
             e.update(dt);
             e.updateElevatorMovement(dt);
         }
-        for (let i = 0, len = this._users.length; i < len; ++i) {
-            let u = this._users[i];
+        for (let i = 0, len = this._passengers.length; i < len; ++i) {
+            let u = this._passengers[i];
             u.update(dt);
             this._stats.observeWait(this._elapsedTime - u.spawnTimestamp);
         }
 
-        for (let i = this._users.length - 1; i >= 0; i--) {
-            if (this._users[i].removeMe) {
-                this._users.splice(i, 1);
+        for (let i = this._passengers.length - 1; i >= 0; i--) {
+            if (this._passengers[i].removeMe) {
+                this._passengers.splice(i, 1);
             }
         }
 
@@ -188,16 +188,16 @@ export default class Simulation {
         for (let i = 0, len = this._elevators.length; i < len; ++i) {
             this._elevators[i].updateDisplayPosition();
         }
-        for (let i = 0, len = this._users.length; i < len; ++i) {
-            this._users[i].updateDisplayPosition();
+        for (let i = 0, len = this._passengers.length; i < len; ++i) {
+            this._passengers[i].updateDisplayPosition();
         }
     }
 
-    spawnUser({ fromFloor, toFloor }) {
-        const user = createRandomUser();
-        user.moveTo(105, 0);
-        user.appearOnFloor(this._floors[fromFloor], toFloor);
-        this._registerUser(user);
+    spawnPassenger({ fromFloor, toFloor }) {
+        const passenger = createRandomPassenger();
+        passenger.moveTo(105, 0);
+        passenger.appearOnFloor(this._floors[fromFloor], toFloor);
+        this._registerPassenger(passenger);
     }
 
     applyCode(codeObj) {

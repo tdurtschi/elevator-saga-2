@@ -30,10 +30,10 @@ html[data-theme="light"] {
     --color-emphasis: #2E7D32;
     --color-emphasis-shadow: #ccc;
     --color-error: #B71C1C;
-    --color-user-happy: #2E7D32;
-    --color-user-frustrated: #E65100;
-    --color-user-disappointed: #B71C1C;
-    --color-user-leaving: #616161;
+    --color-passenger-happy: #2E7D32;
+    --color-passenger-frustrated: #E65100;
+    --color-passenger-disappointed: #B71C1C;
+    --color-passenger-leaving: #616161;
     --inactive-faint: rgba(0, 0, 0, 0.2);
     --inactive-medium: rgba(0, 0, 0, 0.3);
     --scrollbar-track: #e0e0e0;
@@ -61,10 +61,10 @@ html[data-theme="dark"] {
     --color-emphasis: #59ce5e;
     --color-emphasis-shadow: #333;
     --color-error: #CF6679;
-    --color-user-happy: #81C784;
-    --color-user-frustrated: #FFC107;
-    --color-user-disappointed: #CF6679;
-    --color-user-leaving: #A0A0A0;
+    --color-passenger-happy: #81C784;
+    --color-passenger-frustrated: #FFC107;
+    --color-passenger-disappointed: #CF6679;
+    --color-passenger-leaving: #A0A0A0;
     --inactive-faint: rgba(224, 224, 224, 0.2);
     --inactive-medium: rgba(224, 224, 224, 0.3);
     --scrollbar-track: #1E1E1E;
@@ -114,7 +114,7 @@ a {
 }
 
 .unselectable {
-    user-select: none;
+    passenger-select: none;
 }
 
 button {
@@ -367,26 +367,26 @@ button.link-style {
     display: block;
 }
 
-.user {
+.passenger {
     color: var(--text-primary);
     text-shadow: 0 1px 3px var(--text-shadow);
     z-index: 2;
 }
 
-.user.happy {
-    color: var(--color-user-happy);
+.passenger.happy {
+    color: var(--color-passenger-happy);
 }
 
-.user.frustrated {
-    color: var(--color-user-frustrated);
+.passenger.frustrated {
+    color: var(--color-passenger-frustrated);
 }
 
-.user.disappointed {
-    color: var(--color-user-disappointed);
+.passenger.disappointed {
+    color: var(--color-passenger-disappointed);
 }
 
-.user.leaving {
-    color: var(--color-user-leaving);
+.passenger.leaving {
+    color: var(--color-passenger-leaving);
 }
 
 .elevator {
@@ -549,7 +549,7 @@ button.link-style {
     background-color: var(--bg-surface);
     color: var(--text-primary);
     cursor: pointer;
-    user-select: none;
+    passenger-select: none;
 }
 
 #tabs-form label:first-child {
