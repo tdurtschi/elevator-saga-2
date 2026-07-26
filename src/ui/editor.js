@@ -161,7 +161,7 @@ update: function (dt, elevators, floors) {}
             editor.getAction('editor.action.formatDocument').run()
         }).catch((e) => {
             console.error(e);
-            alert("Error from AI service: " + e.message);
+            notify("Error from AI service: " + e.message, "error");
         }).then(() => {
             $("#button-generate")
                 .attr("disabled", false)

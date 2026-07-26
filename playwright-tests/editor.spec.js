@@ -214,4 +214,15 @@ test.describe('editor behavior', () => {
         await expect(page.locator('.swal2-popup')).toBeVisible();
         await expect(page.locator('.swal2-popup')).toContainText('enter a description');
     });
+
+    test('an AI service failure notifies the user', async ({ page }) => {
+        await enableAi(page);
+        await waitForApp(page);
+        await openEditorPanel(page);
+
+        await page.locator('#button-generate').click();
+
+        await expect(page.locator('.swal2-popup')).toBeVisible();
+        await expect(page.locator('.swal2-popup')).toContainText('Error from AI service');
+    });
 });
