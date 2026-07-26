@@ -8,7 +8,7 @@ import {typeDeclarations} from "./types.js";
 import {defaultPrompt, sendMessage, updateSettings, getInstructions, resetInstructions, setInstructions} from "../ai/ai.js";
 import {getBackupCode, getPrompt, setBackupCode, getCode, setCode, setPrompt, getAiSettings, patchAiSettings} from "./persistence.js";
 import { observable } from "../libs/unobservable.js";
-import { confirmAction } from "./dialogs.js";
+import { confirmAction, notify } from "./dialogs.js";
 
 window.monaco = monaco;
 
@@ -142,7 +142,7 @@ export const createEditorAsync = () => new Promise((resolve) => {
         setInstructions(instructionsModel.getValue());
         const promptInput = promptModel.getValue().trim();
         if (promptInput.length === 0) {
-            alert("Please enter a description for the elevator behavior.");
+            notify("Please enter a description for the elevator behavior.", "warning");
             return;
         }
 

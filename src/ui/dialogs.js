@@ -10,3 +10,11 @@ export async function confirmAction(message) {
     });
     return result.isConfirmed;
 }
+
+export function notify(message, icon) {
+    return Swal.fire({
+        text: message,
+        icon,
+        theme: currentTheme(),
+    });
+}

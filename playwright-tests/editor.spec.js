@@ -21,6 +21,14 @@ const confirmDialog = async (page) => {
     await page.locator('.swal2-confirm').click();
 };
 
+const enableAi = (page) =>
+    page.addInitScript(() =>
+        localStorage.setItem('ai-settings', JSON.stringify({ aiEnabled: true, modelName: 'test-model' })));
+
+const clearPrompt = (page) =>
+    page.evaluate(() =>
+        monaco.editor.getModel(monaco.Uri.parse('inmemory://model/prompt')).setValue(''));
+
 test.describe('editor panel', () => {
     test('editor panel is hidden by default', async ({ page }) => {
         await waitForApp(page);
@@ -193,5 +201,17 @@ test.describe('editor behavior', () => {
 
         const code = await getEditorCode(page);
         expect(code).toContain('/* my work */');
+    });
+
+    test('generating with an empty prompt warns the user', async ({ page }) => {
+        await enableAi(page);
+        await waitForApp(page);
+        await openEditorPanel(page);
+        await clearPrompt(page);
+
+        await page.locator('#button-generate').click();
+
+        await expect(page.locator('.swal2-popup')).toBeVisible();
+        await expect(page.locator('.swal2-popup')).toContainText('enter a description');
     });
 });
