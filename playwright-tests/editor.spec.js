@@ -178,4 +178,20 @@ test.describe('editor behavior', () => {
         const code = await getEditorCode(page);
         expect(code).toContain('elevator.goToFloor(0)');
     });
+
+    test('undo reset brings back the code from before the last reset', async ({ page }) => {
+        await waitForApp(page);
+        await openEditorPanel(page);
+
+        await setEditorCode(page, '({ init: function() { /* my work */ }, update: function() {} })');
+
+        await page.locator('#button_reset').click();
+        await confirmDialog(page);
+
+        await page.locator('#button_resetundo').click();
+        await confirmDialog(page);
+
+        const code = await getEditorCode(page);
+        expect(code).toContain('/* my work */');
+    });
 });

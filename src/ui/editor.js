@@ -85,8 +85,8 @@ export const createEditorAsync = () => new Promise((resolve) => {
         editor.focus();
     });
 
-    $("#button_resetundo").click(function () {
-        if (confirm("Do you want to bring back the code as before the last reset?")) {
+    $("#button_resetundo").click(async function () {
+        if (await confirmAction("Do you want to bring back the code as before the last reset?")) {
             codeModel.setValue(getBackupCode() || "");
         }
         editor.focus();
