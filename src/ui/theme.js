@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'theme';
 
-function currentTheme() {
+export function currentTheme() {
     return document.documentElement.getAttribute('data-theme')
         || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 }
