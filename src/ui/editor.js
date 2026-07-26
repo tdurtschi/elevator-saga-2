@@ -8,6 +8,7 @@ import {typeDeclarations} from "./types.js";
 import {defaultPrompt, sendMessage, updateSettings, getInstructions, resetInstructions, setInstructions} from "../ai/ai.js";
 import {getBackupCode, getPrompt, setBackupCode, getCode, setCode, setPrompt, getAiSettings, patchAiSettings} from "./persistence.js";
 import { observable } from "../libs/unobservable.js";
+import { confirmAction } from "./dialogs.js";
 
 window.monaco = monaco;
 
@@ -76,8 +77,8 @@ export const createEditorAsync = () => new Promise((resolve) => {
         editor.focus();
     });
 
-    $("#button_reset").click(function () {
-        if (confirm("Do you really want to reset to the default implementation? This will erase your changes to the instructions, prompt AND code tabs!.")) {
+    $("#button_reset").click(async function () {
+        if (await confirmAction("Do you really want to reset to the default implementation? This will erase your changes to the instructions, prompt AND code tabs!")) {
             setBackupCode(editor.getValue());
             reset();
         }

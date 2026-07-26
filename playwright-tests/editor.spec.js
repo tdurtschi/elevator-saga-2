@@ -16,6 +16,11 @@ const setEditorCode = (page, code) =>
 const getEditorCode = (page) =>
     page.evaluate(() => monaco.editor.getModels()[0].getValue());
 
+const confirmDialog = async (page) => {
+    await expect(page.locator('.swal2-popup')).toBeVisible();
+    await page.locator('.swal2-confirm').click();
+};
+
 test.describe('editor panel', () => {
     test('editor panel is hidden by default', async ({ page }) => {
         await waitForApp(page);
@@ -167,8 +172,8 @@ test.describe('editor behavior', () => {
 
         await setEditorCode(page, '({ init: function() {}, update: function() {} })');
 
-        page.on('dialog', dialog => dialog.accept());
         await page.locator('#button_reset').click();
+        await confirmDialog(page);
 
         const code = await getEditorCode(page);
         expect(code).toContain('elevator.goToFloor(0)');
