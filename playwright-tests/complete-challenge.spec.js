@@ -24,9 +24,10 @@ export const update = function(dt, elevators, floors) {};
 
 const waitForApp = async (page) => {
     await page.goto('http://localhost:3000/', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#editor .monaco-editor').first()).toBeVisible();
     await expect(page.locator('.innerworld .floor').first()).toBeVisible();
 };
+
+const openEditorPanel = (page) => page.locator('#editor-toggle').click();
 
 const setEditorCode = (page, code) =>
     page.evaluate((c) => monaco.editor.getModels()[0].setValue(c), code);
@@ -40,6 +41,7 @@ test('Completes the challenge', async ({ page }) => {
         await page.locator('.timescale_increase').click();
     }
 
+    await openEditorPanel(page);
     await setEditorCode(page, PROGRAM);
     await page.locator('#button_apply').click();
 
@@ -50,6 +52,7 @@ test('Next challenge link advances to challenge 2', async ({ page }) => {
     await waitForApp(page);
 
     for (let i = 0; i < 6; i++) await page.locator('.timescale_increase').click();
+    await openEditorPanel(page);
     await setEditorCode(page, PROGRAM);
     await page.locator('#button_apply').click();
     await expect(page.locator('.feedback')).toHaveText(/Success!/i, { timeout: 15000 });
@@ -64,6 +67,7 @@ test('Next challenge link advances to challenge 2', async ({ page }) => {
 test('Changing the challenge resets the game state', async ({ page }) => {
     await waitForApp(page);
 
+    await openEditorPanel(page);
     await setEditorCode(page, PROGRAM);
     await page.locator('#button_apply').click();
 
@@ -98,6 +102,7 @@ test.describe('in-page challenge switching (hash change, no reload)', () => {
     test('elapsed time resets to 0s when switching mid-run', async ({ page }) => {
         await waitForApp(page);
 
+        await openEditorPanel(page);
         await setEditorCode(page, PROGRAM);
         await page.locator('#button_apply').click();
         await page.waitForTimeout(1000);
@@ -112,6 +117,7 @@ test.describe('in-page challenge switching (hash change, no reload)', () => {
         await waitForApp(page);
 
         for (let i = 0; i < 6; i++) await page.locator('.timescale_increase').click();
+        await openEditorPanel(page);
         await setEditorCode(page, PROGRAM);
         await page.locator('#button_apply').click();
         await expect(page.locator('.feedback')).toHaveText(/Success!/i, { timeout: 15000 });

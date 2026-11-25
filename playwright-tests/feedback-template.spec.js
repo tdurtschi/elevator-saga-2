@@ -24,7 +24,6 @@ export const update = function(dt, elevators, floors) {};
 
 const waitForApp = async (page) => {
     await page.goto('http://localhost:3000/', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#editor .monaco-editor').first()).toBeVisible();
     await expect(page.locator('.innerworld .floor').first()).toBeVisible();
 };
 
@@ -35,6 +34,7 @@ const runWinningProgram = async (page) => {
     for (let i = 0; i < 6; i++) {
         await page.locator('.timescale_increase').click();
     }
+    await page.locator('#editor-toggle').click();
     await setEditorCode(page, WINNING_PROGRAM);
     await page.locator('#button_apply').click();
 };

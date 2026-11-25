@@ -3,7 +3,6 @@ import { test, expect } from '@playwright/test';
 
 const waitForApp = async (page) => {
     await page.goto('http://localhost:3000/', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#editor .monaco-editor').first()).toBeVisible();
     await expect(page.locator('.innerworld .floor').first()).toBeVisible();
     // startChallenge logs "Starting challenge" on load — wait for it
     await expect(page.locator('#terminal-output')).not.toBeEmpty();
