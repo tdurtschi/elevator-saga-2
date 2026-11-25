@@ -50,7 +50,6 @@ export const update = function(dt, elevators, floors) {
                 href="https://github.com/tdurtschi/elevator-saga-2/wiki"
         >Help</a
         >
-        <a class="right" href="#" id="ai-toggle">Enable AI</a>
         <a class="right" href="#" id="theme-toggle" title="Switch to light mode"><i class="fa fa-sun-o"></i></a>
     </div>
 </div>
@@ -117,48 +116,8 @@ export const update = function(dt, elevators, floors) {
     </div>
     <div class="actions-container">
         <div>
-            <button
-                    type="button"
-                    id="ai-settings-config"
-                    style="float: left; display: none"
-            >
-                AI Settings ⛭
-            </button>
-            <button type="button" id="button-generate" style="display: none">
-                Generate code from prompt
-            </button>
-        </div>
-        <div>
             <button id="button_apply">Apply Changes &#9654; <kbd>⌘↵</kbd></button>
         </div>
-    </div>
-    <div class="aiprompt">
-        <form id="tabs-form" style="display: none">
-            <input
-                    type="radio"
-                    name="editor-tab"
-                    value="prompt"
-                    id="tab-instructions"
-            />
-            <label for="tab-instructions" title="Show system instructions"
-            >AI Instructions</label
-            >
-            <input
-                    type="radio"
-                    name="editor-tab"
-                    value="prompt"
-                    id="tab-prompt"
-            />
-            <label for="tab-prompt" title="Show prompt input">Prompt</label>
-            <input
-                    type="radio"
-                    name="editor-tab"
-                    value="code"
-                    id="tab-code"
-                    checked
-            />
-            <label for="tab-code" title="Show generated code">Code</label>
-        </form>
     </div>
     <div class="code">
         <div id="editor"></div>

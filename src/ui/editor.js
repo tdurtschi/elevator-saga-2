@@ -5,10 +5,9 @@ import $ from "jquery";
 import _ from "lodash-es";
 import {getCodeObjFromCode} from "../libs/util.js";
 import {typeDeclarations} from "./types.js";
-import {defaultPrompt, sendMessage, updateSettings, getInstructions, resetInstructions, setInstructions} from "../ai/ai.js";
-import {getBackupCode, getPrompt, setBackupCode, getCode, setCode, setPrompt, getAiSettings, patchAiSettings} from "./persistence.js";
+import {getBackupCode, setBackupCode, getCode, setCode} from "./persistence.js";
 import { observable } from "../libs/unobservable.js";
-import { confirmAction, notify } from "./dialogs.js";
+import { confirmAction } from "./dialogs.js";
 
 window.monaco = monaco;
 
@@ -20,13 +19,11 @@ window.MonacoEnvironment = {
 };
 
 let editor = null;
-let codeModel, promptModel, instructionsModel = null;
+let codeModel = null;
 
 export const createEditorAsync = () => new Promise((resolve) => {
     if (!editor) {
         codeModel = monaco.editor.createModel("// code goes here\n", "javascript", "inmemory://model/code");
-        promptModel = monaco.editor.createModel(defaultPrompt, "text/plain", "inmemory://model/prompt");
-        instructionsModel = monaco.editor.createModel("", "text/plain", "inmemory://model/instructions");
 
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
         editor = monaco.editor.create(document.getElementById("editor"), {
@@ -44,32 +41,18 @@ export const createEditorAsync = () => new Promise((resolve) => {
 
     var reset = function () {
         codeModel.setValue($("#default-elev-implementation").text().trim());
-        promptModel.setValue(defaultPrompt);
-        resetInstructions().then(sp => instructionsModel.setValue(sp))
     };
     var saveCode = function () {
         setCode(codeModel.getValue());
-        setPrompt(promptModel.getValue());
-        setInstructions(instructionsModel.getValue());
         $("#save_message").text("Code saved " + new Date().toTimeString());
         editorService.trigger("change");
     };
 
     var existingCode = getCode();
-    var existingPrompt = getPrompt();
-    if (existingCode || existingPrompt) {
-        if (existingPrompt) {
-            promptModel.setValue(existingPrompt);
-        }
-        if (existingCode) {
-            codeModel.setValue(existingCode);
-        }
+    if (existingCode) {
+        codeModel.setValue(existingCode);
     } else {
         reset();
-    }
-    var { aiEnabled } = getAiSettings() || {};
-    if (aiEnabled) {
-        getInstructions().then(i => instructionsModel.setValue(i))
     }
 
     $("#button_save").click(function () {
@@ -78,7 +61,7 @@ export const createEditorAsync = () => new Promise((resolve) => {
     });
 
     $("#button_reset").click(async function () {
-        if (await confirmAction("Do you really want to reset to the default implementation? This will erase your changes to the instructions, prompt AND code tabs!")) {
+        if (await confirmAction("Do you really want to reset to the default implementation? This will erase your changes to the code.")) {
             setBackupCode(editor.getValue());
             reset();
         }
@@ -136,69 +119,6 @@ export const createEditorAsync = () => new Promise((resolve) => {
         saveCode();
         editorService.trigger("apply_code");
     });
-
-    $("#button-generate").click(function (event) {
-        event.preventDefault();
-        setInstructions(instructionsModel.getValue());
-        const promptInput = promptModel.getValue().trim();
-        if (promptInput.length === 0) {
-            notify("Please enter a description for the elevator behavior.", "warning");
-            return;
-        }
-
-        const oldLabel = $("#button-generate").text();
-        $("#button-generate")
-            .attr("disabled", true)
-            .text("Loading...");
-        sendMessage(promptInput).then(responseText => {
-            codeModel.setValue(`({
-/** @type {Solution} */
-init: ${responseText.trim()},
-update: function (dt, elevators, floors) {}
-})`)
-            editor.setModel(codeModel);
-            $("#tab-code").click();
-            editor.getAction('editor.action.formatDocument').run()
-        }).catch((e) => {
-            console.error(e);
-            notify("Error from AI service: " + e.message, "error");
-        }).then(() => {
-            $("#button-generate")
-                .attr("disabled", false)
-                .text(oldLabel);
-        });
-    });
-
-    $("#tab-prompt").click(function () {
-        editor.setModel(promptModel)
-    });
-
-    $("#tab-instructions").click(function () {
-        editor.setModel(instructionsModel)
-    });
-
-    $("#tab-code").click(function () {
-        editor.setModel(codeModel)
-    });
-
-    $("#ai-settings-config").click(async function () {
-        await updateSettings();
-    });
-
-    $("#ai-toggle").click(function () {
-        var { aiEnabled } = getAiSettings() || {};
-        aiEnabled = !aiEnabled;
-        patchAiSettings({ aiEnabled });
-        document.location.reload();
-    });
-
-    var { aiEnabled: aiEnabledForUI } = getAiSettings() || {};
-    if (aiEnabledForUI) {
-        $("#ai-toggle").text("Disable AI");
-        $("#ai-settings-config").attr("style", "display: inline; float: left;");
-        $("#button-generate").attr("style", "display: inline;");
-        $("#tabs-form").attr("style", "display: block;");
-    }
 
     resolve(editorService);
 });
