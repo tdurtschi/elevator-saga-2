@@ -19,8 +19,6 @@ Elevator Saga 2 is a browser-based programming game where you write JavaScript t
 | Build | Vite 5.4 |
 | UI templating | Riot.js |
 | Code editor | Monaco Editor (via CDN) |
-| AI (local) | WebLLM (`@mlc-ai/web-llm`) |
-| AI (cloud) | OpenAI API |
 | Unit tests | Jasmine 5.1 |
 | E2E tests | Playwright 1.52 |
 | Utilities | jQuery 2, Lodash 3.6 |
@@ -32,10 +30,9 @@ Elevator Saga 2 is a browser-based programming game where you write JavaScript t
 - **19 progressive challenges** — increasing difficulty across transport count, time, and move constraints
 - **Real-time simulation** — physics-based elevator movement with acceleration and deceleration
 - **Monaco editor** — full IDE experience with TypeScript type definitions for autocomplete
-- **AI code generation** — describe your strategy in plain English; local (WebLLM) or cloud (OpenAI) LLM generates the code
 - **Adjustable time scale** — run simulation at 1x–40x speed
 - **Terminal output** — real-time logs with clear and copy buttons
-- **Persistence** — code, prompts, and AI settings saved to localStorage
+- **Persistence** — code and time scale saved to localStorage
 
 ---
 
@@ -71,13 +68,11 @@ npm run clean     # remove dist/ and node_modules/
 | `interfaces.js` | Public API facade exposed to user code (`goToFloor`, events, etc.) |
 | `challenges.js` | 19 challenge definitions with win/fail conditions |
 | `presenters.js` | DOM rendering and event binding for elevators, floors, passengers |
-| `ai.js` | LLM orchestration — WebLLM and OpenAI, model management, prompt handling |
-| `persistence.js` | localStorage helpers for code, prompts, AI settings, time scale |
+| `persistence.js` | localStorage helpers for code and time scale |
 | `terminal-logger.js` | Timestamped log output with clear/copy controls |
 | `types.js` | TypeScript definitions for Monaco editor autocomplete |
 | `util.js` | Number limiting, interpolation, frame utilities, code parsing |
 | `movable.js` | Base class for position tracking and animation |
-| `elevator-saga-prompt.md` | System prompt used for AI code generation |
 
 ### Key patterns
 
@@ -137,22 +132,6 @@ floor.floorNum()
 floor.on('up_button_pressed', cb)
 floor.on('down_button_pressed', cb)
 ```
-
----
-
-## AI Code Generation
-
-1. Enable AI in the UI (toggle in header)
-2. Open the **Prompt** tab in the editor
-3. Describe your strategy in plain English
-4. Click **Generate code from prompt**
-5. Generated code is inserted into the editor
-
-**Local models (WebLLM):** runs entirely in browser, no server needed. Recommended models: Hermes-3, Llama-3.2-1B, Phi-3.5-mini, Qwen2.5-Coder-3B.
-
-**Cloud:** configure an OpenAI API key in AI settings.
-
-Custom system instructions can be set via the **Instructions** tab.
 
 ---
 

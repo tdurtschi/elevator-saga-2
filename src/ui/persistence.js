@@ -1,35 +1,7 @@
 
-const aiKey = "ai-settings";
-const lspKey = "elevatorCrushPrompt_v1";
 const lsKey = "elevatorCrushCode_v5";
 const backupCodeKey = "develevateBackupCode";
 const tsKey = "elevatorTimeScale";
-
-export const getAiSettings = () => {
-  let settingsStr = localStorage.getItem(aiKey);
-  let settings = JSON.parse(settingsStr || "null");
-
-  return settings;
-}
-
-const setAiSettings = (settings) => {
-    localStorage.setItem(aiKey, JSON.stringify(settings));
-}
-
-export const patchAiSettings = (newSettings) => {
-  let settings = getAiSettings() || {};
-  settings = { ...settings, ...newSettings };
-  setAiSettings(settings);
-  return settings;
-}
-
-export const setPrompt = (prompt) => {
-  localStorage.setItem(lspKey, prompt);
-}
-
-export const getPrompt = () => {
-  return localStorage.getItem(lspKey);
-}
 
 export const getCode = () => {
   return localStorage.getItem(lsKey);
